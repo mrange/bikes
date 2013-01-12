@@ -1,0 +1,308 @@
+﻿<#@ include file = "$(ProjectDir)\T4\Header.ttinclude"#>
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
+// ReSharper disable InconsistentNaming
+// ReSharper disable InvocationIsSkipped
+// ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable PartialTypeWithSinglePart
+// ReSharper disable RedundantAssignment
+
+<#
+    NamespaceName = "SASBikes.DataModel"    ;
+    Model = new []
+    {
+        new ClassDefinition ("State")
+        {
+            P ("decimal"            , "Lo"                  ),
+            P ("decimal"            , "La"                  ),              
+            P ("string"             , "StationName"         ),
+            P ("string"             , "SearchingFor"        ),
+            C ("string"             , "FavoriteStationNames"),
+            C ("Station"            , "Stations"            ),
+        },
+        new ClassDefinition ("Station")
+        {
+            P ("string"             , "Name"            ),
+            P ("int"                , "Number"          ),
+            P ("string"             , "Address"         ),
+            P ("string"             , "FullAddress"     ),
+            P ("decimal"            , "Lo"              ),
+            P ("decimal"            , "La"              ),
+            P ("bool"               , "IsOpen"          ),
+            P ("bool"               , "IsBonus"         ),
+        },
+    };
+#>
+
+namespace <#=NamespaceName#>
+{
+
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.Linq;
+    using System.Xml.Linq;
+
+
+<#
+    foreach (var classDef in Model)
+    {
+#>
+    sealed partial class <#=classDef.Name#> : <#=classDef.BaseName#> 
+    {
+        public <#=classDef.Name#> (DataModelContext context) : base (context)
+        {
+        }
+
+<#
+    foreach (var propertyDef in classDef)
+    {
+#>
+        // --------------------------------------------------------------------
+        public <#=propertyDef.Type#> <#=propertyDef.PropertyName#>
+        {
+            get
+            {
+                return <#=propertyDef.MemberName#>;
+            }
+            set
+            {
+                if (<#=propertyDef.MemberName#> != value)
+                {
+                    var oldValue = <#=propertyDef.MemberName#>; 
+
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+                    if (oldValue != null)
+                    {
+                        oldValue.CollectionChanged -= <#=propertyDef.CollectionChangedName#>;
+                    }
+<#
+    }
+#>
+                    <#=propertyDef.MemberName#> = value;
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+                    if (value != null)
+                    {
+                        value.CollectionChanged += <#=propertyDef.CollectionChangedName#>;
+                    }
+<#
+    }
+#>
+
+                    <#=propertyDef.ChangedName#> (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        <#=propertyDef.Type#> <#=propertyDef.MemberName#> = <#=propertyDef.DefaultValue#>   ;
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+        void <#=propertyDef.CollectionChangedName#> (object sender, NotifyCollectionChangedEventArgs e)
+        {
+            <#=propertyDef.CollectionChangedName#> (<#=propertyDef.MemberName#>, e);
+        }
+<#
+    }    
+#>
+        // --------------------------------------------------------------------
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+        partial void <#=propertyDef.CollectionChangedName#> (<#=propertyDef.Type#> value, NotifyCollectionChangedEventArgs e);
+<#
+    }    
+#>
+        partial void <#=propertyDef.ChangedName#> (<#=propertyDef.Type#> oldValue, <#=propertyDef.Type#> newValue);
+        // --------------------------------------------------------------------
+
+<#
+    }
+#>
+
+    }
+<#
+    }
+#>
+
+    static partial class DataModelSerializer
+    {
+<#
+    foreach (var classDef in Model)
+    {
+#>
+        public static XElement Serialize (this ObservableCollection<<#=classDef.Name#>> instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+
+            return CreateElement (
+                    name
+                ,   instance.Select ((v,i) => v.Serialize (i.ToString()))
+                );
+
+        }
+
+        public static XElement Serialize (this <#=classDef.Name#> instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+            return CreateElement (
+                    name
+<#
+    foreach (var propertyDef in classDef)
+    {
+#>
+                ,   instance.<#=propertyDef.PropertyName#>.Serialize ("<#=propertyDef.Name#>")
+<#
+    }
+#>
+                );
+        }
+<#
+    }
+#>
+    }
+
+}
+
+<#+
+
+    string              NamespaceName   = "T4Include"               ;
+    ClassDefinition[]   Model           = new ClassDefinition[0]    ;
+
+    sealed class ClassDefinition : BaseContainer<Root, PropertyDefinition>
+    {
+        public readonly string Name      ;
+        public readonly string BaseName  ;
+
+        public ClassDefinition (
+            string name             ,    
+            string baseName = null
+            )
+        {
+            Name        = name      ?? S_NoName         ;
+            BaseName    = baseName  ?? "DataModelBase"  ;
+        }
+    }
+
+    [Flags]
+    enum PropertyFlags
+    {
+        None                = 0x0000    ,
+        IsCollection        = 0x1000    ,
+        IsNotSerializable   = 0x0001    ,
+    }
+
+    static bool IsOn(PropertyFlags pf, PropertyFlags test)
+    {
+        return (pf & test) == test;
+    }
+
+    sealed class PropertyDefinition : BaseEntity<ClassDefinition>
+    {
+        public readonly PropertyFlags   Flags       ;
+        public readonly string          ElementType ;
+        public readonly string          Type        ;
+        public readonly string          Name        ;
+        public readonly string          DefaultValue;
+
+        public PropertyDefinition (
+            PropertyFlags   flags       ,
+            string          elementType ,
+            string          type        ,
+            string          name        ,
+            string          defaultValue
+            )
+        {
+            Flags           = flags                     ;
+            ElementType     = elementType   ?? S_NoType ;
+            Type            = type          ?? S_NoType ;
+            Name            = name          ?? S_NoName ;
+            DefaultValue    = defaultValue  ?? "default ("  + Type + ")";
+        }
+
+        public string PropertyName
+        {
+            get { return Parent.Name + "_" + Name; }
+        }
+
+        public string MemberName
+        {
+            get { return "_" + PropertyName; }
+        }
+
+        public string CollectionChangedName
+        {
+            get { return "CollectionChanged__" + PropertyName; }
+        }
+
+        public string ChangedName
+        {
+            get { return "Changed__" + PropertyName; }
+        }
+
+        public bool IsCollection 
+        {
+            get { return IsOn (Flags, PropertyFlags.IsCollection);}
+        }
+
+        public bool IsNotSerializable
+        {
+            get { return IsOn (Flags, PropertyFlags.IsNotSerializable);}
+        }
+
+    }
+
+    static PropertyDefinition P (
+        string type         , 
+        string name         ,
+        string defaultValue = null                  , 
+        PropertyFlags flags = PropertyFlags.None
+        )
+    {
+        if (defaultValue == null && "string" == type)
+        {
+            defaultValue = @"""""";
+        }
+
+        return new PropertyDefinition (
+                flags   &   ~PropertyFlags.IsCollection  
+            ,   null
+            ,   type
+            ,   name
+            ,   defaultValue
+            );
+    }
+
+    static PropertyDefinition C (
+        string elementType  , 
+        string name         , 
+        PropertyFlags flags = PropertyFlags.None
+        )
+    {
+        var type = "ObservableCollection<" + (elementType ?? S_NoType) + ">";
+        var defaultValue = "new " + type + " ()";
+        return new PropertyDefinition (
+                flags   |   PropertyFlags.IsCollection  
+            ,   elementType
+            ,   type   
+            ,   name
+            ,   defaultValue
+            );
+    }
+
+#>

@@ -1,0 +1,4 @@
+http://www.goteborgbikes.se
+
+/index.php/service/carto
+/index.php/service/stationdetails/goteborg

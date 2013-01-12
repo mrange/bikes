@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="d1a73986-61d0-4149-a8fe-393ed4c4fbad" Publisher="CN=marran" Version="1.0.0.0" />
+  <Properties>
+    <DisplayName>SASBikes</DisplayName>
+    <PublisherDisplayName>VRONGE</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2.1</OSMinVersion>
+    <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="SASBikes.App">
+      <VisualElements DisplayName="Styr och Ställ (Unofficial)" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Styr och Ställ (Unofficial) är en app för svenska Styr och Ställ i Göteborg. Den hjälper dig finna närmaste öppna Styr och Ställ station." ForegroundText="light" BackgroundColor="#232346">
+        <DefaultTile ShowName="allLogos" ShortName="Styr och Ställ" />
+        <SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="#232346" />
+      </VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>
