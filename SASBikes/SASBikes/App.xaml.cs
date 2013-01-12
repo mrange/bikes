@@ -1,4 +1,5 @@
-﻿using SASBikes.Common;
+﻿using System.Reflection;
+using SASBikes.Common;
 
 using System;
 using Windows.ApplicationModel;

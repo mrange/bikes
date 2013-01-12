@@ -121,6 +121,7 @@
     <Compile Include="DataModel\DataModelSerializer.cs" />
     <Compile Include="DataModel\IDataModelEntity.cs" />
     <Compile Include="DataModel\IUnserializeErrorReporter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Include_T4Include.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
