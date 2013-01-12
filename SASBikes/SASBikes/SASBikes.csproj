@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -111,6 +111,7 @@
       <LastGenOutput>Generated_DataModel.cs</LastGenOutput>
     </None>
     <Compile Include="DataModel\DataModelBase.cs" />
+    <Compile Include="DataModel\DataModelCollection.cs" />
     <Compile Include="DataModel\DataModelContext.cs" />
     <Compile Include="DataModel\Generated_DataModel.cs">
       <AutoGen>True</AutoGen>
@@ -118,6 +119,13 @@
       <DependentUpon>Generated_DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="DataModel\DataModelSerializer.cs" />
+    <Compile Include="DataModel\IDataModelEntity.cs" />
+    <Compile Include="DataModel\IUnserializeErrorReporter.cs" />
+    <Compile Include="Include_T4Include.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Include_T4Include.tt</DependentUpon>
+    </Compile>
     <Compile Include="ItemsPage.xaml.cs">
       <DependentUpon>ItemsPage.xaml</DependentUpon>
     </Compile>
@@ -138,6 +146,11 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="Common\ReadMe.txt" />
+    <None Include="Include_T4Include.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Include_T4Include.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
     <None Include="SASBikes_TemporaryKey.pfx" />
     <None Include="T4\Header.ttinclude" />
   </ItemGroup>

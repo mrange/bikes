@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace SASBikes.DataModel
 {
-    abstract partial class DataModelBase : INotifyPropertyChanged
+    abstract partial class DataModelBase : INotifyPropertyChanged, IDataModelEntity
     {
         readonly DataModelContext m_context;
 

@@ -32,6 +32,12 @@ namespace SASBikes.DataModel
     {
         public State (DataModelContext context) : base (context)
         {
+            _State_Lo = default (decimal)   ;
+            _State_La = default (decimal)   ;
+            _State_StationName = ""   ;
+            _State_SearchingFor = ""   ;
+            _State_FavoriteStationNames = new DataModelCollection<string> (context)   ;
+            _State_Stations = new DataModelCollection<Station> (context)   ;
         }
 
         // --------------------------------------------------------------------
@@ -56,7 +62,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _State_Lo = default (decimal)   ;
+        decimal _State_Lo;
         // --------------------------------------------------------------------
         partial void Changed__State_Lo (decimal oldValue, decimal newValue);
         // --------------------------------------------------------------------
@@ -83,7 +89,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _State_La = default (decimal)   ;
+        decimal _State_La;
         // --------------------------------------------------------------------
         partial void Changed__State_La (decimal oldValue, decimal newValue);
         // --------------------------------------------------------------------
@@ -110,7 +116,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        string _State_StationName = ""   ;
+        string _State_StationName;
         // --------------------------------------------------------------------
         partial void Changed__State_StationName (string oldValue, string newValue);
         // --------------------------------------------------------------------
@@ -137,13 +143,13 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        string _State_SearchingFor = ""   ;
+        string _State_SearchingFor;
         // --------------------------------------------------------------------
         partial void Changed__State_SearchingFor (string oldValue, string newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public ObservableCollection<string> State_FavoriteStationNames
+        public DataModelCollection<string> State_FavoriteStationNames
         {
             get
             {
@@ -172,18 +178,18 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        ObservableCollection<string> _State_FavoriteStationNames = new ObservableCollection<string> ()   ;
+        DataModelCollection<string> _State_FavoriteStationNames;
         void CollectionChanged__State_FavoriteStationNames (object sender, NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged__State_FavoriteStationNames (_State_FavoriteStationNames, e);
         }
         // --------------------------------------------------------------------
-        partial void CollectionChanged__State_FavoriteStationNames (ObservableCollection<string> value, NotifyCollectionChangedEventArgs e);
-        partial void Changed__State_FavoriteStationNames (ObservableCollection<string> oldValue, ObservableCollection<string> newValue);
+        partial void CollectionChanged__State_FavoriteStationNames (DataModelCollection<string> value, NotifyCollectionChangedEventArgs e);
+        partial void Changed__State_FavoriteStationNames (DataModelCollection<string> oldValue, DataModelCollection<string> newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public ObservableCollection<Station> State_Stations
+        public DataModelCollection<Station> State_Stations
         {
             get
             {
@@ -212,14 +218,14 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        ObservableCollection<Station> _State_Stations = new ObservableCollection<Station> ()   ;
+        DataModelCollection<Station> _State_Stations;
         void CollectionChanged__State_Stations (object sender, NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged__State_Stations (_State_Stations, e);
         }
         // --------------------------------------------------------------------
-        partial void CollectionChanged__State_Stations (ObservableCollection<Station> value, NotifyCollectionChangedEventArgs e);
-        partial void Changed__State_Stations (ObservableCollection<Station> oldValue, ObservableCollection<Station> newValue);
+        partial void CollectionChanged__State_Stations (DataModelCollection<Station> value, NotifyCollectionChangedEventArgs e);
+        partial void Changed__State_Stations (DataModelCollection<Station> oldValue, DataModelCollection<Station> newValue);
         // --------------------------------------------------------------------
 
 
@@ -228,6 +234,14 @@ namespace SASBikes.DataModel
     {
         public Station (DataModelContext context) : base (context)
         {
+            _Station_Name = ""   ;
+            _Station_Number = default (int)   ;
+            _Station_Address = ""   ;
+            _Station_FullAddress = ""   ;
+            _Station_Lo = default (decimal)   ;
+            _Station_La = default (decimal)   ;
+            _Station_IsOpen = default (bool)   ;
+            _Station_IsBonus = default (bool)   ;
         }
 
         // --------------------------------------------------------------------
@@ -252,7 +266,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        string _Station_Name = ""   ;
+        string _Station_Name;
         // --------------------------------------------------------------------
         partial void Changed__Station_Name (string oldValue, string newValue);
         // --------------------------------------------------------------------
@@ -279,7 +293,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        int _Station_Number = default (int)   ;
+        int _Station_Number;
         // --------------------------------------------------------------------
         partial void Changed__Station_Number (int oldValue, int newValue);
         // --------------------------------------------------------------------
@@ -306,7 +320,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        string _Station_Address = ""   ;
+        string _Station_Address;
         // --------------------------------------------------------------------
         partial void Changed__Station_Address (string oldValue, string newValue);
         // --------------------------------------------------------------------
@@ -333,7 +347,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        string _Station_FullAddress = ""   ;
+        string _Station_FullAddress;
         // --------------------------------------------------------------------
         partial void Changed__Station_FullAddress (string oldValue, string newValue);
         // --------------------------------------------------------------------
@@ -360,7 +374,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _Station_Lo = default (decimal)   ;
+        decimal _Station_Lo;
         // --------------------------------------------------------------------
         partial void Changed__Station_Lo (decimal oldValue, decimal newValue);
         // --------------------------------------------------------------------
@@ -387,7 +401,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _Station_La = default (decimal)   ;
+        decimal _Station_La;
         // --------------------------------------------------------------------
         partial void Changed__Station_La (decimal oldValue, decimal newValue);
         // --------------------------------------------------------------------
@@ -414,7 +428,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        bool _Station_IsOpen = default (bool)   ;
+        bool _Station_IsOpen;
         // --------------------------------------------------------------------
         partial void Changed__Station_IsOpen (bool oldValue, bool newValue);
         // --------------------------------------------------------------------
@@ -441,7 +455,7 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        bool _Station_IsBonus = default (bool)   ;
+        bool _Station_IsBonus;
         // --------------------------------------------------------------------
         partial void Changed__Station_IsBonus (bool oldValue, bool newValue);
         // --------------------------------------------------------------------
@@ -451,7 +465,7 @@ namespace SASBikes.DataModel
 
     static partial class DataModelSerializer
     {
-        public static XElement Serialize (this ObservableCollection<State> instance, string name)
+        public static XElement Serialize (this DataModelCollection<State> instance, string name)
         {
             if (instance == null)
             {
@@ -481,7 +495,147 @@ namespace SASBikes.DataModel
                 ,   instance.State_Stations.Serialize ("Stations")
                 );
         }
-        public static XElement Serialize (this ObservableCollection<Station> instance, string name)
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref DataModelCollection<State> instance
+            )
+        {
+            instance = new DataModelCollection<State> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements (NodeName))
+            {
+                State subInstance = null;
+                
+                subElement.Unserialize (
+                    context,
+                    reporter,
+                    ref subInstance
+                    );
+
+                instance.Add (subInstance);                                
+            }
+        }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref State instance
+            )
+        {
+            instance = new State (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements(NodeName))
+            {
+                var nameAttribute = subElement.Attribute(NameAttributeName);
+                if (nameAttribute == null)
+                {
+                    continue;
+                }
+
+                var name = nameAttribute.Value;
+
+                switch (name)
+                {
+                    case "Lo":
+                        {
+                            var value = default (decimal);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_Lo = value;                                
+                        }
+                        break;
+                    case "La":
+                        {
+                            var value = default (decimal);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_La = value;                                
+                        }
+                        break;
+                    case "StationName":
+                        {
+                            var value = "";
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_StationName = value;                                
+                        }
+                        break;
+                    case "SearchingFor":
+                        {
+                            var value = "";
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_SearchingFor = value;                                
+                        }
+                        break;
+                    case "FavoriteStationNames":
+                        {
+                            var value = new DataModelCollection<string> (context);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_FavoriteStationNames = value;                                
+                        }
+                        break;
+                    case "Stations":
+                        {
+                            var value = new DataModelCollection<Station> (context);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_Stations = value;                                
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+        public static XElement Serialize (this DataModelCollection<Station> instance, string name)
         {
             if (instance == null)
             {
@@ -513,6 +667,174 @@ namespace SASBikes.DataModel
                 ,   instance.Station_IsBonus.Serialize ("IsBonus")
                 );
         }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref DataModelCollection<Station> instance
+            )
+        {
+            instance = new DataModelCollection<Station> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements (NodeName))
+            {
+                Station subInstance = null;
+                
+                subElement.Unserialize (
+                    context,
+                    reporter,
+                    ref subInstance
+                    );
+
+                instance.Add (subInstance);                                
+            }
+        }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref Station instance
+            )
+        {
+            instance = new Station (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements(NodeName))
+            {
+                var nameAttribute = subElement.Attribute(NameAttributeName);
+                if (nameAttribute == null)
+                {
+                    continue;
+                }
+
+                var name = nameAttribute.Value;
+
+                switch (name)
+                {
+                    case "Name":
+                        {
+                            var value = "";
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_Name = value;                                
+                        }
+                        break;
+                    case "Number":
+                        {
+                            var value = default (int);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_Number = value;                                
+                        }
+                        break;
+                    case "Address":
+                        {
+                            var value = "";
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_Address = value;                                
+                        }
+                        break;
+                    case "FullAddress":
+                        {
+                            var value = "";
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_FullAddress = value;                                
+                        }
+                        break;
+                    case "Lo":
+                        {
+                            var value = default (decimal);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_Lo = value;                                
+                        }
+                        break;
+                    case "La":
+                        {
+                            var value = default (decimal);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_La = value;                                
+                        }
+                        break;
+                    case "IsOpen":
+                        {
+                            var value = default (bool);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_IsOpen = value;                                
+                        }
+                        break;
+                    case "IsBonus":
+                        {
+                            var value = default (bool);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_IsBonus = value;                                
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+
+
     }
 
 }

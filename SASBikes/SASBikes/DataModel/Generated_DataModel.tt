@@ -51,6 +51,14 @@ namespace <#=NamespaceName#>
     {
         public <#=classDef.Name#> (DataModelContext context) : base (context)
         {
+<#
+    foreach (var propertyDef in classDef)
+    {
+#>
+            <#=propertyDef.MemberName#> = <#=propertyDef.DefaultValue#>   ;
+<#
+    }
+#>
         }
 
 <#
@@ -101,7 +109,7 @@ namespace <#=NamespaceName#>
             }
         }
         // --------------------------------------------------------------------
-        <#=propertyDef.Type#> <#=propertyDef.MemberName#> = <#=propertyDef.DefaultValue#>   ;
+        <#=propertyDef.Type#> <#=propertyDef.MemberName#>;
 <#
     if (propertyDef.IsCollection)
     {
@@ -137,10 +145,10 @@ namespace <#=NamespaceName#>
     static partial class DataModelSerializer
     {
 <#
-    foreach (var classDef in Model)
+    foreach (var classDef in Model.Where (c => !c.IsNotSerializable))
     {
 #>
-        public static XElement Serialize (this ObservableCollection<<#=classDef.Name#>> instance, string name)
+        public static XElement Serialize (this DataModelCollection<<#=classDef.Name#>> instance, string name)
         {
             if (instance == null)
             {
@@ -163,7 +171,7 @@ namespace <#=NamespaceName#>
             return CreateElement (
                     name
 <#
-    foreach (var propertyDef in classDef)
+    foreach (var propertyDef in classDef.Where (p => !p.IsNotSerializable))
     {
 #>
                 ,   instance.<#=propertyDef.PropertyName#>.Serialize ("<#=propertyDef.Name#>")
@@ -172,9 +180,93 @@ namespace <#=NamespaceName#>
 #>
                 );
         }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref DataModelCollection<<#=classDef.Name#>> instance
+            )
+        {
+            instance = new DataModelCollection<<#=classDef.Name#>> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements (NodeName))
+            {
+                <#=classDef.Name#> subInstance = null;
+                
+                subElement.Unserialize (
+                    context,
+                    reporter,
+                    ref subInstance
+                    );
+
+                instance.Add (subInstance);                                
+            }
+        }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref <#=classDef.Name#> instance
+            )
+        {
+            instance = new <#=classDef.Name#> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements(NodeName))
+            {
+                var nameAttribute = subElement.Attribute(NameAttributeName);
+                if (nameAttribute == null)
+                {
+                    continue;
+                }
+
+                var name = nameAttribute.Value;
+
+                switch (name)
+                {
+<#
+    foreach (var propertyDef in classDef.Where (p => !p.IsNotSerializable))
+    {
+#>
+                    case "<#=propertyDef.Name#>":
+                        {
+                            var value = <#=propertyDef.DefaultValue#>;
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.<#=propertyDef.PropertyName#> = value;                                
+                        }
+                        break;
 <#
     }
 #>
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+<#
+    }
+#>
+
+
     }
 
 }
@@ -184,19 +276,45 @@ namespace <#=NamespaceName#>
     string              NamespaceName   = "T4Include"               ;
     ClassDefinition[]   Model           = new ClassDefinition[0]    ;
 
+    [Flags]
+    enum ClassFlags
+    {
+        None                = 0x0000    ,
+        IsNotSerializable   = 0x0001    ,
+    }
+
+    static bool IsOn(PropertyFlags pf, PropertyFlags test)
+    {
+        return (pf & test) == test;
+    }
+
     sealed class ClassDefinition : BaseContainer<Root, PropertyDefinition>
     {
-        public readonly string Name      ;
-        public readonly string BaseName  ;
+        public readonly ClassFlags  Flags       ;
+        public readonly string      Name        ;
+        public readonly string      BaseName    ;
 
         public ClassDefinition (
-            string name             ,    
-            string baseName = null
+            string name         ,    
+            string baseName     = null              ,
+            ClassFlags flags    = ClassFlags.None
             )
         {
             Name        = name      ?? S_NoName         ;
             BaseName    = baseName  ?? "DataModelBase"  ;
         }
+
+        bool IsOn(ClassFlags test)
+        {
+            return (Flags & test) == test;
+        }
+
+        public bool IsNotSerializable
+        {
+            get { return IsOn (ClassFlags.IsNotSerializable);}
+        }
+
+
     }
 
     [Flags]
@@ -205,11 +323,6 @@ namespace <#=NamespaceName#>
         None                = 0x0000    ,
         IsCollection        = 0x1000    ,
         IsNotSerializable   = 0x0001    ,
-    }
-
-    static bool IsOn(PropertyFlags pf, PropertyFlags test)
-    {
-        return (pf & test) == test;
     }
 
     sealed class PropertyDefinition : BaseEntity<ClassDefinition>
@@ -257,13 +370,19 @@ namespace <#=NamespaceName#>
 
         public bool IsCollection 
         {
-            get { return IsOn (Flags, PropertyFlags.IsCollection);}
+            get { return IsOn (PropertyFlags.IsCollection);}
         }
 
         public bool IsNotSerializable
         {
-            get { return IsOn (Flags, PropertyFlags.IsNotSerializable);}
+            get { return IsOn (PropertyFlags.IsNotSerializable);}
         }
+
+        bool IsOn(PropertyFlags test)
+        {
+            return (Flags & test) == test;
+        }
+
 
     }
 
@@ -294,8 +413,8 @@ namespace <#=NamespaceName#>
         PropertyFlags flags = PropertyFlags.None
         )
     {
-        var type = "ObservableCollection<" + (elementType ?? S_NoType) + ">";
-        var defaultValue = "new " + type + " ()";
+        var type = "DataModelCollection<" + (elementType ?? S_NoType) + ">";
+        var defaultValue = "new " + type + " (context)";
         return new PropertyDefinition (
                 flags   |   PropertyFlags.IsCollection  
             ,   elementType
