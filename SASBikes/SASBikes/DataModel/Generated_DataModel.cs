@@ -32,6 +32,7 @@ namespace SASBikes.DataModel
     {
         public State (DataModelContext context) : base (context)
         {
+            _State_ZoomLevel = default (decimal)   ;
             _State_Lo = default (decimal)   ;
             _State_La = default (decimal)   ;
             _State_StationName = ""   ;
@@ -39,6 +40,33 @@ namespace SASBikes.DataModel
             _State_FavoriteStationNames = new DataModelCollection<string> (context)   ;
             _State_Stations = new DataModelCollection<Station> (context)   ;
         }
+
+        // --------------------------------------------------------------------
+        public decimal State_ZoomLevel
+        {
+            get
+            {
+                return _State_ZoomLevel;
+            }
+            set
+            {
+                if (_State_ZoomLevel != value)
+                {
+                    var oldValue = _State_ZoomLevel; 
+
+                    _State_ZoomLevel = value;
+
+                    Changed__State_ZoomLevel (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        decimal _State_ZoomLevel;
+        // --------------------------------------------------------------------
+        partial void Changed__State_ZoomLevel (decimal oldValue, decimal newValue);
+        // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
         public decimal State_Lo
@@ -487,6 +515,7 @@ namespace SASBikes.DataModel
             }
             return CreateElement (
                     name
+                ,   instance.State_ZoomLevel.Serialize ("ZoomLevel")
                 ,   instance.State_Lo.Serialize ("Lo")
                 ,   instance.State_La.Serialize ("La")
                 ,   instance.State_StationName.Serialize ("StationName")
@@ -550,6 +579,19 @@ namespace SASBikes.DataModel
 
                 switch (name)
                 {
+                    case "ZoomLevel":
+                        {
+                            var value = default (decimal);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_ZoomLevel = value;                                
+                        }
+                        break;
                     case "Lo":
                         {
                             var value = default (decimal);

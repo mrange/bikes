@@ -13,6 +13,7 @@
     {
         new ClassDefinition ("State")
         {
+            P ("decimal"            , "ZoomLevel"           ),
             P ("decimal"            , "Lo"                  ),
             P ("decimal"            , "La"                  ),              
             P ("string"             , "StationName"         ),
