@@ -20,8 +20,9 @@ namespace SASBikes
         {
             InitializeComponent();
 
-            DefaultViewModel[C.ViewModel_ApplicationState] = App.Value.AppState;
+            App.Value.Dispatcher = Dispatcher;
 
+            DefaultViewModel[C.ViewModel_ApplicationState] = App.Value.AppState;
         }
 
         /// <summary>
@@ -47,14 +48,11 @@ namespace SASBikes
         {
         }
 
-        async void Click_ZoomOnMe(object sender, RoutedEventArgs e)
+        void Click_ZoomOnMe(object sender, RoutedEventArgs e)
         {
-            var locator = new Geolocator();
-            var pos = await locator.GetGeopositionAsync();
-
             var appState = App.Value.AppState;
-            appState.State_La = pos.Coordinate.Latitude;
-            appState.State_Lo = pos.Coordinate.Longitude;
+            appState.State_La = appState.State_MyLa;
+            appState.State_Lo = appState.State_MyLo;
             appState.State_ZoomLevel = 20;
         }
 
@@ -70,7 +68,7 @@ namespace SASBikes
             {
                 var station = appState.State_Stations[index];
 
-                var distance = me.DistanceTo(new Location(station.Station_La, station.Station_Lo));
+                var distance = station.Station_Distance;
 
                 if (distance < closestDistance)
                 {

@@ -115,12 +115,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppServices\LogService.cs" />
+    <Compile Include="AppServices\SchedulerService.cs" />
+    <Compile Include="AppServices\Services.cs" />
+    <Compile Include="AppServices\UpdateLocationService.cs" />
+    <Compile Include="AppServices\UpdateStationsService.cs" />
     <Compile Include="BikeMap.xaml.cs">
       <DependentUpon>BikeMap.xaml</DependentUpon>
     </Compile>
     <Compile Include="C.cs" />
     <Compile Include="CommonExtensions\SuspensionManager.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="DataModel\DataModel.cs" />
     <Compile Include="Generated_DependencyProperties.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

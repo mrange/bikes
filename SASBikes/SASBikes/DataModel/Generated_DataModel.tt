@@ -16,6 +16,8 @@
             P ("double"             , "ZoomLevel"           ),
             P ("double"             , "Lo"                  ),
             P ("double"             , "La"                  ),              
+            P ("double"             , "MyLo"                ),
+            P ("double"             , "MyLa"                ),              
             P ("string"             , "StationName"         ),
             P ("string"             , "SearchingFor"        ),
             C ("Station"            , "Stations"            ),
@@ -30,6 +32,7 @@
             P ("double"             , "La"              ),
             P ("bool"               , "IsOpen"          ),
             P ("bool"               , "IsBonus"         ),
+            P ("double"             , "Distance"        ),
         },
     };
 #>

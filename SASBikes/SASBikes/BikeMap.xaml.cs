@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using Bing.Maps;
 using SASBikes.DataModel;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -15,9 +14,6 @@ namespace SASBikes
     {
         readonly Brush m_openBrush = new SolidColorBrush(Colors.WhiteSmoke);
         readonly Brush m_closedBrush = new SolidColorBrush(Colors.Crimson);
-
-        bool m_isUpdatingView;
-        bool m_isUpdatingStations;
 
         partial void Constructed__BikeMap()
         {
@@ -72,62 +68,40 @@ namespace SASBikes
 
         void Async_UpdateStations()
         {
-            if (!m_isUpdatingStations)
-            {
-                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Low, UpdateStations);
-                m_isUpdatingStations = true;
-            }
+            App.Value.Async_Invoke(App.AsyncGroup.UpdateMapStations, UpdateMapStations);
         }
 
-        void UpdateStations()
+        void UpdateMapStations()
         {
-            try
+            Map.Children.Clear();
+            var stations = Stations;
+            if (stations != null)
             {
-                Map.Children.Clear();
-                var stations = Stations;
-                if (stations != null)
+                for (int index = 0; index < stations.Count; index++)
                 {
-                    for (int index = 0; index < stations.Count; index++)
-                    {
-                        var station = stations[index];
-                        var pp = new Pushpin
-                                     {
-                                         Tag = station.Station_Name,
-                                         Foreground = station.Station_IsOpen ? m_openBrush : m_closedBrush,
-                                         Text = station.Station_Number.ToString(),
-                                     };
+                    var station = stations[index];
+                    var pp = new Pushpin
+                                 {
+                                     Tag = station.Station_Name,
+                                     Foreground = station.Station_IsOpen ? m_openBrush : m_closedBrush,
+                                     Text = station.Station_Number.ToString(),
+                                 };
 
-                        MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
+                    MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
 
-                        Map.Children.Add(pp);
-                    }
+                    Map.Children.Add(pp);
                 }
-            }
-            finally
-            {
-                m_isUpdatingStations = false;
             }
         }
 
         void Async_UpateView()
         {
-            if (!m_isUpdatingView)
-            {
-                var task = Dispatcher.RunAsync(CoreDispatcherPriority.Low, UpdateView);
-                m_isUpdatingView = true;
-            }
+            App.Value.Async_Invoke(App.AsyncGroup.UpdateMapView, UpdateMapView);
         }
 
-        void UpdateView()
+        void UpdateMapView()
         {
-            try
-            {
-                Map.SetView(new Location(View_La, View_Lo), View_ZoomLevel);
-            }
-            finally
-            {
-                m_isUpdatingView = false;
-            }
+            Map.SetView(new Location(View_La, View_Lo), View_ZoomLevel);
         }
     }
 }

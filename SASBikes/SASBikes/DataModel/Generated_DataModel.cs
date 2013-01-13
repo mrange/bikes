@@ -42,6 +42,8 @@ namespace SASBikes.DataModel
             _State_ZoomLevel = default (double)   ;
             _State_Lo = default (double)   ;
             _State_La = default (double)   ;
+            _State_MyLo = default (double)   ;
+            _State_MyLa = default (double)   ;
             _State_StationName = ""   ;
             _State_SearchingFor = ""   ;
             _State_Stations = new StationList (context)   ;
@@ -126,6 +128,60 @@ namespace SASBikes.DataModel
         double _State_La;
         // --------------------------------------------------------------------
         partial void Changed__State_La (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        public double State_MyLo
+        {
+            get
+            {
+                return _State_MyLo;
+            }
+            set
+            {
+                if (_State_MyLo != value)
+                {
+                    var oldValue = _State_MyLo; 
+
+                    _State_MyLo = value;
+
+                    Changed__State_MyLo (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        double _State_MyLo;
+        // --------------------------------------------------------------------
+        partial void Changed__State_MyLo (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        public double State_MyLa
+        {
+            get
+            {
+                return _State_MyLa;
+            }
+            set
+            {
+                if (_State_MyLa != value)
+                {
+                    var oldValue = _State_MyLa; 
+
+                    _State_MyLa = value;
+
+                    Changed__State_MyLa (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        double _State_MyLa;
+        // --------------------------------------------------------------------
+        partial void Changed__State_MyLa (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
@@ -243,6 +299,7 @@ namespace SASBikes.DataModel
             _Station_La = default (double)   ;
             _Station_IsOpen = default (bool)   ;
             _Station_IsBonus = default (bool)   ;
+            _Station_Distance = default (double)   ;
         }
 
         // --------------------------------------------------------------------
@@ -461,6 +518,33 @@ namespace SASBikes.DataModel
         partial void Changed__Station_IsBonus (bool oldValue, bool newValue);
         // --------------------------------------------------------------------
 
+        // --------------------------------------------------------------------
+        public double Station_Distance
+        {
+            get
+            {
+                return _Station_Distance;
+            }
+            set
+            {
+                if (_Station_Distance != value)
+                {
+                    var oldValue = _Station_Distance; 
+
+                    _Station_Distance = value;
+
+                    Changed__Station_Distance (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        double _Station_Distance;
+        // --------------------------------------------------------------------
+        partial void Changed__Station_Distance (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
 
     }
 
@@ -491,6 +575,8 @@ namespace SASBikes.DataModel
                 ,   instance.State_ZoomLevel.Serialize ("ZoomLevel")
                 ,   instance.State_Lo.Serialize ("Lo")
                 ,   instance.State_La.Serialize ("La")
+                ,   instance.State_MyLo.Serialize ("MyLo")
+                ,   instance.State_MyLa.Serialize ("MyLa")
                 ,   instance.State_StationName.Serialize ("StationName")
                 ,   instance.State_SearchingFor.Serialize ("SearchingFor")
                 ,   instance.State_Stations.Serialize ("Stations")
@@ -590,6 +676,32 @@ namespace SASBikes.DataModel
                             instance.State_La = value;                                
                         }
                         break;
+                    case "MyLo":
+                        {
+                            var value = default (double);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_MyLo = value;                                
+                        }
+                        break;
+                    case "MyLa":
+                        {
+                            var value = default (double);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_MyLa = value;                                
+                        }
+                        break;
                     case "StationName":
                         {
                             var value = "";
@@ -666,6 +778,7 @@ namespace SASBikes.DataModel
                 ,   instance.Station_La.Serialize ("La")
                 ,   instance.Station_IsOpen.Serialize ("IsOpen")
                 ,   instance.Station_IsBonus.Serialize ("IsBonus")
+                ,   instance.Station_Distance.Serialize ("Distance")
                 );
         }
 
@@ -825,6 +938,19 @@ namespace SASBikes.DataModel
                                 );       
                             
                             instance.Station_IsBonus = value;                                
+                        }
+                        break;
+                    case "Distance":
+                        {
+                            var value = default (double);
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.Station_Distance = value;                                
                         }
                         break;
                     default:

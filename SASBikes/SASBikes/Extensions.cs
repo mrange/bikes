@@ -13,11 +13,14 @@
 using System;
 using System.Xml.Linq;
 using Bing.Maps;
+using Windows.UI.Core;
 
 namespace SASBikes
 {
     static class Extensions
     {
+        const double EarthMeanRadius = 6371009;
+
         public static string GetAttributeValue(
             this XElement element,
             XName name,
@@ -43,12 +46,38 @@ namespace SASBikes
 
             return attribute.Value ?? defaultValue;
         }
-        
+
+        public static double Asin(this double d)
+        {
+            return Math.Asin(d);
+        }
+
+        public static double Sqrt(this double d)
+        {
+            return Math.Sqrt(d);
+        }
+
+        public static double Cos(this double d)
+        {
+            return Math.Cos(d);
+        }
+
+        public static double Haversine(this double d)
+        {
+            var x = Math.Sin(d/2);
+            return x*x;
+        }
+
         public static double DistanceTo(this Location location, Location otherLocation)
         {
-            var lo = Location.NormalizeLongitude(location.Longitude) - Location.NormalizeLongitude(otherLocation.Longitude);
-            var la = location.Latitude - otherLocation.Latitude;
-            return Math.Sqrt(lo*lo + la*la);
+            var slo = Location.NormalizeLongitude(location.Longitude);
+            var flo = Location.NormalizeLongitude(otherLocation.Longitude);
+            var dlo = slo - flo;
+            var dla = location.Latitude - otherLocation.Latitude;
+
+            // http://en.wikipedia.org/wiki/Great_circle_distance
+
+            return EarthMeanRadius*2*(dlo.Haversine() + slo.Cos()*flo.Cos()*dla.Haversine());
         }
     }
 }

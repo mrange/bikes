@@ -10,8 +10,10 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.IO;
 using System.Xml.Linq;
+using SASBikes.AppServices;
 using SASBikes.Common;
 
 using System;
@@ -19,6 +21,7 @@ using SASBikes.DataModel;
 using SASBikes.Source.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -93,8 +96,80 @@ namespace SASBikes
         public App()
         {
             InitializeComponent();
+            Resuming += OnResuming;
             Suspending += OnSuspending;
+        }
 
+        CoreDispatcher m_dispatcher;
+        public CoreDispatcher Dispatcher
+        {
+            get { return m_dispatcher; }
+            set
+            {
+                m_dispatcher = value;
+                StartServices();
+            }
+        }
+
+        void StartServices()
+        {
+            if (Dispatcher != null)
+            {
+                Services.Start();
+            }
+        }
+
+        public enum AsyncGroup
+        {
+            UpdateStationDistances  ,
+            UpdateMapView           ,
+            UpdateMapStations       ,
+            UpdateStatePosition     ,
+        }
+
+        readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
+
+        public void Async_Invoke(AsyncGroup group, Action action)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+            var dispatcher = Dispatcher;
+
+            if (dispatcher == null)
+            {
+                return;
+            }
+
+            if (!m_dispatchedAsyncCalls.TryAdd(group, true))
+            {
+                return;
+            }
+
+            var task = dispatcher.RunIdleAsync(
+                e =>
+                    {
+                        try
+                        {
+                            action();
+                        }
+                        catch
+                        {
+                            // TODO: Log
+                        }
+                        finally
+                        {
+                            bool val;
+                            m_dispatchedAsyncCalls.TryRemove(group, out val);
+                        }
+                    });
+        }
+
+        void OnResuming(object sender, object e)
+        {
+            StartServices();
         }
 
         public static App Value 
@@ -206,6 +281,7 @@ namespace SASBikes
             Window.Current.Activate();
         }
 
+
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
@@ -215,6 +291,8 @@ namespace SASBikes
         /// <param name="e">Details about the suspend request.</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            Services.Stop();
+         
             var deferral = e.SuspendingOperation.GetDeferral();
 
             await SuspensionManager.SaveAsync();
