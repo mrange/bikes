@@ -20,7 +20,7 @@ namespace SASBikes.Common
     /// carry across sessions, but that should be discarded when an application crashes or is
     /// upgraded.
     /// </summary>
-    internal sealed class SuspensionManager
+    internal sealed partial class SuspensionManager
     {
         private static Dictionary<string, object> _sessionState = new Dictionary<string, object>();
         private static List<Type> _knownTypes = new List<Type>();
@@ -69,6 +69,8 @@ namespace SASBikes.Common
                 }
             }
 
+            Saving_SessionState ();
+
             // Serialize the session state synchronously to avoid asynchronous access to shared
             // state
             MemoryStream sessionData = new MemoryStream();
@@ -89,6 +91,8 @@ namespace SASBikes.Common
                 throw new SuspensionManagerException(e);
             }
         }
+
+        static partial void Saving_SessionState();
 
         /// <summary>
         /// Restores previously saved <see cref="SessionState"/>.  Any <see cref="Frame"/> instances
@@ -114,6 +118,8 @@ namespace SASBikes.Common
                     _sessionState = (Dictionary<string, object>)serializer.ReadObject(inStream.AsStreamForRead());
                 }
 
+                Loading_SessionState ();
+
                 // Restore any registered frames to their saved state
                 foreach (var weakFrameReference in _registeredFrames)
                 {
@@ -130,6 +136,8 @@ namespace SASBikes.Common
                 throw new SuspensionManagerException(e);
             }
         }
+
+        static partial void Loading_SessionState();
 
         private static DependencyProperty FrameSessionStateKeyProperty =
             DependencyProperty.RegisterAttached("_FrameSessionStateKey", typeof(String), typeof(SuspensionManager), null);

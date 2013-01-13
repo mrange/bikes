@@ -1,0 +1,32 @@
+﻿using SASBikes.DataModel;
+
+<#
+    // -------------------------------------------------------------------------
+    //  ___      ___     ______    ________    _______  ___
+    // |"  \    /"  |   /    " \  |"      "\  /"     "||"  |
+    //  \   \  //   |  // ____  \ (.  ___  :)(: ______)||  |
+    //  /\\  \/.    | /  /    ) :)|: \   ) || \/    |  |:  |
+    // |: \.        |(: (____/ // (| (___\ || // ___)_  \  |___
+    // |.  \    /:  | \        /  |:       :)(:      "|( \_|:  \
+    // |___|\__/|___|  \"_____/   (________/  \_______) \_______)
+    // -------------------------------------------------------------------------
+    Namespace ="SASBikes";
+
+    Model = new []
+    {
+        new ClassDefinition ("BindTo"                       , isStatic:true                                         )
+            {
+                P ("string"                                 , "Data"            , flags:PropertyFlags.IsAttached    ),
+                P ("string"                                 , "FriendlyName"    , flags:PropertyFlags.IsAttached    ),
+            },
+        new ClassDefinition ("BikeMap"                                                                              )
+            {
+                P ("double"                                 , "View_Lo"                                             ),
+                P ("double"                                 , "View_La"                                             ),
+                P ("double"                                 , "View_ZoomLevel"                                      ),
+                P ("StationList"                            , "Stations"                                            ),
+            },
+    };
+    // ------------------------------------------------------------------------
+#>
+<#@ include file="$(ProjectDir)\T4\DependencyPropertiesWinRT.ttinclude" #>

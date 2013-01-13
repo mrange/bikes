@@ -10,7 +10,9 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System;
 using System.Xml.Linq;
+using Bing.Maps;
 
 namespace SASBikes
 {
@@ -42,5 +44,11 @@ namespace SASBikes
             return attribute.Value ?? defaultValue;
         }
         
+        public static double DistanceTo(this Location location, Location otherLocation)
+        {
+            var lo = Location.NormalizeLongitude(location.Longitude) - Location.NormalizeLongitude(otherLocation.Longitude);
+            var la = location.Latitude - otherLocation.Latitude;
+            return Math.Sqrt(lo*lo + la*la);
+        }
     }
 }

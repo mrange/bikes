@@ -13,12 +13,11 @@
     {
         new ClassDefinition ("State")
         {
-            P ("decimal"            , "ZoomLevel"           ),
-            P ("decimal"            , "Lo"                  ),
-            P ("decimal"            , "La"                  ),              
+            P ("double"             , "ZoomLevel"           ),
+            P ("double"             , "Lo"                  ),
+            P ("double"             , "La"                  ),              
             P ("string"             , "StationName"         ),
             P ("string"             , "SearchingFor"        ),
-            C ("string"             , "FavoriteStationNames"),
             C ("Station"            , "Stations"            ),
         },
         new ClassDefinition ("Station")
@@ -27,8 +26,8 @@
             P ("int"                , "Number"          ),
             P ("string"             , "Address"         ),
             P ("string"             , "FullAddress"     ),
-            P ("decimal"            , "Lo"              ),
-            P ("decimal"            , "La"              ),
+            P ("double"             , "Lo"              ),
+            P ("double"             , "La"              ),
             P ("bool"               , "IsOpen"          ),
             P ("bool"               , "IsBonus"         ),
         },
@@ -48,7 +47,14 @@ namespace <#=NamespaceName#>
     foreach (var classDef in Model)
     {
 #>
-    sealed partial class <#=classDef.Name#> : <#=classDef.BaseName#> 
+    public sealed partial class <#=classDef.ListName#> : DataModelCollection<<#=classDef.Name#>>
+    {
+        public <#=classDef.ListName#> (DataModelContext context) : base (context)
+        {
+        }
+    }
+
+    public sealed partial class <#=classDef.Name#> : <#=classDef.BaseName#> 
     {
         public <#=classDef.Name#> (DataModelContext context) : base (context)
         {
@@ -149,7 +155,7 @@ namespace <#=NamespaceName#>
     foreach (var classDef in Model.Where (c => !c.IsNotSerializable))
     {
 #>
-        public static XElement Serialize (this DataModelCollection<<#=classDef.Name#>> instance, string name)
+        public static XElement Serialize (this <#=classDef.ListName#> instance, string name)
         {
             if (instance == null)
             {
@@ -186,10 +192,10 @@ namespace <#=NamespaceName#>
                 this XElement element
             ,   DataModelContext context
             ,   IUnserializeErrorReporter reporter
-            ,   ref DataModelCollection<<#=classDef.Name#>> instance
+            ,   ref <#=classDef.ListName#> instance
             )
         {
-            instance = new DataModelCollection<<#=classDef.Name#>> (context);
+            instance = new <#=classDef.ListName#> (context);
 
             if (element == null)
             {
@@ -305,6 +311,14 @@ namespace <#=NamespaceName#>
             BaseName    = baseName  ?? "DataModelBase"  ;
         }
 
+        public string ListName
+        {
+            get
+            {
+                return Name + "List";
+            }
+        }
+
         bool IsOn(ClassFlags test)
         {
             return (Flags & test) == test;
@@ -414,7 +428,7 @@ namespace <#=NamespaceName#>
         PropertyFlags flags = PropertyFlags.None
         )
     {
-        var type = "DataModelCollection<" + (elementType ?? S_NoType) + ">";
+        var type = (elementType ?? S_NoType) + "List";
         var defaultValue = "new " + type + " (context)";
         return new PropertyDefinition (
                 flags   |   PropertyFlags.IsCollection  

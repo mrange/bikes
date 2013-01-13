@@ -28,14 +28,27 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="ZoomOnMe" Content="Zoom on Me" FontSize="20" Click="Click_ZoomOnMe" />
+                <Button x:Name="FindNearestBike"  Content="Find nearest bike" FontSize="20" Click="Click_FindNearestBike" />
+            </StackPanel>
         </Grid>
 
-        <maps:Map Grid.Row="1" x:Name="Map">
+        <local:BikeMap 
+            Grid.Row="1" 
+            x:Name="Map"
+            DataContext="{Binding ViewModel_ApplicationState}"
+            View_La="{Binding Path=State_La,Mode=TwoWay}"
+            View_Lo="{Binding Path=State_Lo,Mode=TwoWay}"
+            View_ZoomLevel="{Binding Path=State_ZoomLevel,Mode=TwoWay}"
+            Stations="{Binding State_Stations}"
+            >
             
-        </maps:Map>
+        </local:BikeMap>
         
         <VisualStateManager.VisualStateGroups>
 

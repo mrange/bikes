@@ -2,7 +2,7 @@
 
 namespace SASBikes.DataModel
 {
-    sealed partial class DataModelCollection<T> : ObservableCollection<T>, IDataModelEntity
+    public partial class DataModelCollection<T> : ObservableCollection<T>, IDataModelEntity
     {
         readonly DataModelContext m_context;
 

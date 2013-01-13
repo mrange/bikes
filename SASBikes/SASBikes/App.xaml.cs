@@ -10,6 +10,7 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System.IO;
 using System.Xml.Linq;
 using SASBikes.Common;
 
@@ -27,7 +28,6 @@ namespace SASBikes
 {
     sealed partial class App
     {
-        State m_state;
         const string SampleData = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <carto>
   <markers>
@@ -39,7 +39,7 @@ namespace SASBikes
     <marker name=""SLUSSPLATSEN"" number=""6"" address=""006_SLUSSPLATSEN"" fullAddress=""006_SLUSSPLATSEN  "" lat=""57.707316"" lng=""11.973448"" open=""0"" bonus=""0""/>
     <marker name=""ESPERANTOPLATSEN"" number=""8"" address=""008_ESPERANTOPLATSEN"" fullAddress=""008_ESPERANTOPLATSEN  "" lat=""57.702793"" lng=""11.955461"" open=""0"" bonus=""0""/>
     <marker name=""KANALTORGET"" number=""9"" address=""009_KANALTORGET"" fullAddress=""009_KANALTORGET  "" lat=""57.710396"" lng=""11.966421"" open=""0"" bonus=""0""/>
-    <marker name=""VALAND"" number=""10"" address=""010_VALAND"" fullAddress=""010_VALAND  "" lat=""57.700324"" lng=""11.973429"" open=""0"" bonus=""0""/>
+    <marker name=""VALAND"" number=""10"" address=""010_VALAND"" fullAddress=""010_VALAND  "" lat=""57.700324"" lng=""11.973429"" open=""1"" bonus=""0""/>
     <marker name=""STORAN"" number=""11"" address=""011_STORAN"" fullAddress=""011_STORAN  "" lat=""57.702482"" lng=""11.971552"" open=""0"" bonus=""0""/>
     <marker name=""GRÖNSAKSTORGET"" number=""12"" address=""012_GRÖNSAKSTORGET"" fullAddress=""012_GRÖNSAKSTORGET  "" lat=""57.702459"" lng=""11.965179"" open=""0"" bonus=""0""/>
     <marker name=""GUSTAF ADOLFS TORG"" number=""13"" address=""013_GUSTAF ADOLFS TORG"" fullAddress=""013_GUSTAF ADOLFS TORG  "" lat=""57.707233"" lng=""11.967502"" open=""0"" bonus=""0""/>
@@ -83,8 +83,6 @@ namespace SASBikes
     <marker name=""HAGABION"" number=""51"" address="""" fullAddress=""  "" lat=""57.696837"" lng=""11.951009"" open=""0"" bonus=""0""/>
     <marker name=""POSTHUSET/ÅKAREPLATSEN"" number=""7"" address="""" fullAddress=""  "" lat=""57.707647"" lng=""11.976117"" open=""0"" bonus=""0""/>
     <marker name=""GIBRALTARG/EKLANDAG"" number=""52"" address=""GIBRALTARGATAN/EKLANDAGATAN"" fullAddress=""GIBRALTARGATAN/EKLANDAGATAN  "" lat=""57.68542"" lng=""11.98322"" open=""1"" bonus=""0""/>
-    <marker name=""MOLINSGATAN/LÄRAREGATAN"" number=""53"" address="""" fullAddress=""  "" lat=""0.0"" lng=""0.0"" open=""1"" bonus=""0""/>
-    <marker name=""EKLANDA/UTLANDAGATAN"" number=""54"" address="""" fullAddress=""  "" lat=""0.0"" lng=""0.0"" open=""1"" bonus=""0""/>
   </markers>
   <arrondissements>
     <arrondissement number=""0"" minLat=""0.0"" minLng=""0.0"" maxLat=""57.711547"" maxLng=""11.995107""/>
@@ -96,9 +94,40 @@ namespace SASBikes
         {
             InitializeComponent();
             Suspending += OnSuspending;
-            var context = new DataModelContext();
 
-            var state = new State(context);
+        }
+
+        public static App Value 
+        {
+            get
+            {
+                return (App) Current;
+            }
+        }
+
+        public State AppState
+        {
+            get
+            {
+                if (SuspensionManager.AppState == null)
+                {
+                    SuspensionManager.AppState = CreateEmptyState();
+                }
+
+                return SuspensionManager.AppState;
+            }
+        }
+
+        static State CreateEmptyState()
+        {
+            var context = new DataModelContext();
+            var state = new State(context)
+                            {
+                                State_Lo            = 11.973429     ,
+                                State_La            = 57.700324     ,
+                                State_StationName   = "VALAND"      ,
+                                State_ZoomLevel     = 18            ,
+                            };
 
             var doc = XDocument.Parse(SampleData).Document;
             var markers = doc
@@ -115,20 +144,15 @@ namespace SASBikes
                 station.Station_Number      = marker.GetAttributeValue("number"     , "0"       ).Parse(0);
                 station.Station_Address     = marker.GetAttributeValue("address"    , "NoAddress");
                 station.Station_FullAddress = marker.GetAttributeValue("fullAddress", "NoAddress");
-                station.Station_La          = marker.GetAttributeValue("lat"        , "57.69").Parse(57.69M);
-                station.Station_Lo          = marker.GetAttributeValue("lng"        , "11.95").Parse(11.95M);
+                station.Station_La          = marker.GetAttributeValue("lat"        , "57.69").Parse(57.69);
+                station.Station_Lo          = marker.GetAttributeValue("lng"        , "11.95").Parse(11.95);
                 station.Station_IsOpen      = marker.GetAttributeValue("open"       , "0") == "1"; 
                 station.Station_IsBonus     = marker.GetAttributeValue("bonus"      , "0") == "1";
 
                 state.State_Stations.Add(station);
             }
 
-            m_state = state;
-        }
-
-        internal State AppState
-        {
-            get { return m_state; }
+            return state;
         }
 
         /// <summary>
@@ -192,6 +216,7 @@ namespace SASBikes
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+
             await SuspensionManager.SaveAsync();
             deferral.Complete();
         }

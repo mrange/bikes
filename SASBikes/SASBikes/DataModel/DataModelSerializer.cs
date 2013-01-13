@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using SASBikes.Source.Extensions;
@@ -9,8 +10,9 @@ namespace SASBikes.DataModel
     {
         public static readonly CultureInfo SerializeCulture = CultureInfo.InvariantCulture;
 
-        public static readonly XName NodeName = "V";
-        public static readonly XName NameAttributeName = "n";
+        public static readonly XName    NodeName           = "N";
+        public static readonly XName    NameAttributeName  = "n";
+        public static readonly string   RootName           = "Root";
 
         public static XElement CreateElement(
             string name,
@@ -23,20 +25,6 @@ namespace SASBikes.DataModel
         static XElement CreateTextElement(string name, string value)
         {
             return CreateElement(name, new XText(value ?? ""));
-        }
-
-        public static XElement Serialize(this DataModelCollection<string> instance, string name)
-        {
-            if (instance == null)
-            {
-                return null;
-            }
-
-            return CreateElement(
-                    name
-                , instance.Select((v, i) => v.Serialize(i.ToString()))
-                );
-
         }
 
         public static XElement Serialize(this string value, string name)
@@ -79,7 +67,7 @@ namespace SASBikes.DataModel
             instance = element.Value;
         }
 
-        public static XElement Serialize(this decimal value, string name)
+        public static XElement Serialize(this double value, string name)
         {
             return CreateTextElement(name, value.ToString(SerializeCulture));
         }
@@ -88,7 +76,7 @@ namespace SASBikes.DataModel
             this XElement element
             , DataModelContext context
             , IUnserializeErrorReporter reporter
-            , ref decimal instance
+            , ref double instance
             )
         {
             if (element == null)
@@ -96,7 +84,7 @@ namespace SASBikes.DataModel
                 return;
             }
 
-            instance = element.Value.Parse(0M);
+            instance = element.Value.Parse(SerializeCulture, 0.0);
         }
 
         public static XElement Serialize(this int value, string name)
@@ -116,7 +104,7 @@ namespace SASBikes.DataModel
                 return;
             }
 
-            instance = element.Value.Parse(0);
+            instance = element.Value.Parse(SerializeCulture, 0);
         }
 
         public static XElement Serialize(this bool value, string name)
@@ -136,10 +124,37 @@ namespace SASBikes.DataModel
                 return;
             }
 
-            instance = element.Value.Parse(false);
+            instance = element.Value.Parse(SerializeCulture, false);
         }
 
 
-    
+        public static string SerializeToString(this State state)
+        {
+            var doc = new XDocument(state.Serialize(RootName));
+
+            using (var sw = new StringWriter())
+            {
+                doc.Save(sw);
+                return sw.ToString();
+            }
+        }
+
+        public static State UnserializeFromString(this string value)
+        {
+            var doc = XDocument.Parse(value ?? "");
+
+            var context = new DataModelContext();
+
+            State state = null;
+            doc
+                .Document
+                .Elements(NodeName)
+                .FirstOrDefault()
+                .Unserialize(context, null, ref state)
+                ;
+
+            return state;
+        }
+
     }
 }

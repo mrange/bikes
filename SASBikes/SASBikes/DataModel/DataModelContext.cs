@@ -1,6 +1,6 @@
 ﻿namespace SASBikes.DataModel
 {
-    sealed partial class DataModelContext
+    public sealed partial class DataModelContext
     {
         
     }

@@ -28,21 +28,27 @@ namespace SASBikes.DataModel
     using System.Xml.Linq;
 
 
-    sealed partial class State : DataModelBase 
+    public sealed partial class StateList : DataModelCollection<State>
+    {
+        public StateList (DataModelContext context) : base (context)
+        {
+        }
+    }
+
+    public sealed partial class State : DataModelBase 
     {
         public State (DataModelContext context) : base (context)
         {
-            _State_ZoomLevel = default (decimal)   ;
-            _State_Lo = default (decimal)   ;
-            _State_La = default (decimal)   ;
+            _State_ZoomLevel = default (double)   ;
+            _State_Lo = default (double)   ;
+            _State_La = default (double)   ;
             _State_StationName = ""   ;
             _State_SearchingFor = ""   ;
-            _State_FavoriteStationNames = new DataModelCollection<string> (context)   ;
-            _State_Stations = new DataModelCollection<Station> (context)   ;
+            _State_Stations = new StationList (context)   ;
         }
 
         // --------------------------------------------------------------------
-        public decimal State_ZoomLevel
+        public double State_ZoomLevel
         {
             get
             {
@@ -63,13 +69,13 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _State_ZoomLevel;
+        double _State_ZoomLevel;
         // --------------------------------------------------------------------
-        partial void Changed__State_ZoomLevel (decimal oldValue, decimal newValue);
+        partial void Changed__State_ZoomLevel (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public decimal State_Lo
+        public double State_Lo
         {
             get
             {
@@ -90,13 +96,13 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _State_Lo;
+        double _State_Lo;
         // --------------------------------------------------------------------
-        partial void Changed__State_Lo (decimal oldValue, decimal newValue);
+        partial void Changed__State_Lo (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public decimal State_La
+        public double State_La
         {
             get
             {
@@ -117,9 +123,9 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _State_La;
+        double _State_La;
         // --------------------------------------------------------------------
-        partial void Changed__State_La (decimal oldValue, decimal newValue);
+        partial void Changed__State_La (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
@@ -177,47 +183,7 @@ namespace SASBikes.DataModel
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public DataModelCollection<string> State_FavoriteStationNames
-        {
-            get
-            {
-                return _State_FavoriteStationNames;
-            }
-            set
-            {
-                if (_State_FavoriteStationNames != value)
-                {
-                    var oldValue = _State_FavoriteStationNames; 
-
-                    if (oldValue != null)
-                    {
-                        oldValue.CollectionChanged -= CollectionChanged__State_FavoriteStationNames;
-                    }
-                    _State_FavoriteStationNames = value;
-                    if (value != null)
-                    {
-                        value.CollectionChanged += CollectionChanged__State_FavoriteStationNames;
-                    }
-
-                    Changed__State_FavoriteStationNames (oldValue, value);
-
-                    Raise_PropertyChanged ();
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        DataModelCollection<string> _State_FavoriteStationNames;
-        void CollectionChanged__State_FavoriteStationNames (object sender, NotifyCollectionChangedEventArgs e)
-        {
-            CollectionChanged__State_FavoriteStationNames (_State_FavoriteStationNames, e);
-        }
-        // --------------------------------------------------------------------
-        partial void CollectionChanged__State_FavoriteStationNames (DataModelCollection<string> value, NotifyCollectionChangedEventArgs e);
-        partial void Changed__State_FavoriteStationNames (DataModelCollection<string> oldValue, DataModelCollection<string> newValue);
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
-        public DataModelCollection<Station> State_Stations
+        public StationList State_Stations
         {
             get
             {
@@ -246,19 +212,26 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        DataModelCollection<Station> _State_Stations;
+        StationList _State_Stations;
         void CollectionChanged__State_Stations (object sender, NotifyCollectionChangedEventArgs e)
         {
             CollectionChanged__State_Stations (_State_Stations, e);
         }
         // --------------------------------------------------------------------
-        partial void CollectionChanged__State_Stations (DataModelCollection<Station> value, NotifyCollectionChangedEventArgs e);
-        partial void Changed__State_Stations (DataModelCollection<Station> oldValue, DataModelCollection<Station> newValue);
+        partial void CollectionChanged__State_Stations (StationList value, NotifyCollectionChangedEventArgs e);
+        partial void Changed__State_Stations (StationList oldValue, StationList newValue);
         // --------------------------------------------------------------------
 
 
     }
-    sealed partial class Station : DataModelBase 
+    public sealed partial class StationList : DataModelCollection<Station>
+    {
+        public StationList (DataModelContext context) : base (context)
+        {
+        }
+    }
+
+    public sealed partial class Station : DataModelBase 
     {
         public Station (DataModelContext context) : base (context)
         {
@@ -266,8 +239,8 @@ namespace SASBikes.DataModel
             _Station_Number = default (int)   ;
             _Station_Address = ""   ;
             _Station_FullAddress = ""   ;
-            _Station_Lo = default (decimal)   ;
-            _Station_La = default (decimal)   ;
+            _Station_Lo = default (double)   ;
+            _Station_La = default (double)   ;
             _Station_IsOpen = default (bool)   ;
             _Station_IsBonus = default (bool)   ;
         }
@@ -381,7 +354,7 @@ namespace SASBikes.DataModel
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public decimal Station_Lo
+        public double Station_Lo
         {
             get
             {
@@ -402,13 +375,13 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _Station_Lo;
+        double _Station_Lo;
         // --------------------------------------------------------------------
-        partial void Changed__Station_Lo (decimal oldValue, decimal newValue);
+        partial void Changed__Station_Lo (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
-        public decimal Station_La
+        public double Station_La
         {
             get
             {
@@ -429,9 +402,9 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        decimal _Station_La;
+        double _Station_La;
         // --------------------------------------------------------------------
-        partial void Changed__Station_La (decimal oldValue, decimal newValue);
+        partial void Changed__Station_La (double oldValue, double newValue);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
@@ -493,7 +466,7 @@ namespace SASBikes.DataModel
 
     static partial class DataModelSerializer
     {
-        public static XElement Serialize (this DataModelCollection<State> instance, string name)
+        public static XElement Serialize (this StateList instance, string name)
         {
             if (instance == null)
             {
@@ -520,7 +493,6 @@ namespace SASBikes.DataModel
                 ,   instance.State_La.Serialize ("La")
                 ,   instance.State_StationName.Serialize ("StationName")
                 ,   instance.State_SearchingFor.Serialize ("SearchingFor")
-                ,   instance.State_FavoriteStationNames.Serialize ("FavoriteStationNames")
                 ,   instance.State_Stations.Serialize ("Stations")
                 );
         }
@@ -529,10 +501,10 @@ namespace SASBikes.DataModel
                 this XElement element
             ,   DataModelContext context
             ,   IUnserializeErrorReporter reporter
-            ,   ref DataModelCollection<State> instance
+            ,   ref StateList instance
             )
         {
-            instance = new DataModelCollection<State> (context);
+            instance = new StateList (context);
 
             if (element == null)
             {
@@ -581,7 +553,7 @@ namespace SASBikes.DataModel
                 {
                     case "ZoomLevel":
                         {
-                            var value = default (decimal);
+                            var value = default (double);
 
                             subElement.Unserialize (
                                 context,
@@ -594,7 +566,7 @@ namespace SASBikes.DataModel
                         break;
                     case "Lo":
                         {
-                            var value = default (decimal);
+                            var value = default (double);
 
                             subElement.Unserialize (
                                 context,
@@ -607,7 +579,7 @@ namespace SASBikes.DataModel
                         break;
                     case "La":
                         {
-                            var value = default (decimal);
+                            var value = default (double);
 
                             subElement.Unserialize (
                                 context,
@@ -644,22 +616,9 @@ namespace SASBikes.DataModel
                             instance.State_SearchingFor = value;                                
                         }
                         break;
-                    case "FavoriteStationNames":
-                        {
-                            var value = new DataModelCollection<string> (context);
-
-                            subElement.Unserialize (
-                                context,
-                                reporter,
-                                ref value
-                                );       
-                            
-                            instance.State_FavoriteStationNames = value;                                
-                        }
-                        break;
                     case "Stations":
                         {
-                            var value = new DataModelCollection<Station> (context);
+                            var value = new StationList (context);
 
                             subElement.Unserialize (
                                 context,
@@ -677,7 +636,7 @@ namespace SASBikes.DataModel
         }
 
 
-        public static XElement Serialize (this DataModelCollection<Station> instance, string name)
+        public static XElement Serialize (this StationList instance, string name)
         {
             if (instance == null)
             {
@@ -714,10 +673,10 @@ namespace SASBikes.DataModel
                 this XElement element
             ,   DataModelContext context
             ,   IUnserializeErrorReporter reporter
-            ,   ref DataModelCollection<Station> instance
+            ,   ref StationList instance
             )
         {
-            instance = new DataModelCollection<Station> (context);
+            instance = new StationList (context);
 
             if (element == null)
             {
@@ -818,7 +777,7 @@ namespace SASBikes.DataModel
                         break;
                     case "Lo":
                         {
-                            var value = default (decimal);
+                            var value = default (double);
 
                             subElement.Unserialize (
                                 context,
@@ -831,7 +790,7 @@ namespace SASBikes.DataModel
                         break;
                     case "La":
                         {
-                            var value = default (decimal);
+                            var value = default (double);
 
                             subElement.Unserialize (
                                 context,

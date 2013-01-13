@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Bing.Maps;
 using SASBikes.Common;
+using SASBikes.DataModel;
+using Windows.Devices.Geolocation;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
@@ -16,9 +19,9 @@ namespace SASBikes
         public StationsPage()
         {
             InitializeComponent();
-            Map.Credentials = BingLicenseKeys.TrialKey;
-            Map.MapType = MapType.Aerial;
-            Map.SetView(new Location(57.700324, 11.973429), 20);
+
+            DefaultViewModel[C.ViewModel_ApplicationState] = App.Value.AppState;
+
         }
 
         /// <summary>
@@ -42,6 +45,46 @@ namespace SASBikes
         /// <param name="pageState">An empty dictionary to be populated with serializable state.</param>
         protected override void SaveState(Dictionary<String, Object> pageState)
         {
+        }
+
+        async void Click_ZoomOnMe(object sender, RoutedEventArgs e)
+        {
+            var locator = new Geolocator();
+            var pos = await locator.GetGeopositionAsync();
+
+            var appState = App.Value.AppState;
+            appState.State_La = pos.Coordinate.Latitude;
+            appState.State_Lo = pos.Coordinate.Longitude;
+            appState.State_ZoomLevel = 20;
+        }
+
+        void Click_FindNearestBike(object sender, RoutedEventArgs e)
+        {
+            var appState = App.Value.AppState;
+            var me = new Location(appState.State_La, appState.State_Lo);
+
+            double closestDistance = double.MaxValue;
+            Station closestStation = null;
+
+            for (int index = 0; index < appState.State_Stations.Count; index++)
+            {
+                var station = appState.State_Stations[index];
+
+                var distance = me.DistanceTo(new Location(station.Station_La, station.Station_Lo));
+
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestStation = station;
+                }
+            }
+
+            if (closestStation != null)
+            {
+                appState.State_La = closestStation.Station_La;
+                appState.State_Lo = closestStation.Station_Lo;
+                appState.State_ZoomLevel = 20;
+            }
         }
     }
 }
