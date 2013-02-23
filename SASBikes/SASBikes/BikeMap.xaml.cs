@@ -13,10 +13,10 @@
 // ReSharper disable InconsistentNaming
 
 using System.Collections.Specialized;
+using System.Linq;
 using Bing.Maps;
 using SASBikes.DataModel;
 using Windows.UI;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -25,10 +25,20 @@ namespace SASBikes
 {
     public sealed partial class BikeMap
     {
-        readonly Brush m_openBackground     = new SolidColorBrush(Colors.DeepSkyBlue        );
-        readonly Brush m_closedBackground   = new SolidColorBrush(Colors.Red                );
-        readonly Brush m_meBackground       = new SolidColorBrush(Colors.MediumVioletRed    );
-        Pushpin m_me;
+        static readonly Brush   s_openBackground    = new SolidColorBrush(Colors.DeepSkyBlue        );
+        static readonly Brush   s_closedBackground  = new SolidColorBrush(Colors.Red                );
+        static readonly Brush   s_meBackground      = new SolidColorBrush(Colors.MediumVioletRed    );
+        static readonly Color[] s_nearestColors     = 
+            new []
+                {
+                    Colors.LawnGreen  ,
+                    Colors.Yellow       ,
+                    Colors.Orange       ,
+                };
+
+        Pushpin                 m_me;
+        readonly MapShapeLayer  m_nearestLayer      = new MapShapeLayer();
+        readonly MapLayer       m_stationsLayer     = new MapLayer();
 
         partial void GetBingLicenseKey(ref string key);
 
@@ -42,8 +52,20 @@ namespace SASBikes
 
             Map.Credentials = key;
             Map.MapType = MapType.Aerial;
-            Map.SetView(new Location(57.700324, 11.973429), 18);
+            Map.SetView(new Location(View_La, View_Lo), View_ZoomLevel);
             Map.ViewChangeEnded += Map_ViewChangeEnded;
+
+            m_me = new Pushpin
+            {
+                Background  = s_meBackground    , 
+                Text        = "Me"              ,
+            };
+
+            MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));
+
+            Map.ShapeLayers.Add(m_nearestLayer);
+            Map.Children.Add(m_stationsLayer);
+            Map.Children.Add(m_me);
         }
 
         void Map_ViewChangeEnded(object sender, ViewChangeEndedEventArgs e)
@@ -95,7 +117,7 @@ namespace SASBikes
 
         void Map_UpdateMapStations()
         {
-            Map.Children.Clear();
+            m_stationsLayer.Children.Clear();
             var stations = Stations;
             if (stations != null)
             {
@@ -104,26 +126,16 @@ namespace SASBikes
                     var station = stations[index];
                     var pp = new Pushpin
                                  {
-                                     Background = station.Station_IsOpen ? m_openBackground : m_closedBackground,
+                                     Background = station.Station_IsOpen ? s_openBackground : s_closedBackground,
                                      Text       = station.Station_Number.ToString(),
                                  };
 
                     MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
 
-                    Map.Children.Add(pp);
+                    m_stationsLayer.Children.Add(pp);
                 }
             }
 
-            m_me = new Pushpin
-            {
-                Background  = m_meBackground    , 
-                Text        = "Me"              ,
-            };
-
-            MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));
-
-            Map.Children.Add(m_me);
-            
         }
 
         void Async_UpateView()
@@ -148,10 +160,39 @@ namespace SASBikes
 
         void Map_UpdateMyPosition()
         {
-            if (m_me != null)
+            var myLa = My_La;
+            var myLo = My_Lo;
+            MapLayer.SetPosition(m_me, new Location(myLa, myLo));
+            
+            var stations = Stations;
+            if (stations != null)
             {
-                MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));                
+                var nearestThree = Stations
+                    .OrderBy (s=>s.Station_Distance)
+                    .Take(s_nearestColors.Length)
+                    .ToArray();
+
+                m_nearestLayer.Shapes.Clear();
+
+                for (int index = 0; index < nearestThree.Length; index++)
+                {
+                    var nearest = nearestThree[index];
+                    m_nearestLayer.Shapes.Add(
+                        new MapPolyline
+                            {
+                                Color = s_nearestColors[index],
+                                Width = 5.0,
+                                Visible = true,
+                                Locations =
+                                    new LocationCollection
+                                        {
+                                            new Location(myLa, myLo),
+                                            new Location(nearest.Station_La, nearest.Station_Lo),
+                                        }
+                            });
+                }
             }
+    
         }
     }
 

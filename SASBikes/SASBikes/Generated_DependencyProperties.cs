@@ -180,7 +180,7 @@ namespace SASBikes
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                default (double),
+                11.973429,
                 Changed_My_Lo
             ));
 
@@ -201,7 +201,7 @@ namespace SASBikes
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                default (double),
+                57.700324,
                 Changed_My_La
             ));
 
@@ -222,7 +222,7 @@ namespace SASBikes
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                default (double),
+                11.973429,
                 Changed_View_Lo
             ));
 
@@ -243,7 +243,7 @@ namespace SASBikes
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                default (double),
+                57.700324,
                 Changed_View_La
             ));
 
@@ -264,7 +264,7 @@ namespace SASBikes
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                default (double),
+                18.0,
                 Changed_View_ZoomLevel
             ));
 
