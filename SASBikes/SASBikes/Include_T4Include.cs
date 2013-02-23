@@ -11,18 +11,19 @@
 
 
 // ############################################################################
+// @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Log.cs
+// @@@ INCLUDE_FOUND: Generated_Log.cs
 // @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs
 // @@@ INCLUDE_FOUND: ../Common/Array.cs
 // @@@ INCLUDE_FOUND: ../Common/Config.cs
 // @@@ INCLUDE_FOUND: ../Common/Log.cs
 // @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Extensions/ParseExtensions.cs
 // @@@ INCLUDE_FOUND: ../Common/Config.cs
+// @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs
 // @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Array.cs
 // @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Config.cs
-// @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Log.cs
-// @@@ INCLUDE_FOUND: Generated_Log.cs
+// @@@ SKIPPING (Already seen): https://raw.github.com/mrange/T4Include/master/Common/Log.cs
 // @@@ SKIPPING (Already seen): https://raw.github.com/mrange/T4Include/master/Common/Config.cs
-// @@@ INCLUDING: https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs
 // ############################################################################
 // Certains directives such as #define and // Resharper comments has to be 
 // moved to top in order to work properly    
@@ -31,6 +32,70 @@
 // ReSharper disable PartialMethodWithSinglePart
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantNameQualifier
+// ############################################################################
+
+// ############################################################################
+namespace SASBikes
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    
+    
+    namespace Source.Common
+    {
+        using System;
+        using System.Globalization;
+    
+        static partial class Log
+        {
+            static partial void Partial_LogLevel (Level level);
+            static partial void Partial_LogMessage (Level level, string message);
+            static partial void Partial_ExceptionOnLog (Level level, string format, object[] args, Exception exc);
+    
+            public static void LogMessage (Level level, string format, params object[] args)
+            {
+                try
+                {
+                    Partial_LogLevel (level);
+                    Partial_LogMessage (level, GetMessage (format, args));
+                }
+                catch (Exception exc)
+                {
+                    Partial_ExceptionOnLog (level, format, args, exc);
+                }
+                
+            }
+    
+            static string GetMessage (string format, object[] args)
+            {
+                format = format ?? "";
+                try
+                {
+                    return (args == null || args.Length == 0)
+                               ? format
+                               : string.Format (Config.DefaultCulture, format, args)
+                        ;
+                }
+                catch (FormatException)
+                {
+    
+                    return format;
+                }
+            }
+        }
+    }
+}
+
 // ############################################################################
 
 // ############################################################################
@@ -914,143 +979,6 @@ namespace SASBikes
 // ############################################################################
 namespace SASBikes
 {
-    // ----------------------------------------------------------------------------------------------
-    // Copyright (c) Mårten Rånge.
-    // ----------------------------------------------------------------------------------------------
-    // This source code is subject to terms and conditions of the Microsoft Public License. A 
-    // copy of the license can be found in the License.html file at the root of this distribution. 
-    // If you cannot locate the  Microsoft Public License, please send an email to 
-    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
-    //  by the terms of the Microsoft Public License.
-    // ----------------------------------------------------------------------------------------------
-    // You must not remove this notice, or any other, from this software.
-    // ----------------------------------------------------------------------------------------------
-    
-    namespace Source.Common
-    {
-        static class Array<T>
-        {
-            public static readonly T[] Empty = new T[0];
-        }
-    }
-}
-
-// ############################################################################
-
-// ############################################################################
-namespace SASBikes
-{
-    // ----------------------------------------------------------------------------------------------
-    // Copyright (c) Mårten Rånge.
-    // ----------------------------------------------------------------------------------------------
-    // This source code is subject to terms and conditions of the Microsoft Public License. A 
-    // copy of the license can be found in the License.html file at the root of this distribution. 
-    // If you cannot locate the  Microsoft Public License, please send an email to 
-    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
-    //  by the terms of the Microsoft Public License.
-    // ----------------------------------------------------------------------------------------------
-    // You must not remove this notice, or any other, from this software.
-    // ----------------------------------------------------------------------------------------------
-    
-    
-    namespace Source.Common
-    {
-        using System.Globalization;
-    
-        sealed partial class InitConfig
-        {
-            public CultureInfo DefaultCulture = CultureInfo.InvariantCulture;
-        }
-    
-        static partial class Config
-        {
-            static partial void Partial_Constructed(ref InitConfig initConfig);
-    
-            public readonly static CultureInfo DefaultCulture;
-    
-            static Config ()
-            {
-                var initConfig = new InitConfig();
-    
-                Partial_Constructed (ref initConfig);
-    
-                initConfig = initConfig ?? new InitConfig();
-    
-                DefaultCulture = initConfig.DefaultCulture;
-            }
-        }
-    }
-}
-
-// ############################################################################
-
-// ############################################################################
-namespace SASBikes
-{
-    // ----------------------------------------------------------------------------------------------
-    // Copyright (c) Mårten Rånge.
-    // ----------------------------------------------------------------------------------------------
-    // This source code is subject to terms and conditions of the Microsoft Public License. A 
-    // copy of the license can be found in the License.html file at the root of this distribution. 
-    // If you cannot locate the  Microsoft Public License, please send an email to 
-    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
-    //  by the terms of the Microsoft Public License.
-    // ----------------------------------------------------------------------------------------------
-    // You must not remove this notice, or any other, from this software.
-    // ----------------------------------------------------------------------------------------------
-    
-    
-    
-    namespace Source.Common
-    {
-        using System;
-        using System.Globalization;
-    
-        static partial class Log
-        {
-            static partial void Partial_LogLevel (Level level);
-            static partial void Partial_LogMessage (Level level, string message);
-            static partial void Partial_ExceptionOnLog (Level level, string format, object[] args, Exception exc);
-    
-            public static void LogMessage (Level level, string format, params object[] args)
-            {
-                try
-                {
-                    Partial_LogLevel (level);
-                    Partial_LogMessage (level, GetMessage (format, args));
-                }
-                catch (Exception exc)
-                {
-                    Partial_ExceptionOnLog (level, format, args, exc);
-                }
-                
-            }
-    
-            static string GetMessage (string format, object[] args)
-            {
-                format = format ?? "";
-                try
-                {
-                    return (args == null || args.Length == 0)
-                               ? format
-                               : string.Format (Config.DefaultCulture, format, args)
-                        ;
-                }
-                catch (FormatException)
-                {
-    
-                    return format;
-                }
-            }
-        }
-    }
-}
-
-// ############################################################################
-
-// ############################################################################
-namespace SASBikes
-{
     // ############################################################################
     // #                                                                          #
     // #        ---==>  T H I S  F I L E  I S   G E N E R A T E D  <==---         #
@@ -1156,19 +1084,92 @@ namespace SASBikes
 // ############################################################################
 
 // ############################################################################
+namespace SASBikes
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    namespace Source.Common
+    {
+        static class Array<T>
+        {
+            public static readonly T[] Empty = new T[0];
+        }
+    }
+}
+
+// ############################################################################
+
+// ############################################################################
+namespace SASBikes
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    
+    namespace Source.Common
+    {
+        using System.Globalization;
+    
+        sealed partial class InitConfig
+        {
+            public CultureInfo DefaultCulture = CultureInfo.InvariantCulture;
+        }
+    
+        static partial class Config
+        {
+            static partial void Partial_Constructed(ref InitConfig initConfig);
+    
+            public readonly static CultureInfo DefaultCulture;
+    
+            static Config ()
+            {
+                var initConfig = new InitConfig();
+    
+                Partial_Constructed (ref initConfig);
+    
+                initConfig = initConfig ?? new InitConfig();
+    
+                DefaultCulture = initConfig.DefaultCulture;
+            }
+        }
+    }
+}
+
+// ############################################################################
+
+// ############################################################################
 namespace SASBikes.Include
 {
     static partial class MetaData
     {
         public const string RootPath        = @"https://raw.github.com/";
-        public const string IncludeDate     = @"2013-01-12T17:22:46";
+        public const string IncludeDate     = @"2013-02-23T21:53:03";
 
-        public const string Include_0       = @"mrange/T4Include/master/Extensions/BasicExtensions.cs";
-        public const string Include_1       = @"mrange/T4Include/master/Extensions/ParseExtensions.cs";
-        public const string Include_2       = @"https://raw.github.com/mrange/T4Include/master/Common/Array.cs";
-        public const string Include_3       = @"https://raw.github.com/mrange/T4Include/master/Common/Config.cs";
-        public const string Include_4       = @"https://raw.github.com/mrange/T4Include/master/Common/Log.cs";
-        public const string Include_5       = @"https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs";
+        public const string Include_0       = @"mrange/T4Include/master/Common/Log.cs";
+        public const string Include_1       = @"mrange/T4Include/master/Extensions/BasicExtensions.cs";
+        public const string Include_2       = @"mrange/T4Include/master/Extensions/ParseExtensions.cs";
+        public const string Include_3       = @"https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs";
+        public const string Include_4       = @"https://raw.github.com/mrange/T4Include/master/Common/Array.cs";
+        public const string Include_5       = @"https://raw.github.com/mrange/T4Include/master/Common/Config.cs";
     }
 }
 // ############################################################################

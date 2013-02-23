@@ -10,8 +10,9 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+// ReSharper disable InconsistentNaming
+
 using System.Collections.Concurrent;
-using System.IO;
 using System.Xml.Linq;
 using SASBikes.AppServices;
 using SASBikes.Common;
@@ -121,10 +122,11 @@ namespace SASBikes
 
         public enum AsyncGroup
         {
-            UpdateStationDistances  ,
-            UpdateMapView           ,
-            UpdateMapStations       ,
-            UpdateStatePosition     ,
+            Model_UpdateMyPosition          ,
+            Map_UpdateView                  ,
+            Map_UpdateMapStations           ,
+            Map_UpdateMyPosition            ,
+            LocatorService_UpdateMyPosition ,
         }
 
         readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();

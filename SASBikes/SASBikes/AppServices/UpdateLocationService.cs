@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------------------------
 
 using System;
+using SASBikes.Source.Common;
 using Windows.Devices.Geolocation;
 
 namespace SASBikes.AppServices
@@ -34,7 +35,7 @@ namespace SASBikes.AppServices
             }
             catch (Exception exc)
             {
-                // TODO: Log
+                Log.Exception ("Failed to update my position", exc);
             }
         }
 
@@ -46,12 +47,12 @@ namespace SASBikes.AppServices
             var la = coordinate.Latitude;
 
             App.Value.Async_Invoke(
-                App.AsyncGroup.UpdateStatePosition,
-                () => UpdateCoordinate(lo, la)
+                App.AsyncGroup.LocatorService_UpdateMyPosition,
+                () => LocatorService_UpdateMyPosition(lo, la)
                 );
         }
 
-        void UpdateCoordinate(double lo, double la)
+        void LocatorService_UpdateMyPosition(double lo, double la)
         {
             var appState = App.Value.AppState;
             appState.State_MyLo = lo;

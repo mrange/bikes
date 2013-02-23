@@ -18,15 +18,15 @@ namespace SASBikes.DataModel
     {
         partial void Changed__State_MyLa(double oldValue, double newValue)
         {
-            App.Value.Async_Invoke(App.AsyncGroup.UpdateStationDistances, UpdateStationDistances);
+            App.Value.Async_Invoke(App.AsyncGroup.Model_UpdateMyPosition, Model_UpdateMyPosition);
         }
 
         partial void Changed__State_MyLo(double oldValue, double newValue)
         {
-            App.Value.Async_Invoke(App.AsyncGroup.UpdateStationDistances, UpdateStationDistances);
+            App.Value.Async_Invoke(App.AsyncGroup.Model_UpdateMyPosition, Model_UpdateMyPosition);
         }
 
-        void UpdateStationDistances()
+        void Model_UpdateMyPosition()
         {
             var location = new Location(State_MyLa, State_MyLo);
 
@@ -38,6 +38,22 @@ namespace SASBikes.DataModel
                     station.Station_La, 
                     station.Station_Lo
                     ));
+            }
+
+            if (State_IsTrackingMyPosition)
+            {
+                State_La = State_MyLa;
+                State_Lo = State_MyLo;
+            }
+        }
+
+        partial void Changed__State_IsTrackingMyPosition(bool oldValue, bool newValue)
+        {
+            if (newValue)
+            {
+                State_La        = State_MyLa;
+                State_Lo        = State_MyLo;
+                State_ZoomLevel = 20        ;
             }
         }
     }

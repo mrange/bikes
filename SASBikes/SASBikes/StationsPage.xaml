@@ -32,9 +32,25 @@
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource AppName}" Style="{StaticResource PageHeaderTextStyle}"/>
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button x:Name="ZoomOnMe" Content="Zoom on Me" FontSize="20" Click="Click_ZoomOnMe" />
-                <Button x:Name="FindNearestBike"  Content="Find nearest bike" FontSize="20" Click="Click_FindNearestBike" />
+            <StackPanel 
+                Grid.Column="2" 
+                Orientation="Horizontal" 
+                VerticalAlignment="Center"
+                DataContext="{Binding ViewModel_ApplicationState}"
+                >
+                <CheckBox   
+                    x:Name="TrackMe"        
+                    Content="Track my position" 
+                    FontSize="20" 
+                    IsChecked="{Binding Path=State_IsTrackingMyPosition,Mode=TwoWay}"
+                    />
+                <Button     
+                    x:Name="FindNearestBike"
+                    Margin="8,0,0,0"
+                    Content="Find nearest bike" 
+                    FontSize="20" 
+                    Click="Click_FindNearestBike" 
+                    />
             </StackPanel>
         </Grid>
 
@@ -44,6 +60,8 @@
             DataContext="{Binding ViewModel_ApplicationState}"
             View_La="{Binding Path=State_La,Mode=TwoWay}"
             View_Lo="{Binding Path=State_Lo,Mode=TwoWay}"
+            My_La="{Binding Path=State_MyLa}"
+            My_Lo="{Binding Path=State_MyLo}"
             View_ZoomLevel="{Binding Path=State_ZoomLevel,Mode=TwoWay}"
             Stations="{Binding State_Stations}"
             >

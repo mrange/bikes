@@ -25,6 +25,7 @@
     {
         new ClassDefinition ("State")
         {
+            P ("bool"               , "IsTrackingMyPosition", defaultValue:"true"   ),
             P ("double"             , "ZoomLevel"           ),
             P ("double"             , "Lo"                  ),
             P ("double"             , "La"                  ),              

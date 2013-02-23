@@ -60,14 +60,6 @@ namespace SASBikes
         {
         }
 
-        void Click_ZoomOnMe(object sender, RoutedEventArgs e)
-        {
-            var appState = App.Value.AppState;
-            appState.State_La = appState.State_MyLa;
-            appState.State_Lo = appState.State_MyLo;
-            appState.State_ZoomLevel = 20;
-        }
-
         void Click_FindNearestBike(object sender, RoutedEventArgs e)
         {
             var appState = App.Value.AppState;

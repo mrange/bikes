@@ -6,6 +6,7 @@
     Includes    = new []
         {
             // Include the basic extension from T4Include
+            Include (@"mrange/T4Include/master/Common/Log.cs"),
             Include (@"mrange/T4Include/master/Extensions/BasicExtensions.cs"),
             Include (@"mrange/T4Include/master/Extensions/ParseExtensions.cs"),
 

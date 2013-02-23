@@ -51,6 +51,7 @@ namespace SASBikes.DataModel
     {
         public State (DataModelContext context) : base (context)
         {
+            _State_IsTrackingMyPosition = true   ;
             _State_ZoomLevel = default (double)   ;
             _State_Lo = default (double)   ;
             _State_La = default (double)   ;
@@ -60,6 +61,33 @@ namespace SASBikes.DataModel
             _State_SearchingFor = ""   ;
             _State_Stations = new StationList (context)   ;
         }
+
+        // --------------------------------------------------------------------
+        public bool State_IsTrackingMyPosition
+        {
+            get
+            {
+                return _State_IsTrackingMyPosition;
+            }
+            set
+            {
+                if (_State_IsTrackingMyPosition != value)
+                {
+                    var oldValue = _State_IsTrackingMyPosition; 
+
+                    _State_IsTrackingMyPosition = value;
+
+                    Changed__State_IsTrackingMyPosition (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        bool _State_IsTrackingMyPosition;
+        // --------------------------------------------------------------------
+        partial void Changed__State_IsTrackingMyPosition (bool oldValue, bool newValue);
+        // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
         public double State_ZoomLevel
@@ -584,6 +612,7 @@ namespace SASBikes.DataModel
             }
             return CreateElement (
                     name
+                ,   instance.State_IsTrackingMyPosition.Serialize ("IsTrackingMyPosition")
                 ,   instance.State_ZoomLevel.Serialize ("ZoomLevel")
                 ,   instance.State_Lo.Serialize ("Lo")
                 ,   instance.State_La.Serialize ("La")
@@ -649,6 +678,19 @@ namespace SASBikes.DataModel
 
                 switch (name)
                 {
+                    case "IsTrackingMyPosition":
+                        {
+                            var value = true;
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.State_IsTrackingMyPosition = value;                                
+                        }
+                        break;
                     case "ZoomLevel":
                         {
                             var value = default (double);

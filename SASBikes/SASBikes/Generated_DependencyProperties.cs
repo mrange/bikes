@@ -175,6 +175,48 @@ namespace SASBikes
     partial class BikeMap
     {
         #region Uninteresting generated code
+        public static readonly DependencyProperty My_LoProperty = DependencyProperty.Register (
+            "My_Lo",
+            typeof (double),
+            typeof (BikeMap),
+            new PropertyMetadata (
+                default (double),
+                Changed_My_Lo
+            ));
+
+        static void Changed_My_Lo (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as BikeMap;
+            if (instance != null)
+            {
+                var oldValue = (double)eventArgs.OldValue;
+                var newValue = (double)eventArgs.NewValue;
+
+                instance.Changed_My_Lo (oldValue, newValue);
+            }
+        }
+
+        public static readonly DependencyProperty My_LaProperty = DependencyProperty.Register (
+            "My_La",
+            typeof (double),
+            typeof (BikeMap),
+            new PropertyMetadata (
+                default (double),
+                Changed_My_La
+            ));
+
+        static void Changed_My_La (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as BikeMap;
+            if (instance != null)
+            {
+                var oldValue = (double)eventArgs.OldValue;
+                var newValue = (double)eventArgs.NewValue;
+
+                instance.Changed_My_La (oldValue, newValue);
+            }
+        }
+
         public static readonly DependencyProperty View_LoProperty = DependencyProperty.Register (
             "View_Lo",
             typeof (double),
@@ -276,6 +318,48 @@ namespace SASBikes
         // --------------------------------------------------------------------
         // Properties
         // --------------------------------------------------------------------
+
+           
+        // --------------------------------------------------------------------
+        public double My_Lo
+        {
+            get
+            {
+                return (double)GetValue (My_LoProperty);
+            }
+            set
+            {
+                if (My_Lo != value)
+                {
+                    SetValue (My_LoProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_My_Lo (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
+
+           
+        // --------------------------------------------------------------------
+        public double My_La
+        {
+            get
+            {
+                return (double)GetValue (My_LaProperty);
+            }
+            set
+            {
+                if (My_La != value)
+                {
+                    SetValue (My_LaProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_My_La (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
 
            
         // --------------------------------------------------------------------

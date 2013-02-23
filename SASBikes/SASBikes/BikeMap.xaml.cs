@@ -16,6 +16,7 @@ using System.Collections.Specialized;
 using Bing.Maps;
 using SASBikes.DataModel;
 using Windows.UI;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
@@ -24,8 +25,10 @@ namespace SASBikes
 {
     public sealed partial class BikeMap
     {
-        readonly Brush m_openBrush = new SolidColorBrush(Colors.WhiteSmoke);
-        readonly Brush m_closedBrush = new SolidColorBrush(Colors.Crimson);
+        readonly Brush m_openBackground     = new SolidColorBrush(Colors.DeepSkyBlue        );
+        readonly Brush m_closedBackground   = new SolidColorBrush(Colors.Red                );
+        readonly Brush m_meBackground       = new SolidColorBrush(Colors.MediumVioletRed    );
+        Pushpin m_me;
 
         partial void GetBingLicenseKey(ref string key);
 
@@ -40,10 +43,10 @@ namespace SASBikes
             Map.Credentials = key;
             Map.MapType = MapType.Aerial;
             Map.SetView(new Location(57.700324, 11.973429), 18);
-            Map.ViewChangeEnded += View_ChangeEnded;
+            Map.ViewChangeEnded += Map_ViewChangeEnded;
         }
 
-        void View_ChangeEnded(object sender, ViewChangeEndedEventArgs e)
+        void Map_ViewChangeEnded(object sender, ViewChangeEndedEventArgs e)
         {
             View_Lo         = Map.Center.Longitude  ;
             View_La         = Map.Center.Latitude   ;
@@ -87,10 +90,10 @@ namespace SASBikes
 
         void Async_UpdateStations()
         {
-            App.Value.Async_Invoke(App.AsyncGroup.UpdateMapStations, UpdateMapStations);
+            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMapStations, Map_UpdateMapStations);
         }
 
-        void UpdateMapStations()
+        void Map_UpdateMapStations()
         {
             Map.Children.Clear();
             var stations = Stations;
@@ -101,9 +104,8 @@ namespace SASBikes
                     var station = stations[index];
                     var pp = new Pushpin
                                  {
-                                     Tag = station.Station_Name,
-                                     Foreground = station.Station_IsOpen ? m_openBrush : m_closedBrush,
-                                     Text = station.Station_Number.ToString(),
+                                     Background = station.Station_IsOpen ? m_openBackground : m_closedBackground,
+                                     Text       = station.Station_Number.ToString(),
                                  };
 
                     MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
@@ -111,16 +113,46 @@ namespace SASBikes
                     Map.Children.Add(pp);
                 }
             }
+
+            m_me = new Pushpin
+            {
+                Background  = m_meBackground    , 
+                Text        = "Me"              ,
+            };
+
+            MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));
+
+            Map.Children.Add(m_me);
+            
         }
 
         void Async_UpateView()
         {
-            App.Value.Async_Invoke(App.AsyncGroup.UpdateMapView, UpdateMapView);
+            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateView, Map_UpdateView);
         }
 
-        void UpdateMapView()
+        void Map_UpdateView()
         {
             Map.SetView(new Location(View_La, View_Lo), View_ZoomLevel);
         }
+
+        partial void Changed_My_La(double oldValue, double newValue)
+        {
+            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
+        }
+
+        partial void Changed_My_Lo(double oldValue, double newValue)
+        {
+            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
+        }
+
+        void Map_UpdateMyPosition()
+        {
+            if (m_me != null)
+            {
+                MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));                
+            }
+        }
     }
+
 }

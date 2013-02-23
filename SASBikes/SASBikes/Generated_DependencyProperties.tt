@@ -33,6 +33,8 @@ using SASBikes.DataModel;
             },
         new ClassDefinition ("BikeMap"                                                                              )
             {
+                P ("double"                                 , "My_Lo"                                               ),
+                P ("double"                                 , "My_La"                                               ),
                 P ("double"                                 , "View_Lo"                                             ),
                 P ("double"                                 , "View_La"                                             ),
                 P ("double"                                 , "View_ZoomLevel"                                      ),
