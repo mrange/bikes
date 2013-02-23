@@ -40,14 +40,14 @@
                 >
                 <CheckBox   
                     x:Name="TrackMe"        
-                    Content="Track my position" 
+                    Content="{StaticResource TrackMyPosition}" 
                     FontSize="20" 
                     IsChecked="{Binding Path=State_IsTrackingMyPosition,Mode=TwoWay}"
                     />
                 <Button     
                     x:Name="FindNearestBike"
                     Margin="8,0,0,0"
-                    Content="Find nearest bike" 
+                    Content="{StaticResource FindNearestStation}" 
                     FontSize="20" 
                     Click="Click_FindNearestBike" 
                     />

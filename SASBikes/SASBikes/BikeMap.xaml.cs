@@ -58,7 +58,6 @@ namespace SASBikes
             m_me = new Pushpin
             {
                 Background  = s_meBackground    , 
-                Text        = "Me"              ,
             };
 
             MapLayer.SetPosition(m_me, new Location(My_La, My_Lo));
@@ -127,7 +126,6 @@ namespace SASBikes
                     var pp = new Pushpin
                                  {
                                      Background = station.Station_IsOpen ? s_openBackground : s_closedBackground,
-                                     Text       = station.Station_Number.ToString(),
                                  };
 
                     MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
