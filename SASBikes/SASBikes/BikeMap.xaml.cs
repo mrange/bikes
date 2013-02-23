@@ -1,4 +1,16 @@
-﻿// ReSharper disable InconsistentNaming
+﻿// ----------------------------------------------------------------------------------------------
+// Copyright (c) Mårten Rånge.
+// ----------------------------------------------------------------------------------------------
+// This source code is subject to terms and conditions of the Microsoft Public License. A 
+// copy of the license can be found in the License.html file at the root of this distribution. 
+// If you cannot locate the  Microsoft Public License, please send an email to 
+// dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+//  by the terms of the Microsoft Public License.
+// ----------------------------------------------------------------------------------------------
+// You must not remove this notice, or any other, from this software.
+// ----------------------------------------------------------------------------------------------
+
+// ReSharper disable InconsistentNaming
 
 using System.Collections.Specialized;
 using Bing.Maps;
@@ -15,10 +27,17 @@ namespace SASBikes
         readonly Brush m_openBrush = new SolidColorBrush(Colors.WhiteSmoke);
         readonly Brush m_closedBrush = new SolidColorBrush(Colors.Crimson);
 
+        partial void GetBingLicenseKey(ref string key);
+
         partial void Constructed__BikeMap()
         {
             InitializeComponent();
-            Map.Credentials = BingLicenseKeys.TrialKey;
+
+            string key = "";
+
+            GetBingLicenseKey(ref key);
+
+            Map.Credentials = key;
             Map.MapType = MapType.Aerial;
             Map.SetView(new Location(57.700324, 11.973429), 18);
             Map.ViewChangeEnded += View_ChangeEnded;
