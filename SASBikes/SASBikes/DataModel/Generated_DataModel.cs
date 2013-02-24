@@ -60,6 +60,10 @@ namespace SASBikes.DataModel
             _State_StationName = ""   ;
             _State_SearchingFor = ""   ;
             _State_Stations = new StationList (context)   ;
+            if (_State_Stations != null)
+            {
+                _State_Stations.CollectionChanged += CollectionChanged__State_Stations;
+            }
         }
 
         // --------------------------------------------------------------------

@@ -80,6 +80,17 @@ namespace <#=NamespaceName#>
 #>
             <#=propertyDef.MemberName#> = <#=propertyDef.DefaultValue#>   ;
 <#
+    if (propertyDef.IsCollection)
+    {
+#>
+            if (<#=propertyDef.MemberName#> != null)
+            {
+                <#=propertyDef.MemberName#>.CollectionChanged += <#=propertyDef.CollectionChangedName#>;
+            }
+<#
+    }
+#>
+<#
     }
 #>
         }

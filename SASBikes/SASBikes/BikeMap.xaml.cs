@@ -135,6 +135,7 @@ namespace SASBikes
                 }
             }
 
+            Map_UpdateNearestPositions ();
         }
 
         void Async_UpateView()
@@ -163,12 +164,20 @@ namespace SASBikes
             var myLo = My_Lo;
             MapLayer.SetPosition(m_me, new Location(myLa, myLo));
             
+            Map_UpdateNearestPositions();
+        }
+
+        void Map_UpdateNearestPositions ()
+        {
+            var myLa = My_La;
+            var myLo = My_Lo;
+
             var stations = Stations;
             if (stations != null)
             {
                 var nearestThree = Stations
-                    .Where (s => s.Station_IsOpen)
-                    .OrderBy (s=>s.Station_Distance)
+                    .Where(s => s.Station_IsOpen)
+                    .OrderBy(s => s.Station_Distance)
                     .Take(s_nearestColors.Length)
                     .ToArray();
 
@@ -192,7 +201,6 @@ namespace SASBikes
                             });
                 }
             }
-    
         }
     }
 

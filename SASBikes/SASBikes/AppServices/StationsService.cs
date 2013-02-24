@@ -23,7 +23,7 @@ namespace SASBikes.AppServices
 {
     sealed class StationsService : IService
     {
-        const int Delay_InitialUpdateStations   =        10  *1000   ;
+        const int Delay_InitialUpdateStations   =        5   *1000   ;
         const int Delay_UpdateStations          = 5     *60  *1000   ;
 
         CancellationTokenSource m_source;

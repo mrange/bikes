@@ -10,6 +10,8 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+// ReSharper disable InconsistentNaming
+
 using Bing.Maps;
 
 namespace SASBikes.DataModel
@@ -28,6 +30,17 @@ namespace SASBikes.DataModel
 
         void Model_UpdateMyPosition()
         {
+            Model_UpdateStations ();
+
+            if (State_IsTrackingMyPosition)
+            {
+                State_La = State_MyLa;
+                State_Lo = State_MyLo;
+            }
+        }
+
+        void Model_UpdateStations ()
+        {
             var location = new Location(State_MyLa, State_MyLo);
 
             for (int index = 0; index < State_Stations.Count; index++)
@@ -35,15 +48,9 @@ namespace SASBikes.DataModel
                 var station = State_Stations[index];
 
                 station.Station_Distance = location.DistanceTo(new Location(
-                    station.Station_La, 
-                    station.Station_Lo
-                    ));
-            }
-
-            if (State_IsTrackingMyPosition)
-            {
-                State_La = State_MyLa;
-                State_Lo = State_MyLo;
+                                                                   station.Station_La,
+                                                                   station.Station_Lo
+                                                                   ));
             }
         }
 
@@ -55,6 +62,16 @@ namespace SASBikes.DataModel
                 State_Lo        = State_MyLo;
                 State_ZoomLevel = 20        ;
             }
+        }
+
+        partial void Changed__State_Stations(StationList oldValue, StationList newValue)
+        {
+            App.Value.Async_Invoke(App.AsyncGroup.Model_UpdateStations, Model_UpdateStations);
+        }
+
+        partial void CollectionChanged__State_Stations(StationList value, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            App.Value.Async_Invoke(App.AsyncGroup.Model_UpdateStations, Model_UpdateStations);
         }
     }
 }

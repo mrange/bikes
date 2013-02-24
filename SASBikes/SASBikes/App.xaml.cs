@@ -125,6 +125,7 @@ namespace SASBikes
 
         public enum AsyncGroup
         {
+            Model_UpdateStations            ,
             Model_UpdateMyPosition          ,
             Map_UpdateView                  ,
             Map_UpdateMapStations           ,
@@ -207,7 +208,7 @@ namespace SASBikes
                 return;
             }
 
-            var stations = CreateStations(state.Context, SampleData).ToArray();
+            var stations = CreateStations(state.Context, xmlData).ToArray();
 
             state.State_Stations.Clear ();
             foreach (var station in stations)
