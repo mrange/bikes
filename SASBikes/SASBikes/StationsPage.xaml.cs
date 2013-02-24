@@ -71,6 +71,10 @@ namespace SASBikes
             for (int index = 0; index < appState.State_Stations.Count; index++)
             {
                 var station = appState.State_Stations[index];
+                if (!station.Station_IsOpen)
+                {
+                    continue;
+                }
 
                 var distance = station.Station_Distance;
 

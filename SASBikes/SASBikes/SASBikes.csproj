@@ -115,7 +115,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppServices\LogService.cs" />
     <Compile Include="AppServices\SchedulerService.cs" />
     <Compile Include="AppServices\Services.cs" />
     <Compile Include="AppServices\UpdateLocationService.cs" />
@@ -131,6 +130,14 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Generated_DependencyProperties.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PushPins\Generated_DependencyProperties.cs">
+      <DependentUpon>Generated_DependencyProperties.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="PushPins\StationPushPin.xaml.cs">
+      <DependentUpon>StationPushPin.xaml</DependentUpon>
     </Compile>
     <Compile Include="StationsPage.xaml.cs">
       <DependentUpon>StationsPage.xaml</DependentUpon>
@@ -177,6 +184,10 @@
       <LastGenOutput>Include_T4Include.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <None Include="PushPins\Generated_DependencyProperties.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Generated_DependencyProperties.cs</LastGenOutput>
+    </None>
     <None Include="SASBikes_TemporaryKey.pfx" />
     <None Include="T4\DependencyPropertiesWinRT.ttinclude" />
     <None Include="T4\Header.ttinclude" />
@@ -202,6 +213,10 @@
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PushPins\StationPushPin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StationsPage.xaml">
       <SubType>Designer</SubType>

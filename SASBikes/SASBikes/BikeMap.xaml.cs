@@ -16,6 +16,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using Bing.Maps;
 using SASBikes.DataModel;
+using SASBikes.PushPins;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
@@ -46,7 +47,7 @@ namespace SASBikes
         {
             InitializeComponent();
 
-            string key = "";
+             var key = "";
 
             GetBingLicenseKey(ref key);
 
@@ -120,17 +121,17 @@ namespace SASBikes
             var stations = Stations;
             if (stations != null)
             {
-                for (int index = 0; index < stations.Count; index++)
+                for (var index = 0; index < stations.Count; index++)
                 {
                     var station = stations[index];
-                    var pp = new Pushpin
-                                 {
-                                     Background = station.Station_IsOpen ? s_openBackground : s_closedBackground,
-                                 };
+                    var spp = new StationPushPin
+                                  {
+                                      IsOpen        = station.Station_IsOpen                                ,
+                                      StationName   = station.Station_Name                                  ,
+                                      Location      = new Location(station.Station_La, station.Station_Lo)  , 
+                                  };
 
-                    MapLayer.SetPosition(pp, new Location(station.Station_La, station.Station_Lo));
-
-                    m_stationsLayer.Children.Add(pp);
+                    m_stationsLayer.Children.Add(spp);
                 }
             }
 
@@ -166,6 +167,7 @@ namespace SASBikes
             if (stations != null)
             {
                 var nearestThree = Stations
+                    .Where (s => s.Station_IsOpen)
                     .OrderBy (s=>s.Station_Distance)
                     .Take(s_nearestColors.Length)
                     .ToArray();

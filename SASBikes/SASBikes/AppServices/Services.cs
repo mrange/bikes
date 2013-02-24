@@ -12,6 +12,7 @@
 
 using System;
 using System.Threading;
+using SASBikes.Source.Common;
 using Windows.UI.Core;
 
 namespace SASBikes.AppServices
@@ -34,7 +35,7 @@ namespace SASBikes.AppServices
                 }
                 catch (Exception exc)
                 {
-                    // TODO: Log
+                    Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
                 }
             }
             
@@ -50,13 +51,12 @@ namespace SASBikes.AppServices
                 }
                 catch (Exception exc)
                 {
-                    // TODO: Log
+                    Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
                 }
             }
 
         }
 
-        public static readonly LogService               Log             = new LogService()              ;
         public static readonly SchedulerService         Scheduler       = new SchedulerService()        ;
         public static readonly UpdateLocationService    UpdateLocation  = new UpdateLocationService()   ;
         public static readonly UpdateStationsService    UpdateStations  = new UpdateStationsService()   ;
@@ -74,7 +74,6 @@ namespace SASBikes.AppServices
             var state = SetState(States.Started);
             if (state == States.Stopped)
             {
-                Log.StartService();
                 UpdateLocation.StartService();
                 UpdateStations.StartService();
                 Scheduler.StartService();
@@ -95,7 +94,6 @@ namespace SASBikes.AppServices
                 Scheduler.StopService();
                 UpdateStations.StopService();
                 UpdateLocation.StopService();
-                Log.StopService();
             }
         }
 
