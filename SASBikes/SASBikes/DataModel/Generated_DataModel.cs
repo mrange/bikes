@@ -81,9 +81,12 @@ namespace SASBikes.DataModel
 
                     _State_IsTrackingMyPosition = value;
 
-                    Changed__State_IsTrackingMyPosition (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_IsTrackingMyPosition (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -108,9 +111,12 @@ namespace SASBikes.DataModel
 
                     _State_ZoomLevel = value;
 
-                    Changed__State_ZoomLevel (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_ZoomLevel (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -135,9 +141,12 @@ namespace SASBikes.DataModel
 
                     _State_Lo = value;
 
-                    Changed__State_Lo (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_Lo (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -162,9 +171,12 @@ namespace SASBikes.DataModel
 
                     _State_La = value;
 
-                    Changed__State_La (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_La (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -189,9 +201,12 @@ namespace SASBikes.DataModel
 
                     _State_MyLo = value;
 
-                    Changed__State_MyLo (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_MyLo (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -216,9 +231,12 @@ namespace SASBikes.DataModel
 
                     _State_MyLa = value;
 
-                    Changed__State_MyLa (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_MyLa (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -243,9 +261,12 @@ namespace SASBikes.DataModel
 
                     _State_StationName = value;
 
-                    Changed__State_StationName (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_StationName (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -270,9 +291,12 @@ namespace SASBikes.DataModel
 
                     _State_SearchingFor = value;
 
-                    Changed__State_SearchingFor (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_SearchingFor (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -305,9 +329,12 @@ namespace SASBikes.DataModel
                         value.CollectionChanged += CollectionChanged__State_Stations;
                     }
 
-                    Changed__State_Stations (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_Stations (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -315,7 +342,10 @@ namespace SASBikes.DataModel
         StationList _State_Stations;
         void CollectionChanged__State_Stations (object sender, NotifyCollectionChangedEventArgs e)
         {
-            CollectionChanged__State_Stations (_State_Stations, e);
+            if (!Context.IsSuppressingEvents)
+            {
+                CollectionChanged__State_Stations (_State_Stations, e);
+            }
         }
         // --------------------------------------------------------------------
         partial void CollectionChanged__State_Stations (StationList value, NotifyCollectionChangedEventArgs e);
@@ -361,9 +391,12 @@ namespace SASBikes.DataModel
 
                     _Station_Name = value;
 
-                    Changed__Station_Name (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_Name (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -388,9 +421,12 @@ namespace SASBikes.DataModel
 
                     _Station_Number = value;
 
-                    Changed__Station_Number (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_Number (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -415,9 +451,12 @@ namespace SASBikes.DataModel
 
                     _Station_Address = value;
 
-                    Changed__Station_Address (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_Address (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -442,9 +481,12 @@ namespace SASBikes.DataModel
 
                     _Station_FullAddress = value;
 
-                    Changed__Station_FullAddress (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_FullAddress (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -469,9 +511,12 @@ namespace SASBikes.DataModel
 
                     _Station_Lo = value;
 
-                    Changed__Station_Lo (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_Lo (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -496,9 +541,12 @@ namespace SASBikes.DataModel
 
                     _Station_La = value;
 
-                    Changed__Station_La (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_La (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -523,9 +571,12 @@ namespace SASBikes.DataModel
 
                     _Station_IsOpen = value;
 
-                    Changed__Station_IsOpen (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_IsOpen (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -550,9 +601,12 @@ namespace SASBikes.DataModel
 
                     _Station_IsBonus = value;
 
-                    Changed__Station_IsBonus (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_IsBonus (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -577,9 +631,12 @@ namespace SASBikes.DataModel
 
                     _Station_Distance = value;
 
-                    Changed__Station_Distance (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Station_Distance (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }

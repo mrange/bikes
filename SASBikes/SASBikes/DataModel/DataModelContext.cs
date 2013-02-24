@@ -14,6 +14,6 @@ namespace SASBikes.DataModel
 {
     public sealed partial class DataModelContext
     {
-        
+        public bool IsSuppressingEvents;        
     }
 }

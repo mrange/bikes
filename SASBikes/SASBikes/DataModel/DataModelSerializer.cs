@@ -155,7 +155,10 @@ namespace SASBikes.DataModel
         {
             var doc = XDocument.Parse(value ?? "");
 
-            var context = new DataModelContext();
+            var context = new DataModelContext
+                              {
+                                  IsSuppressingEvents = true
+                              };
 
             State state = null;
             doc
@@ -164,6 +167,8 @@ namespace SASBikes.DataModel
                 .FirstOrDefault()
                 .Unserialize(context, null, ref state)
                 ;
+
+            context.IsSuppressingEvents = false;
 
             return state;
         }
