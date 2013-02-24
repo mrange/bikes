@@ -115,7 +115,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppServices\SchedulerService.cs" />
     <Compile Include="AppServices\Services.cs" />
     <Compile Include="AppServices\LocatorService.cs" />
     <Compile Include="AppServices\StationsService.cs" />

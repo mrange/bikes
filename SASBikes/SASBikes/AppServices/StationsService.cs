@@ -63,11 +63,21 @@ namespace SASBikes.AppServices
             {
                 using (var httpClient = new HttpClient())
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+            
                     var xmlData = httpClient.GetStringAsync(@"http://www.goteborgbikes.se/index.php/service/carto")
                         .Result
                         ?? ""
                         ;
 
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+            
                     if (!xmlData.IsNullOrWhiteSpace())
                     {
                         App.Value.Async_Invoke (App.AsyncGroup.StationsService_UpdateStations, () => StationsService_UpdateStations (xmlData));
@@ -79,6 +89,11 @@ namespace SASBikes.AppServices
                 Log.Exception ("Failed to get station data: {0}", exc);
             }
 
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+            
             m_updateTask =
                 Task
                     .Delay(Delay_UpdateStations, cancellationToken)

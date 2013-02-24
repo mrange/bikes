@@ -13,7 +13,6 @@
 using System;
 using System.Threading;
 using SASBikes.Source.Common;
-using Windows.UI.Core;
 
 namespace SASBikes.AppServices
 {
@@ -57,9 +56,8 @@ namespace SASBikes.AppServices
 
         }
 
-        public static readonly SchedulerService         Scheduler       = new SchedulerService()        ;
-        public static readonly LocatorService    Locator  = new LocatorService()   ;
-        public static readonly StationsService    Stations  = new StationsService()   ;
+        public static readonly LocatorService       Locator     = new LocatorService()      ;
+        public static readonly StationsService      Stations    = new StationsService()     ;
 
         enum States
         {
@@ -76,7 +74,6 @@ namespace SASBikes.AppServices
             {
                 Locator.StartService();
                 Stations.StartService();
-                Scheduler.StartService();
             }
         }
 
@@ -91,7 +88,6 @@ namespace SASBikes.AppServices
             var state = SetState(States.Stopped);
             if (state == States.Started)
             {
-                Scheduler.StopService();
                 Stations.StopService();
                 Locator.StopService();
             }
