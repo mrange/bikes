@@ -8,6 +8,7 @@
     xmlns:common="using:SASBikes.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:maps="using:Bing.Maps"
+    xmlns:controls="using:SASBikes.Controls"
     mc:Ignorable="d"
     >
 
@@ -54,7 +55,7 @@
             </StackPanel>
         </Grid>
 
-        <local:BikeMap 
+        <controls:BikeMap 
             Grid.Row="1" 
             x:Name="Map"
             DataContext="{Binding ViewModel_ApplicationState}"
@@ -66,7 +67,7 @@
             Stations="{Binding State_Stations}"
             >
             
-        </local:BikeMap>
+        </controls:BikeMap>
         
         <VisualStateManager.VisualStateGroups>
 

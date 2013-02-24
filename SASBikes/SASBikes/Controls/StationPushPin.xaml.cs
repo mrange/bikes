@@ -19,7 +19,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
-namespace SASBikes.PushPins
+namespace SASBikes.Controls
 {
     public sealed partial class StationPushPin
     {

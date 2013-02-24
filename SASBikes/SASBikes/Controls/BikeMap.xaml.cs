@@ -16,13 +16,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using Bing.Maps;
 using SASBikes.DataModel;
-using SASBikes.PushPins;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SASBikes
+namespace SASBikes.Controls
 {
     public sealed partial class BikeMap
     {

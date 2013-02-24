@@ -10,6 +10,8 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System;
+
 <#
     NamespaceName = "SASBikes.DataModel"    ;
     Model = new []
@@ -25,6 +27,7 @@
             P ("string"             , "StationName"         ),
             P ("string"             , "SearchingFor"        ),
             C ("Station"            , "Stations"            ),
+            C ("Error"              , "Errors"              , flags:PropertyFlags.IsNotSerializable ),
         },
         new ClassDefinition ("Station")
         {
@@ -37,6 +40,10 @@
             P ("bool"               , "IsOpen"          ),
             P ("bool"               , "IsBonus"         ),
             P ("double"             , "Distance"        ),
+        },
+        new ClassDefinition ("Error", flags:ClassFlags.IsNotSerializable    )
+        {
+            P ("Exception"          , "Exception"       ),
         },
     };
 #>

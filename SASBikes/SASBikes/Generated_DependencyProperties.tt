@@ -10,7 +10,6 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.DataModel;
 
 <#
     // -------------------------------------------------------------------------
@@ -30,15 +29,6 @@ using SASBikes.DataModel;
             {
                 P ("string"                                 , "Data"            , flags:PropertyFlags.IsAttached    ),
                 P ("string"                                 , "FriendlyName"    , flags:PropertyFlags.IsAttached    ),
-            },
-        new ClassDefinition ("BikeMap"                                                                              )
-            {
-                P ("double"                                 , "My_Lo"                                               , defaultValue:"11.973429"  ),
-                P ("double"                                 , "My_La"                                               , defaultValue:"57.700324"  ),
-                P ("double"                                 , "View_Lo"                                             , defaultValue:"11.973429"  ),
-                P ("double"                                 , "View_La"                                             , defaultValue:"57.700324"  ),
-                P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"18.0"       ),
-                P ("StationList"                            , "Stations"                                            ),
             },
     };
     // ------------------------------------------------------------------------

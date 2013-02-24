@@ -12,6 +12,7 @@
 
 using Bing.Maps;
 using Windows.UI.Xaml.Media;
+using SASBikes.DataModel;
 
 <#
     // -------------------------------------------------------------------------
@@ -23,7 +24,7 @@ using Windows.UI.Xaml.Media;
     // |.  \    /:  | \        /  |:       :)(:      "|( \_|:  \
     // |___|\__/|___|  \"_____/   (________/  \_______) \_______)
     // -------------------------------------------------------------------------
-    Namespace ="SASBikes.PushPins";
+    Namespace ="SASBikes.Controls";
 
     Model = new []
     {
@@ -36,6 +37,16 @@ using Windows.UI.Xaml.Media;
                 P ("Brush"      , "StationBackground"                           , flags:PropertyFlags.IsReadOnly    ),
 
             },
+        new ClassDefinition ("BikeMap"                                                                              )
+            {
+                P ("double"                                 , "My_Lo"                                               , defaultValue:"11.973429"  ),
+                P ("double"                                 , "My_La"                                               , defaultValue:"57.700324"  ),
+                P ("double"                                 , "View_Lo"                                             , defaultValue:"11.973429"  ),
+                P ("double"                                 , "View_La"                                             , defaultValue:"57.700324"  ),
+                P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"18.0"       ),
+                P ("StationList"                            , "Stations"                                            ),
+            },
+
     };
     // ------------------------------------------------------------------------
 #>

@@ -312,6 +312,7 @@ namespace <#=NamespaceName#>
         {
             Name        = name      ?? S_NoName         ;
             BaseName    = baseName  ?? "DataModelBase"  ;
+            Flags       = flags                         ;
         }
 
         public string ListName

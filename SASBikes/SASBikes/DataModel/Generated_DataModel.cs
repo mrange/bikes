@@ -10,6 +10,8 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System;
+
 
 // ############################################################################
 // #                                                                          #
@@ -63,6 +65,11 @@ namespace SASBikes.DataModel
             if (_State_Stations != null)
             {
                 _State_Stations.CollectionChanged += CollectionChanged__State_Stations;
+            }
+            _State_Errors = new ErrorList (context)   ;
+            if (_State_Errors != null)
+            {
+                _State_Errors.CollectionChanged += CollectionChanged__State_Errors;
             }
         }
 
@@ -350,6 +357,52 @@ namespace SASBikes.DataModel
         // --------------------------------------------------------------------
         partial void CollectionChanged__State_Stations (StationList value, NotifyCollectionChangedEventArgs e);
         partial void Changed__State_Stations (StationList oldValue, StationList newValue);
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        public ErrorList State_Errors
+        {
+            get
+            {
+                return _State_Errors;
+            }
+            set
+            {
+                if (_State_Errors != value)
+                {
+                    var oldValue = _State_Errors; 
+
+                    if (oldValue != null)
+                    {
+                        oldValue.CollectionChanged -= CollectionChanged__State_Errors;
+                    }
+                    _State_Errors = value;
+                    if (value != null)
+                    {
+                        value.CollectionChanged += CollectionChanged__State_Errors;
+                    }
+
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__State_Errors (oldValue, value);
+
+                        Raise_PropertyChanged ();
+                    }
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        ErrorList _State_Errors;
+        void CollectionChanged__State_Errors (object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!Context.IsSuppressingEvents)
+            {
+                CollectionChanged__State_Errors (_State_Errors, e);
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void CollectionChanged__State_Errors (ErrorList value, NotifyCollectionChangedEventArgs e);
+        partial void Changed__State_Errors (ErrorList oldValue, ErrorList newValue);
         // --------------------------------------------------------------------
 
 
@@ -644,6 +697,52 @@ namespace SASBikes.DataModel
         double _Station_Distance;
         // --------------------------------------------------------------------
         partial void Changed__Station_Distance (double oldValue, double newValue);
+        // --------------------------------------------------------------------
+
+
+    }
+    public sealed partial class ErrorList : DataModelCollection<Error>
+    {
+        public ErrorList (DataModelContext context) : base (context)
+        {
+        }
+    }
+
+    public sealed partial class Error : DataModelBase 
+    {
+        public Error (DataModelContext context) : base (context)
+        {
+            _Error_Exception = default (Exception)   ;
+        }
+
+        // --------------------------------------------------------------------
+        public Exception Error_Exception
+        {
+            get
+            {
+                return _Error_Exception;
+            }
+            set
+            {
+                if (_Error_Exception != value)
+                {
+                    var oldValue = _Error_Exception; 
+
+                    _Error_Exception = value;
+
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Error_Exception (oldValue, value);
+
+                        Raise_PropertyChanged ();
+                    }
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        Exception _Error_Exception;
+        // --------------------------------------------------------------------
+        partial void Changed__Error_Exception (Exception oldValue, Exception newValue);
         // --------------------------------------------------------------------
 
 
