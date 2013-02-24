@@ -115,7 +115,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppServices\Services.cs" />
+    <Compile Include="AppServices\Generated_Services.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Generated_Services.tt</DependentUpon>
+    </Compile>
     <Compile Include="AppServices\LocatorService.cs" />
     <Compile Include="AppServices\StationsService.cs" />
     <Compile Include="BikeMap.xaml.cs">
@@ -141,6 +145,10 @@
     <Compile Include="StationsPage.xaml.cs">
       <DependentUpon>StationsPage.xaml</DependentUpon>
     </Compile>
+    <None Include="AppServices\Generated_Services.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Generated_Services.cs</LastGenOutput>
+    </None>
     <None Include="DataModel\Generated_DataModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Generated_DataModel.cs</LastGenOutput>

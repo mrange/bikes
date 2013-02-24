@@ -305,8 +305,8 @@ namespace <#=Namespace#>
 
         public ClassDefinition (string name, bool isStatic = false, bool isSuppressingDefaultConstructor = false)
         {
-            Name = name ?? "NoName";
-            IsStatic = isStatic;
+            Name = name ?? S_NoName ;
+            IsStatic = isStatic     ;
             IsSuppressingDefaultConstructor = isSuppressingDefaultConstructor;
         }
     }
@@ -329,10 +329,10 @@ namespace <#=Namespace#>
     {
         return new PropertyDefinition
         {
-            ItemType        = "<NoType>"                                                        ,
-            Type            = type                  ?? "<NoType>"                               ,
-            Name            = name                  ?? "<NoName>"                               ,
-            DefaultValue    = defaultValue          ?? "default (" + (type ?? "<NoType>") + ")" ,
+            ItemType        = S_NoType                                                          ,
+            Type            = type                  ?? S_NoType                                 ,
+            Name            = name                  ?? S_NoName                                 ,
+            DefaultValue    = defaultValue          ?? "default (" + (type ?? S_NoType) + ")"   ,
             MetaDataOptions = metaDataOptions       ?? "FrameworkPropertyMetadataOptions.None"  ,
             Flags           = flags                                                             ,
         };
@@ -347,9 +347,9 @@ namespace <#=Namespace#>
     {
         return new PropertyDefinition
         {
-            ItemType        = itemType              ?? "<NoType>"                               ,
-            Type            = "ObservableCollection<" + (itemType ?? "<NoType>") + ">"          , 
-            Name            = name ?? "<NoName>"                                                ,
+            ItemType        = itemType              ?? S_NoType                                 ,
+            Type            = "ObservableCollection<" + (itemType ?? S_NoType) + ">"            , 
+            Name            = name ?? S_NoName                                                  ,
             DefaultValue    = "null"                                                            ,
             MetaDataOptions = metaDataOptions       ?? "FrameworkPropertyMetadataOptions.None"  ,
             Flags           = flags | PropertyFlags.IsCollection                                ,

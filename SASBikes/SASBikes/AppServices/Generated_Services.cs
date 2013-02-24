@@ -1,4 +1,17 @@
-﻿// ----------------------------------------------------------------------------------------------
+﻿// ############################################################################
+// #                                                                          #
+// #        ---==>  T H I S  F I L E  I S   G E N E R A T E D  <==---         #
+// #                                                                          #
+// # This means that any edits to the .cs file will be lost when its          #
+// # regenerated. Changes should instead be applied to the corresponding      #
+// # template file (.tt)                                                      #
+// ############################################################################
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------
 // Copyright (c) Mårten Rånge.
 // ----------------------------------------------------------------------------------------------
 // This source code is subject to terms and conditions of the Microsoft Public License. A 
@@ -10,20 +23,44 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+
 using System;
 using System.Threading;
 using SASBikes.Source.Common;
 
 namespace SASBikes.AppServices
 {
-    interface IService
+    partial interface IService
     {
         void Start ();
         void Stop ();
     }
 
-    static class Services
+    static partial class Services
     {
+        public static readonly LocatorService Locator = new LocatorService()      ;
+        public static readonly StationsService Stations = new StationsService()      ;
+
+        public static void Start()
+        {
+            var state = SetState(States.Started);
+            if (state == States.Stopped)
+            {
+                StartService (Stations);
+                StartService (Locator);
+            }
+        }
+
+        public static void Stop()
+        {
+            var state = SetState(States.Stopped);
+            if (state == States.Started)
+            {
+                StopService (Locator);
+                StopService (Stations);
+            }
+        }
+
         static void StopService(this IService service)
         {
             if (service != null)
@@ -56,9 +93,6 @@ namespace SASBikes.AppServices
 
         }
 
-        public static readonly LocatorService       Locator     = new LocatorService()      ;
-        public static readonly StationsService      Stations    = new StationsService()     ;
-
         enum States
         {
             Stopped = 1,
@@ -67,31 +101,13 @@ namespace SASBikes.AppServices
 
         static int s_state = (int)States.Stopped; 
 
-        public static void Start()
-        {
-            var state = SetState(States.Started);
-            if (state == States.Stopped)
-            {
-                Locator.StartService();
-                Stations.StartService();
-            }
-        }
-
         static States SetState(States states)
         {
             var state = Interlocked.Exchange(ref s_state, (int) states);
             return (States) state;
         }
 
-        public static void Stop()
-        {
-            var state = SetState(States.Stopped);
-            if (state == States.Started)
-            {
-                Stations.StopService();
-                Locator.StopService();
-            }
-        }
-
     }
 }
+
+
