@@ -104,6 +104,12 @@ namespace SASBikes
             InitializeComponent();
             Resuming += OnResuming;
             Suspending += OnSuspending;
+            DebugSettings.BindingFailed += DebugSettings_BindingFailed;
+        }
+
+        void DebugSettings_BindingFailed(object sender, BindingFailedEventArgs e)
+        {
+            Log.Error (e.Message);
         }
 
         CoreDispatcher m_dispatcher;

@@ -519,5 +519,200 @@ namespace SASBikes.Controls
     }
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    // ErrorIndicator
+    // ------------------------------------------------------------------------
+    partial class ErrorIndicator
+    {
+        #region Uninteresting generated code
+        public static readonly DependencyProperty ErrorsProperty = DependencyProperty.Register (
+            "Errors",
+            typeof (ErrorList),
+            typeof (ErrorIndicator),
+            new PropertyMetadata (
+                default (ErrorList),
+                Changed_Errors
+            ));
+
+        static void Changed_Errors (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as ErrorIndicator;
+            if (instance != null)
+            {
+                var oldValue = (ErrorList)eventArgs.OldValue;
+                var newValue = (ErrorList)eventArgs.NewValue;
+
+                instance.Changed_Errors (oldValue, newValue);
+            }
+        }
+
+        public static readonly DependencyProperty ErrorCountProperty = DependencyProperty.Register (
+            "ErrorCount",
+            typeof (int),
+            typeof (ErrorIndicator),
+            new PropertyMetadata (
+                default (int),
+                Changed_ErrorCount
+            ));
+
+        static void Changed_ErrorCount (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as ErrorIndicator;
+            if (instance != null)
+            {
+                var oldValue = (int)eventArgs.OldValue;
+                var newValue = (int)eventArgs.NewValue;
+
+                instance.Changed_ErrorCount (oldValue, newValue);
+            }
+        }
+
+        public static readonly DependencyProperty ErrorTextProperty = DependencyProperty.Register (
+            "ErrorText",
+            typeof (string),
+            typeof (ErrorIndicator),
+            new PropertyMetadata (
+                default (string),
+                Changed_ErrorText
+            ));
+
+        static void Changed_ErrorText (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as ErrorIndicator;
+            if (instance != null)
+            {
+                var oldValue = (string)eventArgs.OldValue;
+                var newValue = (string)eventArgs.NewValue;
+
+                instance.Changed_ErrorText (oldValue, newValue);
+            }
+        }
+
+        public static readonly DependencyProperty ErrorTextVisibilityProperty = DependencyProperty.Register (
+            "ErrorTextVisibility",
+            typeof (Visibility),
+            typeof (ErrorIndicator),
+            new PropertyMetadata (
+                default (Visibility),
+                Changed_ErrorTextVisibility
+            ));
+
+        static void Changed_ErrorTextVisibility (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as ErrorIndicator;
+            if (instance != null)
+            {
+                var oldValue = (Visibility)eventArgs.OldValue;
+                var newValue = (Visibility)eventArgs.NewValue;
+
+                instance.Changed_ErrorTextVisibility (oldValue, newValue);
+            }
+        }
+
+        #endregion
+
+        // --------------------------------------------------------------------
+        // Constructor
+        // --------------------------------------------------------------------
+        public ErrorIndicator ()
+        {
+            Constructed__ErrorIndicator ();
+        }
+        // --------------------------------------------------------------------
+        partial void Constructed__ErrorIndicator ();
+        // --------------------------------------------------------------------
+
+
+        // --------------------------------------------------------------------
+        // Properties
+        // --------------------------------------------------------------------
+
+           
+        // --------------------------------------------------------------------
+        public ErrorList Errors
+        {
+            get
+            {
+                return (ErrorList)GetValue (ErrorsProperty);
+            }
+            set
+            {
+                if (Errors != value)
+                {
+                    SetValue (ErrorsProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_Errors (ErrorList oldValue, ErrorList newValue);
+        // --------------------------------------------------------------------
+
+
+           
+        // --------------------------------------------------------------------
+        public int ErrorCount
+        {
+            get
+            {
+                return (int)GetValue (ErrorCountProperty);
+            }
+            set
+            {
+                if (ErrorCount != value)
+                {
+                    SetValue (ErrorCountProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_ErrorCount (int oldValue, int newValue);
+        // --------------------------------------------------------------------
+
+
+           
+        // --------------------------------------------------------------------
+        public string ErrorText
+        {
+            get
+            {
+                return (string)GetValue (ErrorTextProperty);
+            }
+            private set
+            {
+                if (ErrorText != value)
+                {
+                    SetValue (ErrorTextProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_ErrorText (string oldValue, string newValue);
+        // --------------------------------------------------------------------
+
+
+           
+        // --------------------------------------------------------------------
+        public Visibility ErrorTextVisibility
+        {
+            get
+            {
+                return (Visibility)GetValue (ErrorTextVisibilityProperty);
+            }
+            private set
+            {
+                if (ErrorTextVisibility != value)
+                {
+                    SetValue (ErrorTextVisibilityProperty, value);
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        partial void Changed_ErrorTextVisibility (Visibility oldValue, Visibility newValue);
+        // --------------------------------------------------------------------
+
+
+    }
+    // ------------------------------------------------------------------------
+
 }
 

@@ -43,7 +43,7 @@ using System;
         },
         new ClassDefinition ("Error", flags:ClassFlags.IsNotSerializable    )
         {
-            P ("Exception"          , "Exception"       ),
+            P ("string"             , "Message"         ),
         },
     };
 #>

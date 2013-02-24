@@ -13,7 +13,6 @@
 using System;
 using System.Xml.Linq;
 using Bing.Maps;
-using Windows.UI.Core;
 
 namespace SASBikes
 {

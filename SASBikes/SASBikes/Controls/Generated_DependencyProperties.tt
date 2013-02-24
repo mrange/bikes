@@ -46,6 +46,13 @@ using SASBikes.DataModel;
                 P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"18.0"       ),
                 P ("StationList"                            , "Stations"                                            ),
             },
+        new ClassDefinition ("ErrorIndicator"                                                                       )
+            {
+                P ("ErrorList"                              , "Errors"                                              ),
+                P ("int"                                    , "ErrorCount"                                          ),
+                P ("string"                                 , "ErrorText"                                           , flags:PropertyFlags.IsReadOnly    ),
+                P ("Visibility"                             , "ErrorTextVisibility"                                 , flags:PropertyFlags.IsReadOnly    ),
+            },
 
     };
     // ------------------------------------------------------------------------

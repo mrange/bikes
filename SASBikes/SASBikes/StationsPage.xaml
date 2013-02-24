@@ -8,7 +8,7 @@
     xmlns:common="using:SASBikes.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:maps="using:Bing.Maps"
-    xmlns:controls="using:SASBikes.Controls"
+    xmlns:c="using:SASBikes.Controls"
     mc:Ignorable="d"
     >
 
@@ -39,8 +39,10 @@
                 VerticalAlignment="Center"
                 DataContext="{Binding ViewModel_ApplicationState}"
                 >
+                <c:ErrorIndicator Errors="{Binding Path=State_Errors}" />
                 <CheckBox   
                     x:Name="TrackMe"        
+                    Margin="8,0,0,0"
                     Content="{StaticResource TrackMyPosition}" 
                     FontSize="20" 
                     IsChecked="{Binding Path=State_IsTrackingMyPosition,Mode=TwoWay}"
@@ -55,7 +57,7 @@
             </StackPanel>
         </Grid>
 
-        <controls:BikeMap 
+        <c:BikeMap 
             Grid.Row="1" 
             x:Name="Map"
             DataContext="{Binding ViewModel_ApplicationState}"
@@ -67,7 +69,7 @@
             Stations="{Binding State_Stations}"
             >
             
-        </controls:BikeMap>
+        </c:BikeMap>
         
         <VisualStateManager.VisualStateGroups>
 

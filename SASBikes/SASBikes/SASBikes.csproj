@@ -128,6 +128,9 @@
     <Compile Include="C.cs" />
     <Compile Include="CommonExtensions\SuspensionManager.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
+    <Compile Include="Controls\ErrorIndicator.xaml.cs">
+      <DependentUpon>ErrorIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataModel\DataModel.cs" />
     <Compile Include="Generated_DependencyProperties.cs">
       <AutoGen>True</AutoGen>
@@ -142,6 +145,7 @@
     <Compile Include="Controls\StationPushPin.xaml.cs">
       <DependentUpon>StationPushPin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Log.cs" />
     <Compile Include="StationsPage.xaml.cs">
       <DependentUpon>StationsPage.xaml</DependentUpon>
     </Compile>
@@ -221,6 +225,10 @@
     <Page Include="Common\StandardStyles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ErrorIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\StationPushPin.xaml">
       <SubType>Designer</SubType>

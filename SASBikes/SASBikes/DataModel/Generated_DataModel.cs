@@ -712,27 +712,27 @@ namespace SASBikes.DataModel
     {
         public Error (DataModelContext context) : base (context)
         {
-            _Error_Exception = default (Exception)   ;
+            _Error_Message = ""   ;
         }
 
         // --------------------------------------------------------------------
-        public Exception Error_Exception
+        public string Error_Message
         {
             get
             {
-                return _Error_Exception;
+                return _Error_Message;
             }
             set
             {
-                if (_Error_Exception != value)
+                if (_Error_Message != value)
                 {
-                    var oldValue = _Error_Exception; 
+                    var oldValue = _Error_Message; 
 
-                    _Error_Exception = value;
+                    _Error_Message = value;
 
                     if (!Context.IsSuppressingEvents)
                     {
-                        Changed__Error_Exception (oldValue, value);
+                        Changed__Error_Message (oldValue, value);
 
                         Raise_PropertyChanged ();
                     }
@@ -740,9 +740,9 @@ namespace SASBikes.DataModel
             }
         }
         // --------------------------------------------------------------------
-        Exception _Error_Exception;
+        string _Error_Message;
         // --------------------------------------------------------------------
-        partial void Changed__Error_Exception (Exception oldValue, Exception newValue);
+        partial void Changed__Error_Message (string oldValue, string newValue);
         // --------------------------------------------------------------------
 
 

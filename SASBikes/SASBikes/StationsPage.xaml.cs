@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using Bing.Maps;
 using SASBikes.Common;
 using SASBikes.DataModel;
-using Windows.Devices.Geolocation;
+using SASBikes.Source.Common;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
