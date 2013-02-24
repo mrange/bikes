@@ -106,9 +106,12 @@ namespace <#=NamespaceName#>
     }
 #>
 
-                    <#=propertyDef.ChangedName#> (oldValue, value);
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        <#=propertyDef.ChangedName#> (oldValue, value);
 
-                    Raise_PropertyChanged ();
+                        Raise_PropertyChanged ();
+                    }
                 }
             }
         }
@@ -120,7 +123,10 @@ namespace <#=NamespaceName#>
 #>
         void <#=propertyDef.CollectionChangedName#> (object sender, NotifyCollectionChangedEventArgs e)
         {
-            <#=propertyDef.CollectionChangedName#> (<#=propertyDef.MemberName#>, e);
+            if (!Context.IsSuppressingEvents)
+            {
+                <#=propertyDef.CollectionChangedName#> (<#=propertyDef.MemberName#>, e);
+            }
         }
 <#
     }    
