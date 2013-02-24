@@ -47,24 +47,6 @@ namespace <#=Namespace#>
 <#
         foreach (var propertyDef in classDef)
         {
-
-            if (propertyDef.IsReadOnly)
-            {
-#>
-        static readonly DependencyPropertyKey <#=propertyDef.DependencyPropertyKeyName#> = DependencyProperty.Register<#=propertyDef.IsAttached ? "Attached" : ""#>ReadOnly (
-            "<#=propertyDef.Name#>",
-            typeof (<#=propertyDef.Type#>),
-            typeof (<#=classDef.Name#>),
-            new PropertyMetadata (
-                <#=propertyDef.DefaultValue#>,
-                <#=propertyDef.PropertyChangedEventName#>
-            ));
-
-        public static readonly DependencyProperty <#=propertyDef.DependencyPropertyName#> = <#=propertyDef.DependencyPropertyKeyName#>.DependencyProperty;
-<#
-            }
-            else
-            {
 #>
         public static readonly DependencyProperty <#=propertyDef.DependencyPropertyName#> = DependencyProperty.Register<#=propertyDef.IsAttached ? "Attached" : ""#> (
             "<#=propertyDef.Name#>",
@@ -74,9 +56,6 @@ namespace <#=Namespace#>
                 <#=propertyDef.DefaultValue#>,
                 <#=propertyDef.PropertyChangedEventName#>
             ));
-<#
-            }
-#>
 
 <#
             if (propertyDef.IsAttached)
@@ -236,34 +215,7 @@ namespace <#=Namespace#>
             return (<#=propertyDef.Type#>)dependencyObject.GetValue (<#=propertyDef.DependencyPropertyName#>);
         }
 
-<#
-            if (propertyDef.IsReadOnly)
-            {
-#>
-        private static void Set<#=propertyDef.Name#> (DependencyObject dependencyObject, <#=propertyDef.Type#> value)
-        {
-            if (dependencyObject != null)
-            {
-                if (Get<#=propertyDef.Name#> (dependencyObject) != value)
-                {
-                    SetValue (<#=propertyDef.DependencyPropertyKeyName#>, value);
-                }
-            }
-        }
-
-        private static void Clear<#=propertyDef.Name#> (DependencyObject dependencyObject, <#=propertyDef.Type#> value)
-        {
-            if (dependencyObject != null)
-            {
-                ClearValue (<#=propertyDef.DependencyPropertyKeyName#>);
-            }
-        }
-<#
-            }
-            else
-            {
-#>
-        public static void Set<#=propertyDef.Name#> (DependencyObject dependencyObject, <#=propertyDef.Type#> value)
+        <#=propertyDef.IsReadOnly ? "private " : "public "#>static void Set<#=propertyDef.Name#> (DependencyObject dependencyObject, <#=propertyDef.Type#> value)
         {
             if (dependencyObject != null)
             {
@@ -274,16 +226,13 @@ namespace <#=Namespace#>
             }
         }
 
-        public static void Clear<#=propertyDef.Name#> (DependencyObject dependencyObject)
+        <#=propertyDef.IsReadOnly ? "private " : "public "#>static void Clear<#=propertyDef.Name#> (DependencyObject dependencyObject)
         {
             if (dependencyObject != null)
             {
                 dependencyObject.ClearValue (<#=propertyDef.DependencyPropertyName#>);
             }
         }
-<#
-            }
-#>
         // --------------------------------------------------------------------
         static partial void <#=propertyDef.PropertyChangedEventName#> (DependencyObject dependencyObject, <#=propertyDef.Type#> oldValue, <#=propertyDef.Type#> newValue);
 <#
@@ -309,32 +258,13 @@ namespace <#=Namespace#>
             {
                 return (<#=propertyDef.Type#>)GetValue (<#=propertyDef.DependencyPropertyName#>);
             }
-<#
-            if (propertyDef.IsReadOnly)
-            {
-#>
-            private set
-            {
-                if (<#=propertyDef.Name#> != value)
-                {
-                    SetValue (<#=propertyDef.DependencyPropertyKeyName#>, value);
-                }
-            }
-<#
-            }
-            else
-            {
-#>
-            set
+            <#=propertyDef.IsReadOnly ? "private " : ""#>set
             {
                 if (<#=propertyDef.Name#> != value)
                 {
                     SetValue (<#=propertyDef.DependencyPropertyName#>, value);
                 }
             }
-<#
-            }
-#>
         }
         // --------------------------------------------------------------------
         partial void <#=propertyDef.PropertyChangedEventName#> (<#=propertyDef.Type#> oldValue, <#=propertyDef.Type#> newValue);
@@ -445,14 +375,6 @@ namespace <#=Namespace#>
             get
             {
                 return Name + "Property";
-            }
-        }
-
-        public string DependencyPropertyKeyName
-        {
-            get
-            {
-                return Name + "PropertyKey";
             }
         }
 
