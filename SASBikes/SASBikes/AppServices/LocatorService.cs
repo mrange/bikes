@@ -10,6 +10,8 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+// ReSharper disable InconsistentNaming
+
 using System;
 using SASBikes.Source.Common;
 using Windows.Devices.Geolocation;
@@ -19,6 +21,7 @@ namespace SASBikes.AppServices
     sealed class LocatorService : IService
     {
         Geolocator m_locator;
+        Geoposition m_lastKnownPosition;
 
         public void Start()
         {
@@ -30,8 +33,11 @@ namespace SASBikes.AppServices
         {
             try
             {
-                var pos = args.Position;
-                Async_UpdatePosition(pos);
+                m_lastKnownPosition = args.Position;
+                App.Value.Async_Invoke(
+                    App.AsyncGroup.LocatorService_UpdateMyPosition,
+                    LocatorService_UpdateMyPosition
+                    );
             }
             catch (Exception exc)
             {
@@ -39,24 +45,15 @@ namespace SASBikes.AppServices
             }
         }
 
-        void Async_UpdatePosition(Geoposition pos)
-        {
-            var coordinate = pos.Coordinate;
-
-            var lo = coordinate.Longitude;
-            var la = coordinate.Latitude;
-
-            App.Value.Async_Invoke(
-                App.AsyncGroup.LocatorService_UpdateMyPosition,
-                () => LocatorService_UpdateMyPosition(lo, la)
-                );
-        }
-
-        void LocatorService_UpdateMyPosition(double lo, double la)
+        void LocatorService_UpdateMyPosition()
         {
             var appState = App.Value.AppState;
-            appState.State_MyLo = lo;
-            appState.State_MyLa = la;
+            var lastKnownPosition = m_lastKnownPosition;
+            if (lastKnownPosition != null && appState != null)
+            {
+                appState.State_MyLa = m_lastKnownPosition.Coordinate.Latitude;
+                appState.State_MyLo = m_lastKnownPosition.Coordinate.Longitude;
+            }
         }
 
         public void Stop()
