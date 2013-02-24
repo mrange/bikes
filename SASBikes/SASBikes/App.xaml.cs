@@ -46,7 +46,7 @@ namespace SASBikes
     <marker name=""SLUSSPLATSEN"" number=""6"" address=""006_SLUSSPLATSEN"" fullAddress=""006_SLUSSPLATSEN  "" lat=""57.707316"" lng=""11.973448"" open=""0"" bonus=""0""/>
     <marker name=""ESPERANTOPLATSEN"" number=""8"" address=""008_ESPERANTOPLATSEN"" fullAddress=""008_ESPERANTOPLATSEN  "" lat=""57.702793"" lng=""11.955461"" open=""0"" bonus=""0""/>
     <marker name=""KANALTORGET"" number=""9"" address=""009_KANALTORGET"" fullAddress=""009_KANALTORGET  "" lat=""57.710396"" lng=""11.966421"" open=""0"" bonus=""0""/>
-    <marker name=""VALAND"" number=""10"" address=""010_VALAND"" fullAddress=""010_VALAND  "" lat=""57.700324"" lng=""11.973429"" open=""1"" bonus=""0""/>
+    <marker name=""VALAND"" number=""10"" address=""010_VALAND"" fullAddress=""010_VALAND  "" lat=""57.700324"" lng=""11.973429"" open=""0"" bonus=""0""/>
     <marker name=""STORAN"" number=""11"" address=""011_STORAN"" fullAddress=""011_STORAN  "" lat=""57.702482"" lng=""11.971552"" open=""0"" bonus=""0""/>
     <marker name=""GRÖNSAKSTORGET"" number=""12"" address=""012_GRÖNSAKSTORGET"" fullAddress=""012_GRÖNSAKSTORGET  "" lat=""57.702459"" lng=""11.965179"" open=""0"" bonus=""0""/>
     <marker name=""GUSTAF ADOLFS TORG"" number=""13"" address=""013_GUSTAF ADOLFS TORG"" fullAddress=""013_GUSTAF ADOLFS TORG  "" lat=""57.707233"" lng=""11.967502"" open=""0"" bonus=""0""/>
@@ -90,9 +90,11 @@ namespace SASBikes
     <marker name=""HAGABION"" number=""51"" address="""" fullAddress=""  "" lat=""57.696837"" lng=""11.951009"" open=""0"" bonus=""0""/>
     <marker name=""POSTHUSET/ÅKAREPLATSEN"" number=""7"" address="""" fullAddress=""  "" lat=""57.707647"" lng=""11.976117"" open=""0"" bonus=""0""/>
     <marker name=""GIBRALTARG/EKLANDAG"" number=""52"" address=""GIBRALTARGATAN/EKLANDAGATAN"" fullAddress=""GIBRALTARGATAN/EKLANDAGATAN  "" lat=""57.68542"" lng=""11.98322"" open=""1"" bonus=""0""/>
+    <marker name=""MOLINSGATAN/LÄRAREGATAN"" number=""53"" address="""" fullAddress=""  "" lat=""57.69418"" lng=""11.97451"" open=""1"" bonus=""0""/>
+    <marker name=""EKLANDA/UTLANDAGATAN"" number=""54"" address="""" fullAddress=""  "" lat=""57.69032"" lng=""11.98854"" open=""1"" bonus=""0""/>
   </markers>
   <arrondissements>
-    <arrondissement number=""0"" minLat=""0.0"" minLng=""0.0"" maxLat=""57.711547"" maxLng=""11.995107""/>
+    <arrondissement number=""0"" minLat=""57.68542"" minLng=""11.947047"" maxLat=""57.711547"" maxLng=""11.995107""/>
   </arrondissements>
 </carto>
 ";
