@@ -1,0 +1,439 @@
+﻿<#@ include file = "$(ProjectDir)\T4\Header.ttinclude"#>
+<#
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+#>
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
+// ReSharper disable InconsistentNaming
+// ReSharper disable InvocationIsSkipped
+// ReSharper disable PartialMethodWithSinglePart
+// ReSharper disable PartialTypeWithSinglePart
+// ReSharper disable RedundantAssignment
+
+namespace <#=NamespaceName#>
+{
+
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+    using System.Linq;
+    using System.Xml.Linq;
+
+
+<#
+    foreach (var classDef in Model)
+    {
+#>
+    public sealed partial class <#=classDef.ListName#> : DataModelCollection<<#=classDef.Name#>>
+    {
+        public <#=classDef.ListName#> (DataModelContext context) : base (context)
+        {
+        }
+    }
+
+    public sealed partial class <#=classDef.Name#> : <#=classDef.BaseName#> 
+    {
+        public <#=classDef.Name#> (DataModelContext context) : base (context)
+        {
+<#
+    foreach (var propertyDef in classDef)
+    {
+#>
+            <#=propertyDef.MemberName#> = <#=propertyDef.DefaultValue#>   ;
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+            if (<#=propertyDef.MemberName#> != null)
+            {
+                <#=propertyDef.MemberName#>.CollectionChanged += <#=propertyDef.CollectionChangedName#>;
+            }
+<#
+    }
+#>
+<#
+    }
+#>
+        }
+
+<#
+    foreach (var propertyDef in classDef)
+    {
+#>
+        // --------------------------------------------------------------------
+        public <#=propertyDef.Type#> <#=propertyDef.PropertyName#>
+        {
+            get
+            {
+                return <#=propertyDef.MemberName#>;
+            }
+            set
+            {
+                if (<#=propertyDef.MemberName#> != value)
+                {
+                    var oldValue = <#=propertyDef.MemberName#>; 
+
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+                    if (oldValue != null)
+                    {
+                        oldValue.CollectionChanged -= <#=propertyDef.CollectionChangedName#>;
+                    }
+<#
+    }
+#>
+                    <#=propertyDef.MemberName#> = value;
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+                    if (value != null)
+                    {
+                        value.CollectionChanged += <#=propertyDef.CollectionChangedName#>;
+                    }
+<#
+    }
+#>
+
+                    <#=propertyDef.ChangedName#> (oldValue, value);
+
+                    Raise_PropertyChanged ();
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        <#=propertyDef.Type#> <#=propertyDef.MemberName#>;
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+        void <#=propertyDef.CollectionChangedName#> (object sender, NotifyCollectionChangedEventArgs e)
+        {
+            <#=propertyDef.CollectionChangedName#> (<#=propertyDef.MemberName#>, e);
+        }
+<#
+    }    
+#>
+        // --------------------------------------------------------------------
+<#
+    if (propertyDef.IsCollection)
+    {
+#>
+        partial void <#=propertyDef.CollectionChangedName#> (<#=propertyDef.Type#> value, NotifyCollectionChangedEventArgs e);
+<#
+    }    
+#>
+        partial void <#=propertyDef.ChangedName#> (<#=propertyDef.Type#> oldValue, <#=propertyDef.Type#> newValue);
+        // --------------------------------------------------------------------
+
+<#
+    }
+#>
+
+    }
+<#
+    }
+#>
+
+    static partial class DataModelSerializer
+    {
+<#
+    foreach (var classDef in Model.Where (c => !c.IsNotSerializable))
+    {
+#>
+        public static XElement Serialize (this <#=classDef.ListName#> instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+
+            return CreateElement (
+                    name
+                ,   instance.Select ((v,i) => v.Serialize (i.ToString()))
+                );
+
+        }
+
+        public static XElement Serialize (this <#=classDef.Name#> instance, string name)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+            return CreateElement (
+                    name
+<#
+    foreach (var propertyDef in classDef.Where (p => !p.IsNotSerializable))
+    {
+#>
+                ,   instance.<#=propertyDef.PropertyName#>.Serialize ("<#=propertyDef.Name#>")
+<#
+    }
+#>
+                );
+        }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref <#=classDef.ListName#> instance
+            )
+        {
+            instance = new <#=classDef.ListName#> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements (NodeName))
+            {
+                <#=classDef.Name#> subInstance = null;
+                
+                subElement.Unserialize (
+                    context,
+                    reporter,
+                    ref subInstance
+                    );
+
+                instance.Add (subInstance);                                
+            }
+        }
+
+        public static void Unserialize (
+                this XElement element
+            ,   DataModelContext context
+            ,   IUnserializeErrorReporter reporter
+            ,   ref <#=classDef.Name#> instance
+            )
+        {
+            instance = new <#=classDef.Name#> (context);
+
+            if (element == null)
+            {
+                return;
+            }
+
+            foreach (var subElement in element.Elements(NodeName))
+            {
+                var nameAttribute = subElement.Attribute(NameAttributeName);
+                if (nameAttribute == null)
+                {
+                    continue;
+                }
+
+                var name = nameAttribute.Value;
+
+                switch (name)
+                {
+<#
+    foreach (var propertyDef in classDef.Where (p => !p.IsNotSerializable))
+    {
+#>
+                    case "<#=propertyDef.Name#>":
+                        {
+                            var value = <#=propertyDef.DefaultValue#>;
+
+                            subElement.Unserialize (
+                                context,
+                                reporter,
+                                ref value
+                                );       
+                            
+                            instance.<#=propertyDef.PropertyName#> = value;                                
+                        }
+                        break;
+<#
+    }
+#>
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+<#
+    }
+#>
+
+
+    }
+
+}
+
+<#+
+
+    string              NamespaceName   = "T4Include"               ;
+    ClassDefinition[]   Model           = new ClassDefinition[0]    ;
+
+    [Flags]
+    enum ClassFlags
+    {
+        None                = 0x0000    ,
+        IsNotSerializable   = 0x0001    ,
+    }
+
+    static bool IsOn(PropertyFlags pf, PropertyFlags test)
+    {
+        return (pf & test) == test;
+    }
+
+    sealed class ClassDefinition : BaseContainer<Root, PropertyDefinition>
+    {
+        public readonly ClassFlags  Flags       ;
+        public readonly string      Name        ;
+        public readonly string      BaseName    ;
+
+        public ClassDefinition (
+            string name         ,    
+            string baseName     = null              ,
+            ClassFlags flags    = ClassFlags.None
+            )
+        {
+            Name        = name      ?? S_NoName         ;
+            BaseName    = baseName  ?? "DataModelBase"  ;
+        }
+
+        public string ListName
+        {
+            get
+            {
+                return Name + "List";
+            }
+        }
+
+        bool IsOn(ClassFlags test)
+        {
+            return (Flags & test) == test;
+        }
+
+        public bool IsNotSerializable
+        {
+            get { return IsOn (ClassFlags.IsNotSerializable);}
+        }
+
+
+    }
+
+    [Flags]
+    enum PropertyFlags
+    {
+        None                = 0x0000    ,
+        IsCollection        = 0x1000    ,
+        IsNotSerializable   = 0x0001    ,
+    }
+
+    sealed class PropertyDefinition : BaseEntity<ClassDefinition>
+    {
+        public readonly PropertyFlags   Flags       ;
+        public readonly string          ElementType ;
+        public readonly string          Type        ;
+        public readonly string          Name        ;
+        public readonly string          DefaultValue;
+
+        public PropertyDefinition (
+            PropertyFlags   flags       ,
+            string          elementType ,
+            string          type        ,
+            string          name        ,
+            string          defaultValue
+            )
+        {
+            Flags           = flags                     ;
+            ElementType     = elementType   ?? S_NoType ;
+            Type            = type          ?? S_NoType ;
+            Name            = name          ?? S_NoName ;
+            DefaultValue    = defaultValue  ?? "default ("  + Type + ")";
+        }
+
+        public string PropertyName
+        {
+            get { return Parent.Name + "_" + Name; }
+        }
+
+        public string MemberName
+        {
+            get { return "_" + PropertyName; }
+        }
+
+        public string CollectionChangedName
+        {
+            get { return "CollectionChanged__" + PropertyName; }
+        }
+
+        public string ChangedName
+        {
+            get { return "Changed__" + PropertyName; }
+        }
+
+        public bool IsCollection 
+        {
+            get { return IsOn (PropertyFlags.IsCollection);}
+        }
+
+        public bool IsNotSerializable
+        {
+            get { return IsOn (PropertyFlags.IsNotSerializable);}
+        }
+
+        bool IsOn(PropertyFlags test)
+        {
+            return (Flags & test) == test;
+        }
+
+
+    }
+
+    static PropertyDefinition P (
+        string type         , 
+        string name         ,
+        string defaultValue = null                  , 
+        PropertyFlags flags = PropertyFlags.None
+        )
+    {
+        if (defaultValue == null && "string" == type)
+        {
+            defaultValue = @"""""";
+        }
+
+        return new PropertyDefinition (
+                flags   &   ~PropertyFlags.IsCollection  
+            ,   null
+            ,   type
+            ,   name
+            ,   defaultValue
+            );
+    }
+
+    static PropertyDefinition C (
+        string elementType  , 
+        string name         , 
+        PropertyFlags flags = PropertyFlags.None
+        )
+    {
+        var type = (elementType ?? S_NoType) + "List";
+        var defaultValue = "new " + type + " (context)";
+        return new PropertyDefinition (
+                flags   |   PropertyFlags.IsCollection  
+            ,   elementType
+            ,   type   
+            ,   name
+            ,   defaultValue
+            );
+    }
+
+#>

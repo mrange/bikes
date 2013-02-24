@@ -188,6 +188,7 @@
       <LastGenOutput>Generated_DependencyProperties.cs</LastGenOutput>
     </None>
     <None Include="SASBikes_TemporaryKey.pfx" />
+    <None Include="T4\DataModel.ttinclude" />
     <None Include="T4\DependencyPropertiesWinRT.ttinclude" />
     <None Include="T4\Header.ttinclude" />
   </ItemGroup>
