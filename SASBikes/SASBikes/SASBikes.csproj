@@ -117,8 +117,8 @@
     </Compile>
     <Compile Include="AppServices\SchedulerService.cs" />
     <Compile Include="AppServices\Services.cs" />
-    <Compile Include="AppServices\UpdateLocationService.cs" />
-    <Compile Include="AppServices\UpdateStationsService.cs" />
+    <Compile Include="AppServices\LocatorService.cs" />
+    <Compile Include="AppServices\StationsService.cs" />
     <Compile Include="BikeMap.xaml.cs">
       <DependentUpon>BikeMap.xaml</DependentUpon>
     </Compile>

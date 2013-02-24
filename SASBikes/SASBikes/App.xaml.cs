@@ -13,12 +13,15 @@
 // ReSharper disable InconsistentNaming
 
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 using SASBikes.AppServices;
 using SASBikes.Common;
 
 using System;
 using SASBikes.DataModel;
+using SASBikes.Source.Common;
 using SASBikes.Source.Extensions;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -127,6 +130,7 @@ namespace SASBikes
             Map_UpdateMapStations           ,
             Map_UpdateMyPosition            ,
             LocatorService_UpdateMyPosition ,
+            StationsService_UpdateStations  ,
         }
 
         readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
@@ -157,9 +161,9 @@ namespace SASBikes
                         {
                             action();
                         }
-                        catch
+                        catch (Exception exc)
                         {
-                            // TODO: Log
+                            Log.Exception ("Failed to dispatch async invoke {0}: {1}", group, exc);
                         }
                         finally
                         {
@@ -195,6 +199,53 @@ namespace SASBikes
             }
         }
 
+        public void UpdateStations (string xmlData)
+        {
+            var state = AppState;
+            if (state == null)
+            {
+                return;
+            }
+
+            var stations = CreateStations(state.Context, SampleData).ToArray();
+
+            state.State_Stations.Clear ();
+            foreach (var station in stations)
+            {
+                state.State_Stations.Add(station);
+            }
+        }
+
+        static IEnumerable<Station> CreateStations (
+            DataModelContext context, 
+            string xmlData
+            )
+        {
+            var doc = XDocument.Parse(xmlData).Document;
+            var markers = doc
+                .Elements("carto")
+                .Elements("markers")
+                .Elements("marker")
+                ;
+
+            foreach (var marker in markers)
+            {
+                var station = new Station(context)
+                {
+                    Station_Name        = marker.GetAttributeValue("name"       , "NoName"  )           ,
+                    Station_Number      = marker.GetAttributeValue("number"     , "0"       ).Parse(0)  ,
+                    Station_Address     = marker.GetAttributeValue("address"    , "NoAddress")          ,
+                    Station_FullAddress = marker.GetAttributeValue("fullAddress", "NoAddress")          ,
+                    Station_La          = marker.GetAttributeValue("lat"        , "57.69").Parse(57.69) ,
+                    Station_Lo          = marker.GetAttributeValue("lng"        , "11.95").Parse(11.95) ,
+                    Station_IsOpen      = marker.GetAttributeValue("open"       , "0") == "1"           , 
+                    Station_IsBonus     = marker.GetAttributeValue("bonus"      , "0") == "1"           ,
+                };
+                yield return station;
+            }
+            
+        }
+
         static State CreateEmptyState()
         {
             var context = new DataModelContext();
@@ -206,26 +257,10 @@ namespace SASBikes
                                 State_ZoomLevel     = 18            ,
                             };
 
-            var doc = XDocument.Parse(SampleData).Document;
-            var markers = doc
-                .Elements("carto")
-                .Elements("markers")
-                .Elements("marker")
-                ;
+            var stations = CreateStations(state.Context, SampleData).ToArray();
 
-            foreach (var marker in markers)
+            foreach (var station in stations)
             {
-                var station = new Station(context);
-
-                station.Station_Name        = marker.GetAttributeValue("name"       , "NoName"  );
-                station.Station_Number      = marker.GetAttributeValue("number"     , "0"       ).Parse(0);
-                station.Station_Address     = marker.GetAttributeValue("address"    , "NoAddress");
-                station.Station_FullAddress = marker.GetAttributeValue("fullAddress", "NoAddress");
-                station.Station_La          = marker.GetAttributeValue("lat"        , "57.69").Parse(57.69);
-                station.Station_Lo          = marker.GetAttributeValue("lng"        , "11.95").Parse(11.95);
-                station.Station_IsOpen      = marker.GetAttributeValue("open"       , "0") == "1"; 
-                station.Station_IsBonus     = marker.GetAttributeValue("bonus"      , "0") == "1";
-
                 state.State_Stations.Add(station);
             }
 

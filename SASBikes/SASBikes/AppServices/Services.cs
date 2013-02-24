@@ -58,8 +58,8 @@ namespace SASBikes.AppServices
         }
 
         public static readonly SchedulerService         Scheduler       = new SchedulerService()        ;
-        public static readonly UpdateLocationService    UpdateLocation  = new UpdateLocationService()   ;
-        public static readonly UpdateStationsService    UpdateStations  = new UpdateStationsService()   ;
+        public static readonly LocatorService    Locator  = new LocatorService()   ;
+        public static readonly StationsService    Stations  = new StationsService()   ;
 
         enum States
         {
@@ -74,8 +74,8 @@ namespace SASBikes.AppServices
             var state = SetState(States.Started);
             if (state == States.Stopped)
             {
-                UpdateLocation.StartService();
-                UpdateStations.StartService();
+                Locator.StartService();
+                Stations.StartService();
                 Scheduler.StartService();
             }
         }
@@ -92,8 +92,8 @@ namespace SASBikes.AppServices
             if (state == States.Started)
             {
                 Scheduler.StopService();
-                UpdateStations.StopService();
-                UpdateLocation.StopService();
+                Stations.StopService();
+                Locator.StopService();
             }
         }
 

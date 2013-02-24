@@ -16,7 +16,7 @@ using Windows.Devices.Geolocation;
 
 namespace SASBikes.AppServices
 {
-    sealed class UpdateLocationService : IService
+    sealed class LocatorService : IService
     {
         Geolocator m_locator;
 
