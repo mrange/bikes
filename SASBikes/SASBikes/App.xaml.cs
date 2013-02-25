@@ -21,6 +21,7 @@ using SASBikes.Common;
 
 using System;
 using SASBikes.DataModel;
+using SASBikes.Pages;
 using SASBikes.Source.Common;
 using SASBikes.Source.Extensions;
 using Windows.ApplicationModel;
@@ -140,6 +141,7 @@ namespace SASBikes
             Map_UpdateMyPosition            ,
             LocatorService_UpdateMyPosition ,
             StationsService_UpdateStations  ,
+            Log_UpdateErrors
         }
 
         readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();

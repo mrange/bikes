@@ -10,11 +10,15 @@
     x:Name="Root"
     >
 
-    <TextBlock
-        Text="{Binding Path=ErrorText,ElementName=Root}"
+    <HyperlinkButton
         Visibility="{Binding Path=ErrorTextVisibility,ElementName=Root}"
-        Foreground="Red"
-        FontSize="40"
         VerticalAlignment="Center"
-        />
+        Click="ButtonBase_OnClick"
+        >
+        <TextBlock
+            Text="{Binding Path=ErrorText,ElementName=Root}"
+            Foreground="Red"
+            FontSize="40" 
+            />
+    </HyperlinkButton>
 </UserControl>

@@ -19,6 +19,7 @@
             <!-- Application-specific resources -->
 
             <x:String x:Key="AppName">Styr&amp;Ställ (unofficial)</x:String>
+            <x:String x:Key="ErrorsPage">Errors</x:String>
             <x:String x:Key="TrackMyPosition">Följ mig</x:String>
             <x:String x:Key="FindNearestStation">Finn närmaste station</x:String>
         </ResourceDictionary>

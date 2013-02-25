@@ -14,12 +14,13 @@
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using SASBikes.DataModel;
+using SASBikes.Pages;
 using SASBikes.Source.Common;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace SASBikes.Controls
 {
@@ -79,5 +80,13 @@ namespace SASBikes.Controls
             ErrorText = charValue.ToString();
         }
 
+        void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            var rootFrame = Window.Current.Content as Frame;
+            if (rootFrame != null)
+            {
+                rootFrame.Navigate(typeof(ErrorsPage));    
+            }
+        }
     }
 }

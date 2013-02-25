@@ -10,13 +10,16 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using System;
+// ReSharper disable InconsistentNaming
+
+using System.Collections.Concurrent;
 using SASBikes.DataModel;
 
 namespace SASBikes.Source.Common
 {
     static partial class Log
     {
+        static ConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
         static partial void Partial_LogMessage(Log.Level level, string message)
         {
             switch (level)
@@ -29,12 +32,22 @@ namespace SASBikes.Source.Common
                 case Level.Error:
                 case Level.Exception:
                 default:
-                    App.Value.AppState.State_Errors.Add(
-                        new Error(App.Value.AppState.Context) 
-                        {
-                            Error_Message = message,
-                        });
+                    s_errors.Enqueue (message ?? "");
+                    App.Value.Async_Invoke(App.AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
                     break;
+            }
+        }
+
+        static void Log_UpdateErrors()
+        {
+            string error;
+            while (s_errors.TryDequeue(out error))
+            {
+                App.Value.AppState.State_Errors.Add(
+                    new Error(App.Value.AppState.Context) 
+                    {
+                        Error_Message = error,
+                    });
             }
         }
     }

@@ -10,9 +10,10 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+// ReSharper disable InconsistentNaming
+
 using System;
 using System.Collections.Generic;
-using Bing.Maps;
 using SASBikes.Common;
 using SASBikes.DataModel;
 using SASBikes.Source.Common;
@@ -21,7 +22,7 @@ using Windows.UI.Xaml.Controls;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
-namespace SASBikes
+namespace SASBikes.Pages
 {
     /// <summary>
     /// A basic page that provides characteristics common to most applications.
@@ -62,13 +63,14 @@ namespace SASBikes
 
         void Click_FindNearestBike(object sender, RoutedEventArgs e)
         {
-            var appState = App.Value.AppState;
-            var me = new Location(appState.State_La, appState.State_Lo);
+            Log.Error("TODO: Remove this");
 
-            double closestDistance = double.MaxValue;
+            var appState = App.Value.AppState;
+
+            var closestDistance = double.MaxValue;
             Station closestStation = null;
 
-            for (int index = 0; index < appState.State_Stations.Count; index++)
+            for (var index = 0; index < appState.State_Stations.Count; index++)
             {
                 var station = appState.State_Stations[index];
                 if (!station.Station_IsOpen)
