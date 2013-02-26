@@ -12,6 +12,7 @@
 
 // ReSharper disable InconsistentNaming
 
+using System;
 using System.Collections.Concurrent;
 using SASBikes.DataModel;
 
@@ -46,7 +47,8 @@ namespace SASBikes.Source.Common
                 App.Value.AppState.State_Errors.Add(
                     new Error(App.Value.AppState.Context) 
                     {
-                        Error_Message = error,
+                        Error_TimeStamp = DateTime.Now  ,
+                        Error_Message   = error         ,
                     });
             }
         }

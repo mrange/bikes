@@ -12,6 +12,7 @@
 
 // ReSharper disable InconsistentNaming
 
+using System;
 using Bing.Maps;
 
 namespace SASBikes.DataModel
@@ -73,5 +74,13 @@ namespace SASBikes.DataModel
         {
             App.Value.Async_Invoke(App.AsyncGroup.Model_UpdateStations, Model_UpdateStations);
         }
+    }
+
+    partial class Error
+    {
+        partial void Changed__Error_TimeStamp(DateTime oldValue, DateTime newValue)
+        {
+            Error_FormattedTimeStamp = newValue.ToString ("HH:mm:ss");
+        }    
     }
 }

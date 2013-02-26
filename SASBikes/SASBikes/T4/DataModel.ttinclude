@@ -76,7 +76,7 @@ namespace <#=NamespaceName#>
             {
                 return <#=propertyDef.MemberName#>;
             }
-            set
+            <#=propertyDef.IsReadOnly ? "private " : ""#>set
             {
                 if (<#=propertyDef.MemberName#> != value)
                 {
@@ -342,6 +342,7 @@ namespace <#=NamespaceName#>
         None                = 0x0000    ,
         IsCollection        = 0x1000    ,
         IsNotSerializable   = 0x0001    ,
+        IsReadOnly          = 0x0002    
     }
 
     sealed class PropertyDefinition : BaseEntity<ClassDefinition>
@@ -390,6 +391,11 @@ namespace <#=NamespaceName#>
         public bool IsCollection 
         {
             get { return IsOn (PropertyFlags.IsCollection);}
+        }
+
+        public bool IsReadOnly 
+        {
+            get { return IsOn (PropertyFlags.IsReadOnly);}
         }
 
         public bool IsNotSerializable

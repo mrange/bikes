@@ -14,21 +14,50 @@
         * Row 0 contains the back button and page title
         * Row 1 contains the rest of the page layout
     -->
-    <Grid Style="{StaticResource LayoutRootStyle}">
+    <Grid DataContext="{Binding ViewModel_ApplicationState}" Style="{StaticResource LayoutRootStyle}">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- Back button and page title -->
-        <Grid>
+        <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="backButton" Click="GoBack" IsEnabled="{Binding Frame.CanGoBack, ElementName=pageRoot}" Style="{StaticResource BackButtonStyle}"/>
             <TextBlock x:Name="pageTitle" Grid.Column="1" Text="{StaticResource ErrorsPage}" Style="{StaticResource PageHeaderTextStyle}"/>
+
         </Grid>
+
+        <ItemsControl 
+            Grid.Row="1" 
+            ItemsSource="{Binding Path=State_Errors}"
+            Foreground="Red"
+            Background="Transparent"
+            Margin="36,0,0,0"
+            FontSize="20"
+            >
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel 
+                        />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Canvas>
+                        <TextBlock 
+                            Canvas.Left="0" 
+                            Text="{Binding Path=Error_FormattedTimeStamp, Mode=OneTime}"
+                            />
+                        <TextBlock Canvas.Left="80" Text="{Binding Path=Error_Message, Mode=OneTime}"/>
+                    </Canvas>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
 
         <VisualStateManager.VisualStateGroups>
 

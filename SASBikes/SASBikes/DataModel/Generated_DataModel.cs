@@ -712,8 +712,70 @@ namespace SASBikes.DataModel
     {
         public Error (DataModelContext context) : base (context)
         {
+            _Error_TimeStamp = default (DateTime)   ;
+            _Error_FormattedTimeStamp = ""   ;
             _Error_Message = ""   ;
         }
+
+        // --------------------------------------------------------------------
+        public DateTime Error_TimeStamp
+        {
+            get
+            {
+                return _Error_TimeStamp;
+            }
+            set
+            {
+                if (_Error_TimeStamp != value)
+                {
+                    var oldValue = _Error_TimeStamp; 
+
+                    _Error_TimeStamp = value;
+
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Error_TimeStamp (oldValue, value);
+
+                        Raise_PropertyChanged ();
+                    }
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        DateTime _Error_TimeStamp;
+        // --------------------------------------------------------------------
+        partial void Changed__Error_TimeStamp (DateTime oldValue, DateTime newValue);
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        public string Error_FormattedTimeStamp
+        {
+            get
+            {
+                return _Error_FormattedTimeStamp;
+            }
+            private set
+            {
+                if (_Error_FormattedTimeStamp != value)
+                {
+                    var oldValue = _Error_FormattedTimeStamp; 
+
+                    _Error_FormattedTimeStamp = value;
+
+                    if (!Context.IsSuppressingEvents)
+                    {
+                        Changed__Error_FormattedTimeStamp (oldValue, value);
+
+                        Raise_PropertyChanged ();
+                    }
+                }
+            }
+        }
+        // --------------------------------------------------------------------
+        string _Error_FormattedTimeStamp;
+        // --------------------------------------------------------------------
+        partial void Changed__Error_FormattedTimeStamp (string oldValue, string newValue);
+        // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
         public string Error_Message

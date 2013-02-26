@@ -43,7 +43,9 @@ using System;
         },
         new ClassDefinition ("Error", flags:ClassFlags.IsNotSerializable    )
         {
-            P ("string"             , "Message"         ),
+            P ("DateTime"           , "TimeStamp"           ),
+            P ("string"             , "FormattedTimeStamp"  , flags:PropertyFlags.IsReadOnly    ),
+            P ("string"             , "Message"             ),
         },
     };
 #>
