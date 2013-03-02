@@ -135,6 +135,7 @@
       <DependentUpon>ErrorIndicator.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataModel\DataModel.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Generated_DependencyProperties.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
