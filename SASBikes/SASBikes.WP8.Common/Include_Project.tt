@@ -1,0 +1,6 @@
+﻿<#
+    ProjectFileName     = @"..\SASBikes.Common\SASBikes.Common.csproj";
+    Namespace           = "SASBikes.Common"         ;
+#>
+
+<#@ include file="$(SolutionDir)\packages\T4Include.1.1.2\T4\IncludeProject.ttinclude" #>

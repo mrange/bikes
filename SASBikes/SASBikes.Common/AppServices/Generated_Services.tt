@@ -1,0 +1,162 @@
+﻿<#@ include file = "$(SolutionDir)\T4\Header.ttinclude"#>
+<#
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+#>
+
+// ----------------------------------------------------------------------------------------------
+// Copyright (c) Mårten Rånge.
+// ----------------------------------------------------------------------------------------------
+// This source code is subject to terms and conditions of the Microsoft Public License. A 
+// copy of the license can be found in the License.html file at the root of this distribution. 
+// If you cannot locate the  Microsoft Public License, please send an email to 
+// dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+//  by the terms of the Microsoft Public License.
+// ----------------------------------------------------------------------------------------------
+// You must not remove this notice, or any other, from this software.
+// ----------------------------------------------------------------------------------------------
+
+<#
+    Namespace   = "SASBikes.Common.AppServices";
+    Model       = new []
+    {
+        S("App"             ),
+        S("Locator"         ),
+        S("Stations"        ),
+    };
+#>
+
+using System;
+using System.Threading;
+using SASBikes.Source.Common;
+
+namespace <#=Namespace#>
+{
+    partial interface IService
+    {
+        void Start ();
+        void Stop ();
+    }
+
+    static partial class Services
+    {
+<#
+    foreach (var serviceDef in Model)
+    {
+#>
+        public static readonly <#=serviceDef.Name#>Service <#=serviceDef.Name#> = new <#=serviceDef.Name#>Service()      ;
+<#
+    }
+#>
+
+        public static void Start()
+        {
+            var state = SetState(States.Started);
+            if (state == States.Stopped)
+            {
+<#
+    foreach (var serviceDef in Model.Reverse ())
+    {
+#>
+                StartService (<#=serviceDef.Name#>);
+<#
+    }
+#>
+            }
+        }
+
+        public static void Stop()
+        {
+            var state = SetState(States.Stopped);
+            if (state == States.Started)
+            {
+<#
+    foreach (var serviceDef in Model)
+    {
+#>
+                StopService (<#=serviceDef.Name#>);
+<#
+    }
+#>
+            }
+        }
+
+        static void StopService(this IService service)
+        {
+            if (service != null)
+            {
+                try
+                {
+                    service.Stop();
+                }
+                catch (Exception exc)
+                {
+                    Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
+                }
+            }
+            
+        }
+
+        static void StartService(this IService service)
+        {
+            if (service != null)
+            {
+                try
+                {
+                    service.Start();
+                }
+                catch (Exception exc)
+                {
+                    Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
+                }
+            }
+
+        }
+
+        enum States
+        {
+            Stopped = 1,
+            Started = 2,
+        }
+
+        static int s_state = (int)States.Stopped; 
+
+        static States SetState(States states)
+        {
+            var state = Interlocked.Exchange(ref s_state, (int) states);
+            return (States) state;
+        }
+
+    }
+}
+
+
+<#+
+    string              Namespace   = "T4Include"               ;
+    ServiceDefinition[] Model       = new ServiceDefinition[0]  ;
+
+    class ServiceDefinition : BaseEntity<Root>
+    {
+        public readonly string Name;
+
+        public ServiceDefinition (string name)
+        {
+            Name = name ?? S_NoName;
+        }
+    }
+
+    static ServiceDefinition S (string name)
+    {
+        return new ServiceDefinition (name);
+    }
+
+#>
