@@ -2,13 +2,11 @@
     // Whenever this file is saved the files in the Includes section is downloaded
     // from GitHub (you can download from other websources by changing rootpath)
     RootPath    = @"https://raw.github.com/";
-    Namespace   = "SASBikes"         ;   // The downloaded content is wrapped in this namespace
+    Namespace   = "$rootnamespace$"         ;   // The downloaded content is wrapped in this namespace
     Includes    = new []
         {
             // Include the basic extension from T4Include
-            Include (@"mrange/T4Include/master/Common/Log.cs"),
             Include (@"mrange/T4Include/master/Extensions/BasicExtensions.cs"),
-            Include (@"mrange/T4Include/master/Extensions/ParseExtensions.cs"),
 
             // Uncomment below to include dapper
             // Include (@"SamSaffron/dapper-dot-net/master/Dapper/SqlMapper.cs"),

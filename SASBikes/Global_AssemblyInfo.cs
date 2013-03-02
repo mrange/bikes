@@ -11,6 +11,15 @@
 // ----------------------------------------------------------------------------------------------
 
 using System.Reflection;
+using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Styr&Ställ(unofficial) for Windows Store")]
-[assembly: AssemblyDescription("Styr&Ställ(unofficial) is an applicaton to find the nearest open S&S station")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("SASBikes")]
+[assembly: AssemblyCopyright("Copyright © VRONGE 2013")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: ComVisible(false)]

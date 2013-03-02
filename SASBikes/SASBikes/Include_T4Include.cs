@@ -35,6 +35,7 @@
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Log.cs
 namespace SASBikes
 {
     // ----------------------------------------------------------------------------------------------
@@ -95,10 +96,11 @@ namespace SASBikes
         }
     }
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Log.cs
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs
 namespace SASBikes
 {
     // ----------------------------------------------------------------------------------------------
@@ -334,10 +336,11 @@ namespace SASBikes
         }
     }
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Extensions/ParseExtensions.cs
 namespace SASBikes
 {
     
@@ -973,10 +976,11 @@ namespace SASBikes
     
     
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Extensions/ParseExtensions.cs
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs
 namespace SASBikes
 {
     // ############################################################################
@@ -1080,10 +1084,11 @@ namespace SASBikes
     }
     
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Array.cs
 namespace SASBikes
 {
     // ----------------------------------------------------------------------------------------------
@@ -1106,10 +1111,11 @@ namespace SASBikes
         }
     }
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Array.cs
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Config.cs
 namespace SASBikes
 {
     // ----------------------------------------------------------------------------------------------
@@ -1153,7 +1159,7 @@ namespace SASBikes
         }
     }
 }
-
+// @@@ END_INCLUDE: https://raw.github.com/mrange/T4Include/master/Common/Config.cs
 // ############################################################################
 
 // ############################################################################
@@ -1162,11 +1168,11 @@ namespace SASBikes.Include
     static partial class MetaData
     {
         public const string RootPath        = @"https://raw.github.com/";
-        public const string IncludeDate     = @"2013-02-23T21:53:03";
+        public const string IncludeDate     = @"2013-03-02T10:31:54";
 
-        public const string Include_0       = @"mrange/T4Include/master/Common/Log.cs";
-        public const string Include_1       = @"mrange/T4Include/master/Extensions/BasicExtensions.cs";
-        public const string Include_2       = @"mrange/T4Include/master/Extensions/ParseExtensions.cs";
+        public const string Include_0       = @"https://raw.github.com/mrange/T4Include/master/Common/Log.cs";
+        public const string Include_1       = @"https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs";
+        public const string Include_2       = @"https://raw.github.com/mrange/T4Include/master/Extensions/ParseExtensions.cs";
         public const string Include_3       = @"https://raw.github.com/mrange/T4Include/master/Common/Generated_Log.cs";
         public const string Include_4       = @"https://raw.github.com/mrange/T4Include/master/Common/Array.cs";
         public const string Include_5       = @"https://raw.github.com/mrange/T4Include/master/Common/Config.cs";

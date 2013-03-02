@@ -112,6 +112,9 @@
     <Compile Include="..\..\keys\BingLicenseKey.cs">
       <Link>BingLicenseKey.cs</Link>
     </Compile>
+    <Compile Include="..\Global_AssemblyInfo.cs">
+      <Link>Properties\Global_AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -171,7 +174,6 @@
     <Compile Include="DataModel\DataModelSerializer.cs" />
     <Compile Include="DataModel\IDataModelEntity.cs" />
     <Compile Include="DataModel\IUnserializeErrorReporter.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Include_T4Include.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -197,11 +199,11 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Include_T4Include.cs</LastGenOutput>
     </None>
-    <None Include="packages.config" />
     <None Include="Controls\Generated_DependencyProperties.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Generated_DependencyProperties.cs</LastGenOutput>
     </None>
+    <None Include="packages.config" />
     <None Include="SASBikes_TemporaryKey.pfx" />
     <None Include="T4\DataModel.ttinclude" />
     <None Include="T4\DependencyPropertiesWinRT.ttinclude" />
