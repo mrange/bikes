@@ -15,6 +15,7 @@
 using System.Collections.Specialized;
 using System.Linq;
 using Bing.Maps;
+using SASBikes.Common;
 using SASBikes.Common.AppServices;
 using SASBikes.Common.DataModel;
 using Windows.UI;
@@ -172,34 +173,29 @@ namespace SASBikes.Controls
             var myLa = My_La;
             var myLo = My_Lo;
 
-            var stations = Stations;
-            if (stations != null)
+            var nearestStations = Stations
+                .NearestOpenStations ()
+                .Take(s_nearestColors.Length)
+                .ToArray();
+
+            m_nearestLayer.Shapes.Clear();
+
+            for (int index = 0; index < nearestStations.Length; index++)
             {
-                var nearestThree = Stations
-                    .Where(s => s.Station_IsOpen)
-                    .OrderBy(s => s.Station_Distance)
-                    .Take(s_nearestColors.Length)
-                    .ToArray();
-
-                m_nearestLayer.Shapes.Clear();
-
-                for (int index = 0; index < nearestThree.Length; index++)
-                {
-                    var nearest = nearestThree[index];
-                    m_nearestLayer.Shapes.Add(
-                        new MapPolyline
-                            {
-                                Color = s_nearestColors[index],
-                                Width = 5.0,
-                                Visible = true,
-                                Locations =
-                                    new LocationCollection
-                                        {
-                                            new Location(myLa, myLo),
-                                            new Location(nearest.Station_La, nearest.Station_Lo),
-                                        }
-                            });
-                }
+                var nearest = nearestStations[index];
+                m_nearestLayer.Shapes.Add(
+                    new MapPolyline
+                        {
+                            Color = s_nearestColors[index],
+                            Width = 5.0,
+                            Visible = true,
+                            Locations =
+                                new LocationCollection
+                                    {
+                                        new Location(myLa, myLo),
+                                        new Location(nearest.Station_La, nearest.Station_Lo),
+                                    }
+                        });
             }
         }
     }

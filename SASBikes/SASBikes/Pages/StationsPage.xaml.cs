@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SASBikes.Common;
 using SASBikes.Common.AppServices;
 using SASBikes.Common.DataModel;
@@ -46,34 +47,14 @@ namespace SASBikes.Pages
 
         void Click_FindNearestBike(object sender, RoutedEventArgs e)
         {
-            Log.Error("TODO: Remove this");
-
             var appState = Services.App.State;
 
-            var closestDistance = double.MaxValue;
-            Station closestStation = null;
+            var nearestStation = appState.State_Stations.NearestOpenStations ().FirstOrDefault ();
 
-            for (var index = 0; index < appState.State_Stations.Count; index++)
+            if (nearestStation != null)
             {
-                var station = appState.State_Stations[index];
-                if (!station.Station_IsOpen)
-                {
-                    continue;
-                }
-
-                var distance = station.Station_Distance;
-
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    closestStation = station;
-                }
-            }
-
-            if (closestStation != null)
-            {
-                appState.State_La = closestStation.Station_La;
-                appState.State_Lo = closestStation.Station_Lo;
+                appState.State_La = nearestStation.Station_La;
+                appState.State_Lo = nearestStation.Station_Lo;
                 appState.State_ZoomLevel = 20;
             }
         }

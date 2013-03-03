@@ -11,7 +11,10 @@
 // ----------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
+using SASBikes.Common.DataModel;
 
 namespace SASBikes.Common
 {
@@ -76,6 +79,19 @@ namespace SASBikes.Common
             // http://en.wikipedia.org/wiki/Great_circle_distance
 
             return EarthMeanRadius*2*(dlo.Haversine() + slo.Cos()*flo.Cos()*dla.Haversine());
+        }
+
+        public static IEnumerable<Station> NearestOpenStations (this IEnumerable<Station> stations)
+        {
+            if (stations == null)
+            {
+                return new Station[0];
+            }
+
+            return stations
+                .Where (s => s.Station_IsOpen)
+                .OrderBy (s => s.Station_Distance)
+                ;
         }
     }
 }
