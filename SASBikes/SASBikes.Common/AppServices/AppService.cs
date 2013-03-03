@@ -38,7 +38,7 @@ namespace SASBikes.Common.AppServices
 
     public sealed class AppService : IService
     {
-        const string SampleData = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+        public const string SampleData = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <carto>
   <markers>
     <marker name=""LILLA BOMMEN"" number=""1"" address=""001_LILLA BOMMEN"" fullAddress=""001_LILLA BOMMEN  "" lat=""57.711547"" lng=""11.966574"" open=""1"" bonus=""0""/>

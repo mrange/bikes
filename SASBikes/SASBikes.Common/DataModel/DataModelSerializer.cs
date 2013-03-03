@@ -14,6 +14,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using SASBikes.Common.AppServices;
 using SASBikes.Common.Source.Extensions;
 
 namespace SASBikes.Common.DataModel
@@ -142,6 +143,10 @@ namespace SASBikes.Common.DataModel
 
         public static string SerializeToString(this State state)
         {
+            if (state == null)
+            {
+                return "";
+            }
             var doc = new XDocument(state.Serialize(RootName));
 
             using (var sw = new StringWriter())
@@ -153,6 +158,11 @@ namespace SASBikes.Common.DataModel
 
         public static State UnserializeFromString(this string value)
         {
+            if (value.IsNullOrWhiteSpace())
+            {
+                value = AppService.SampleData;
+            }
+
             var doc = XDocument.Parse(value ?? "");
 
             var context = new DataModelContext
