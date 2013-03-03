@@ -50,6 +50,9 @@
 
 // ############################################################################
 // @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs
+
+using Windows.Foundation.Collections;
+
 namespace SASBikes.Common
 {
     // ----------------------------------------------------------------------------------------------
@@ -93,7 +96,6 @@ namespace SASBikes.Common
         {
             public State State;
             public CoreDispatcher Dispatcher;
-    
             readonly IConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
     
             public void Start()

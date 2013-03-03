@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using SASBikes.Common;
 using SASBikes.Common.AppServices;
 using SASBikes.Common.DataModel;
 using SASBikes.Source.Common;
@@ -32,7 +33,7 @@ namespace SASBikes.Pages
         {
             InitializeComponent();
 
-            DefaultViewModel[C.ViewModel_ApplicationState] = Services.App.State;
+            DefaultViewModel = Services.App.ViewModel;
         }
 
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)

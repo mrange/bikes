@@ -126,6 +126,8 @@
     <Compile Include="AppServices\LocatorService.cs" />
     <Compile Include="AppServices\LogService.cs" />
     <Compile Include="AppServices\StationsService.cs" />
+    <Compile Include="C.cs" />
+    <Compile Include="Collections\ObservableDictionary.cs" />
     <Compile Include="DataModel\DataModel.cs" />
     <Compile Include="DataModel\DataModelBase.cs" />
     <Compile Include="DataModel\DataModelCollection.cs" />

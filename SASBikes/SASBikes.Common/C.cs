@@ -12,7 +12,7 @@
 
 // ReSharper disable InconsistentNaming
 
-namespace SASBikes
+namespace SASBikes.Common
 {
     static class C
     {

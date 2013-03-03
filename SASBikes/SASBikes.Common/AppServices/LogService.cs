@@ -52,7 +52,7 @@ namespace SASBikes.Common.AppServices
 
             var state = Services.App.State;
             if (state == null)
-            {
+            {                             
                 return;
             }
 

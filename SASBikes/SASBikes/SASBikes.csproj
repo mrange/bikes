@@ -121,7 +121,6 @@
     <Compile Include="Controls\BikeMap.xaml.cs">
       <DependentUpon>BikeMap.xaml</DependentUpon>
     </Compile>
-    <Compile Include="C.cs" />
     <Compile Include="CommonExtensions\SuspensionManager.cs" />
     <Compile Include="Common\SuspensionManager.cs" />
     <Compile Include="Controls\ErrorIndicator.xaml.cs">

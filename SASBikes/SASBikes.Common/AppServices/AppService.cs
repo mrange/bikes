@@ -16,10 +16,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using SASBikes.Common.Collections;
 using SASBikes.Common.DataModel;
 using SASBikes.Common.Source.Common;
 using SASBikes.Common.Source.Extensions;
 using SASBikes.Common.WindowsAdaptors;
+using Windows.Foundation.Collections;
 using Windows.UI.Core;
 
 namespace SASBikes.Common.AppServices
@@ -102,7 +104,23 @@ namespace SASBikes.Common.AppServices
 </carto>
 ";
 
-        public State State              ;
+        public readonly IObservableMap<string, object> ViewModel = new ObservableDictionary<string, object>(); 
+
+        public State State
+        {
+            get
+            {
+                object state;
+                return ViewModel.TryGetValue(C.ViewModel_ApplicationState, out state)
+                    ?   state as State
+                    :   default(State)
+                    ;
+            }
+            set
+            {
+                ViewModel[C.ViewModel_ApplicationState] = value;
+            }
+        }
         public CoreWindow     Window    ;
         public CoreDispatcher Dispatcher;
 
@@ -114,7 +132,7 @@ namespace SASBikes.Common.AppServices
             Dispatcher  = Window.Dispatcher                 ;
             if (State == null)
             {
-                State       = CreateEmptyState()            ;
+                State= CreateEmptyState()            ;
             }
             m_dispatchedAsyncCalls.Clear()                  ;
         }
