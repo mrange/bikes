@@ -32,6 +32,8 @@
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Include_T4Include.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Internal\Log.cs
 // @@@ SKIPPING (Blacklisted): C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Properties\AssemblyInfo.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs
 // ############################################################################
 // Certains directives such as #define and // Resharper comments has to be 
 // moved to top in order to work properly    
@@ -64,13 +66,13 @@ namespace SASBikes.Common
     
     
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml.Linq;
     using SASBikes.Common.DataModel;
     using SASBikes.Common.Source.Common;
     using SASBikes.Common.Source.Extensions;
+    using SASBikes.Common.WindowsAdaptors;
     using Windows.UI.Core;
     
     namespace SASBikes.Common.AppServices
@@ -92,7 +94,7 @@ namespace SASBikes.Common
             public State State;
             public CoreDispatcher Dispatcher;
     
-            readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
+            readonly IConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
     
             public void Start()
             {
@@ -415,7 +417,9 @@ namespace SASBikes.Common
     
     
     using System;
-    using System.Net.Http;
+    using System.IO;
+    using System.Net;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using SASBikes.Common.Source.Common;
@@ -464,29 +468,60 @@ namespace SASBikes.Common
                 
                 try
                 {
-                    using (var httpClient = new HttpClient())
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return;
-                        }
-                
-                        var xmlData = httpClient.GetStringAsync(@"http://www.goteborgbikes.se/index.php/service/carto")
-                            .Result
-                            ?? ""
-                            ;
+                    var webRequest = WebRequest.CreateHttp(@"http://www.goteborgbikes.se/index.php/service/carto");
+                    webRequest.Method = "GET";
+                    Func<AsyncCallback, object, IAsyncResult> beginMethod = webRequest.BeginGetResponse;
+                    Func<IAsyncResult, WebResponse> endMethod = webRequest.EndGetResponse;
     
-                        if (cancellationToken.IsCancellationRequested)
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+    
+                    var task = Task.Factory.FromAsync(
+                        beginMethod, 
+                        endMethod,
+                        null
+                        );
+    
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+    
+                    var webResponse = task
+                        .Result
+                        ;
+    
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+    
+                    var contentType = webResponse.ContentType;
+                    if ("text/xml; charset=utf-8".Equals(contentType, StringComparison.OrdinalIgnoreCase))
+                    {
+                        using (var stream = webResponse.GetResponseStream())
+                        using (var reader = new StreamReader(stream, Encoding.UTF8))
                         {
-                            return;
-                        }
-                
-                        if (!xmlData.IsNullOrWhiteSpace())
-                        {
-                            m_lastXmlData = xmlData;
-                            Services.App.Async_Invoke (AsyncGroup.StationsService_UpdateStations, StationsService_UpdateStations);
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                return;
+                            }
+    
+                            var xmlData = reader.ReadToEnd();
+                            if (!xmlData.IsNullOrWhiteSpace())
+                            {
+                                m_lastXmlData = xmlData;
+                                Services.App.Async_Invoke (AsyncGroup.StationsService_UpdateStations, StationsService_UpdateStations);
+                            }
                         }
                     }
+                    else
+                    {
+                        Log.Error ("Invalid content-type returned from station service: {0}", contentType);
+                    }
+    
                 }
                 catch (Exception exc)
                 {
@@ -3564,15 +3599,15 @@ namespace SASBikes.Common
 {
     
     using System;
-    using System.Collections.Concurrent;
     using SASBikes.Common.AppServices;
     using SASBikes.Common.DataModel;
+    using SASBikes.Common.WindowsAdaptors;
     
     namespace SASBikes.Common.Source.Common
     {
         static partial class Log
         {
-            readonly static ConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
+            readonly static IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
             static partial void Partial_LogMessage(Level level, string message)
             {
                 switch (level)
@@ -3617,12 +3652,179 @@ namespace SASBikes.Common
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    namespace SASBikes.Common.WindowsAdaptors
+    {
+        partial interface IConcurrentDictionary<TKey, TValue>
+        {
+            bool TryAdd(TKey key, TValue value);        
+            bool TryRemove(TKey key, out TValue value);
+            void Clear ();
+        }
+    
+    #if SILVERLIGHT || WINDOWS_PHONE
+        sealed partial class ConcurrentDictionary<TKey, TValue> : IConcurrentDictionary<TKey, TValue>
+        {
+            readonly System.Collections.Generic.Dictionary<TKey, TValue> m_dictionary = new System.Collections.Generic.Dictionary<TKey, TValue> ();         
+            public bool TryAdd(TKey key, TValue value)
+            {
+                lock (m_dictionary)
+                {
+                    if (!m_dictionary.ContainsKey(key))
+                    {
+                        return false;
+                    }
+    
+                    m_dictionary[key] = value;                
+    
+                    return true;
+                }
+            }
+    
+            public bool TryRemove(TKey key, out TValue value)
+            {
+                lock (m_dictionary)
+                {
+                    if (!m_dictionary.TryGetValue(key, out value))
+                    {
+                        return false;
+                    }
+    
+                    m_dictionary.Remove(key);
+    
+                    return true;
+                }
+            }
+    
+            public void Clear()
+            {
+                m_dictionary.Clear();
+            }
+        }
+    #else
+        sealed partial class ConcurrentDictionary<TKey, TValue> : IConcurrentDictionary<TKey, TValue>
+        {
+            readonly System.Collections.Concurrent.ConcurrentDictionary<TKey, TValue> m_dictionary = new System.Collections.Concurrent.ConcurrentDictionary<TKey, TValue> ();         
+            public bool TryAdd(TKey key, TValue value)
+            {
+                return m_dictionary.TryAdd(key, value);
+            }
+    
+            public bool TryRemove(TKey key, out TValue value)
+            {
+                return m_dictionary.TryRemove(key, out value);
+            }
+    
+            public void Clear()
+            {
+                m_dictionary.Clear();
+            }
+        }
+    #endif
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs
+// ############################################################################
+
+// ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    namespace SASBikes.Common.WindowsAdaptors
+    {
+        partial interface IConcurrentQueue<TValue>
+        {
+            void Enqueue(TValue value);
+            bool TryDequeue(out TValue value);
+        }
+    
+    #if SILVERLIGHT || WINDOWS_PHONE
+        sealed partial class ConcurrentQueue<TValue> : IConcurrentQueue<TValue>
+        {
+            readonly System.Collections.Generic.Queue<TValue> m_queue = new System.Collections.Generic.Queue<TValue> ();
+    
+    
+            public void Enqueue(TValue value)
+            {
+                lock (m_queue)
+                {
+                    m_queue.Enqueue(value);
+                }
+            }
+    
+            public bool TryDequeue(out TValue value)
+            {
+                lock (m_queue)
+                {
+                    if (m_queue.Count > 0)
+                    {
+                        value = m_queue.Dequeue();
+                        return true;
+                    }
+                    else
+                    {
+                        value = default(TValue);
+                        return false;
+                        
+                    }
+                }
+            }
+        }
+    #else
+        sealed partial class ConcurrentQueue<TValue> : IConcurrentQueue<TValue>
+        {
+            readonly System.Collections.Concurrent.ConcurrentQueue<TValue> m_queue = new System.Collections.Concurrent.ConcurrentQueue<TValue> ();
+    
+    
+            public void Enqueue(TValue value)
+            {
+                m_queue.Enqueue(value);
+            }
+    
+            public bool TryDequeue(out TValue value)
+            {
+                return m_queue.TryDequeue(out value);
+            }
+        }
+    #endif
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs
+// ############################################################################
+
+// ############################################################################
 namespace SASBikes.Common.Include
 {
     static partial class MetaData
     {
         public const string RootPath        = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.WP8.Common\..\SASBikes.Common";
-        public const string IncludeDate     = @"2013-03-02T10:39:31";
+        public const string IncludeDate     = @"2013-03-03T09:26:47";
 
         public const string Include_0       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs";
         public const string Include_1       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\Generated_Services.cs";
@@ -3640,6 +3842,8 @@ namespace SASBikes.Common.Include
         public const string Include_13       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\GeoCoordinate.cs";
         public const string Include_14       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Include_T4Include.cs";
         public const string Include_15       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Internal\Log.cs";
+        public const string Include_16       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs";
+        public const string Include_17       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs";
     }
 }
 // ############################################################################

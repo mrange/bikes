@@ -13,13 +13,13 @@
 // ReSharper disable InconsistentNaming
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using SASBikes.Common.DataModel;
 using SASBikes.Common.Source.Common;
 using SASBikes.Common.Source.Extensions;
+using SASBikes.Common.WindowsAdaptors;
 using Windows.UI.Core;
 
 namespace SASBikes.Common.AppServices
@@ -41,7 +41,7 @@ namespace SASBikes.Common.AppServices
         public State State;
         public CoreDispatcher Dispatcher;
 
-        readonly ConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
+        readonly IConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
 
         public void Start()
         {

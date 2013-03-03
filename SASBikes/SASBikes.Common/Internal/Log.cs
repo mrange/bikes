@@ -2,15 +2,15 @@
 // ReSharper disable InconsistentNaming
 
 using System;
-using System.Collections.Concurrent;
 using SASBikes.Common.AppServices;
 using SASBikes.Common.DataModel;
+using SASBikes.Common.WindowsAdaptors;
 
 namespace SASBikes.Common.Source.Common
 {
     static partial class Log
     {
-        readonly static ConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
+        readonly static IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
         static partial void Partial_LogMessage(Level level, string message)
         {
             switch (level)

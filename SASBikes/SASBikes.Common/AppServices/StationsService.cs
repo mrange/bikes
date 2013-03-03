@@ -13,7 +13,9 @@
 // ReSharper disable InconsistentNaming
 
 using System;
-using System.Net.Http;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SASBikes.Common.Source.Common;
@@ -62,29 +64,60 @@ namespace SASBikes.Common.AppServices
             
             try
             {
-                using (var httpClient = new HttpClient())
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-            
-                    var xmlData = httpClient.GetStringAsync(@"http://www.goteborgbikes.se/index.php/service/carto")
-                        .Result
-                        ?? ""
-                        ;
+                var webRequest = WebRequest.CreateHttp(@"http://www.goteborgbikes.se/index.php/service/carto");
+                webRequest.Method = "GET";
+                Func<AsyncCallback, object, IAsyncResult> beginMethod = webRequest.BeginGetResponse;
+                Func<IAsyncResult, WebResponse> endMethod = webRequest.EndGetResponse;
 
-                    if (cancellationToken.IsCancellationRequested)
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var task = Task.Factory.FromAsync(
+                    beginMethod, 
+                    endMethod,
+                    null
+                    );
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var webResponse = task
+                    .Result
+                    ;
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                var contentType = webResponse.ContentType;
+                if ("text/xml; charset=utf-8".Equals(contentType, StringComparison.OrdinalIgnoreCase))
+                {
+                    using (var stream = webResponse.GetResponseStream())
+                    using (var reader = new StreamReader(stream, Encoding.UTF8))
                     {
-                        return;
-                    }
-            
-                    if (!xmlData.IsNullOrWhiteSpace())
-                    {
-                        m_lastXmlData = xmlData;
-                        Services.App.Async_Invoke (AsyncGroup.StationsService_UpdateStations, StationsService_UpdateStations);
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
+                        var xmlData = reader.ReadToEnd();
+                        if (!xmlData.IsNullOrWhiteSpace())
+                        {
+                            m_lastXmlData = xmlData;
+                            Services.App.Async_Invoke (AsyncGroup.StationsService_UpdateStations, StationsService_UpdateStations);
+                        }
                     }
                 }
+                else
+                {
+                    Log.Error ("Invalid content-type returned from station service: {0}", contentType);
+                }
+
             }
             catch (Exception exc)
             {
