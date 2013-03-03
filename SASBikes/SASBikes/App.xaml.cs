@@ -124,5 +124,6 @@ namespace SASBikes
 
             base.OnActivated(args);
         }
+
     }
 }

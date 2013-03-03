@@ -25,7 +25,10 @@ namespace SASBikes.Common.AppServices
 
         public void Start()
         {
-            m_locator = new Geolocator();
+            m_locator = new Geolocator
+                            {
+                                MovementThreshold = C.Default.MovementThreshold
+                            };
             m_locator.PositionChanged += PositionChanged_Locator;
         }
 

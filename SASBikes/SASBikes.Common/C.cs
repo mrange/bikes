@@ -23,6 +23,7 @@ namespace SASBikes.Common
 
         public static class Default
         {
+            public const double   MovementThreshold     = 2.0   ;
             public const double   My_Lo    = 11.973429  ;
             public const double   My_La    = 57.700324  ;
             public const double   View_Lo  = 11.973429  ;

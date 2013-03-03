@@ -171,14 +171,14 @@ namespace SASBikes.Common
                 get
                 {
                     object state;
-                    return ViewModel.TryGetValue(C.ViewModel_ApplicationState, out state)
+                    return ViewModel.TryGetValue(C.ViewModel.ApplicationState, out state)
                         ?   state as State
                         :   default(State)
                         ;
                 }
                 set
                 {
-                    ViewModel[C.ViewModel_ApplicationState] = value;
+                    ViewModel[C.ViewModel.ApplicationState] = value;
                 }
             }
             public CoreWindow     Window    ;
@@ -540,7 +540,10 @@ namespace SASBikes.Common
     
             public void Start()
             {
-                m_locator = new Geolocator();
+                m_locator = new Geolocator
+                                {
+                                    MovementThreshold = C.Default.MovementThreshold
+                                };
                 m_locator.PositionChanged += PositionChanged_Locator;
             }
     
@@ -839,10 +842,22 @@ namespace SASBikes.Common
     
     namespace SASBikes.Common
     {
-        static class C
+        public static class C
         {
-            public const string ViewModel_ApplicationState = "ViewModel_ApplicationState"  ;
+            public static class ViewModel
+            {
+                public const string ApplicationState = "ViewModel_ApplicationState"  ;
+            }
     
+            public static class Default
+            {
+                public const double   MovementThreshold     = 2.0   ;
+                public const double   My_Lo    = 11.973429  ;
+                public const double   My_La    = 57.700324  ;
+                public const double   View_Lo  = 11.973429  ;
+                public const double   View_La  = 57.700324  ;
+                public const double   View_Zoom= 18         ;
+            }
         }
     }
 }
@@ -1481,11 +1496,11 @@ namespace SASBikes.Common
             public State (DataModelContext context) : base (context)
             {
                 _State_IsTrackingMyPosition = true   ;
-                _State_ZoomLevel = default (double)   ;
-                _State_Lo = default (double)   ;
-                _State_La = default (double)   ;
-                _State_MyLo = default (double)   ;
-                _State_MyLa = default (double)   ;
+                _State_ZoomLevel = C.Default.View_Zoom   ;
+                _State_Lo = C.Default.View_Lo   ;
+                _State_La = C.Default.View_La   ;
+                _State_MyLo = C.Default.My_Lo   ;
+                _State_MyLa = C.Default.My_La   ;
                 _State_StationName = ""   ;
                 _State_SearchingFor = ""   ;
                 _State_Stations = new StationList (context)   ;
@@ -2342,7 +2357,7 @@ namespace SASBikes.Common
                             break;
                         case "ZoomLevel":
                             {
-                                var value = default (double);
+                                var value = C.Default.View_Zoom;
     
                                 subElement.Unserialize (
                                     context,
@@ -2355,7 +2370,7 @@ namespace SASBikes.Common
                             break;
                         case "Lo":
                             {
-                                var value = default (double);
+                                var value = C.Default.View_Lo;
     
                                 subElement.Unserialize (
                                     context,
@@ -2368,7 +2383,7 @@ namespace SASBikes.Common
                             break;
                         case "La":
                             {
-                                var value = default (double);
+                                var value = C.Default.View_La;
     
                                 subElement.Unserialize (
                                     context,
@@ -2381,7 +2396,7 @@ namespace SASBikes.Common
                             break;
                         case "MyLo":
                             {
-                                var value = default (double);
+                                var value = C.Default.My_Lo;
     
                                 subElement.Unserialize (
                                     context,
@@ -2394,7 +2409,7 @@ namespace SASBikes.Common
                             break;
                         case "MyLa":
                             {
-                                var value = default (double);
+                                var value = C.Default.My_La;
     
                                 subElement.Unserialize (
                                     context,
@@ -2745,7 +2760,10 @@ namespace SASBikes.Common
     // ----------------------------------------------------------------------------------------------
     
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Xml.Linq;
+    using SASBikes.Common.DataModel;
     
     namespace SASBikes.Common
     {
@@ -2810,6 +2828,19 @@ namespace SASBikes.Common
                 // http://en.wikipedia.org/wiki/Great_circle_distance
     
                 return EarthMeanRadius*2*(dlo.Haversine() + slo.Cos()*flo.Cos()*dla.Haversine());
+            }
+    
+            public static IEnumerable<Station> NearestOpenStations (this IEnumerable<Station> stations)
+            {
+                if (stations == null)
+                {
+                    return new Station[0];
+                }
+    
+                return stations
+                    .Where (s => s.Station_IsOpen)
+                    .OrderBy (s => s.Station_Distance)
+                    ;
             }
         }
     }
@@ -4316,7 +4347,7 @@ namespace SASBikes.Common.Include
     static partial class MetaData
     {
         public const string RootPath        = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.WP8.Common\..\SASBikes.Common";
-        public const string IncludeDate     = @"2013-03-03T19:48:48";
+        public const string IncludeDate     = @"2013-03-03T20:36:43";
 
         public const string Include_0       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs";
         public const string Include_1       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\Generated_Services.cs";
