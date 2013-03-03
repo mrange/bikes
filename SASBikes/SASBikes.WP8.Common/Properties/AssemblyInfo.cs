@@ -10,29 +10,9 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
+using System.Reflection;
+using System.Resources;
 
-namespace SASBikes.Common
-{
-    partial class SuspensionManager
-    {
-        const string ApplicationState = "ApplicationState";
-
-        static partial void Loading_SessionState()
-        {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
-            {
-                Services.App.State = applicationState.UnserializeFromString();
-            }
-        }
-
-        static partial void Saving_SessionState()
-        {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
-        }
-
-    }
-}
+[assembly: AssemblyTitle("SASBikes.WP8.Common")]
+[assembly: AssemblyDescription("")]
+[assembly: NeutralResourcesLanguageAttribute("en-US")]

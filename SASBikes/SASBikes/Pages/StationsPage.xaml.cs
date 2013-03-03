@@ -15,10 +15,10 @@
 using System;
 using System.Collections.Generic;
 using SASBikes.Common;
-using SASBikes.DataModel;
+using SASBikes.Common.AppServices;
+using SASBikes.Common.DataModel;
 using SASBikes.Source.Common;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234237
 
@@ -33,9 +33,7 @@ namespace SASBikes.Pages
         {
             InitializeComponent();
 
-            App.Value.Dispatcher = Dispatcher;
-
-            DefaultViewModel[C.ViewModel_ApplicationState] = App.Value.AppState;
+            DefaultViewModel = Services.App.ViewModel;
         }
 
         protected override void LoadState(Object navigationParameter, Dictionary<String, Object> pageState)
@@ -50,7 +48,7 @@ namespace SASBikes.Pages
         {
             Log.Error("TODO: Remove this");
 
-            var appState = App.Value.AppState;
+            var appState = Services.App.State;
 
             var closestDistance = double.MaxValue;
             Station closestStation = null;

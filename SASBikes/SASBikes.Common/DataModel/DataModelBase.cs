@@ -10,29 +10,39 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
+// ReSharper disable InconsistentNaming
 
-namespace SASBikes.Common
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace SASBikes.Common.DataModel
 {
-    partial class SuspensionManager
+    public abstract partial class DataModelBase : INotifyPropertyChanged, IDataModelEntity
     {
-        const string ApplicationState = "ApplicationState";
+        readonly DataModelContext m_context;
 
-        static partial void Loading_SessionState()
+        protected DataModelBase(DataModelContext context)
         {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
+            m_context = context;
+        }
+
+        public DataModelContext Context 
+        {
+            get
             {
-                Services.App.State = applicationState.UnserializeFromString();
+                return m_context;
             }
         }
 
-        static partial void Saving_SessionState()
-        {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        protected virtual void Raise_PropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }

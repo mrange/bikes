@@ -10,28 +10,43 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
+using System;
 
 namespace SASBikes.Common
 {
-    partial class SuspensionManager
+    public struct GeoCoordinate
     {
-        const string ApplicationState = "ApplicationState";
+        public double La;
+        public double Lo;
 
-        static partial void Loading_SessionState()
+        public GeoCoordinate(double la, double lo)
         {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
-            {
-                Services.App.State = applicationState.UnserializeFromString();
-            }
+            La = la;
+            Lo = lo;
         }
 
-        static partial void Saving_SessionState()
+        public double NormalizedLa
         {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
+            get
+            {
+                var laf = La / 180.0;
+                var t = Math.Truncate(laf);
+              
+                return (laf - t) * 180.0;
+                
+            }
+        }
+    
+        public double NormalizedLo
+        {
+            get
+            {
+                var lof = Lo / 180.0;
+                var t = Math.Truncate(lof);
+              
+                return (lof - t) * 180.0;
+                
+            }
         }
 
     }

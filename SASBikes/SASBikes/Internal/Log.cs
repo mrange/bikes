@@ -10,29 +10,29 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+// ReSharper disable InconsistentNaming
+
 using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
 
-namespace SASBikes.Common
+namespace SASBikes.Source.Common
 {
-    partial class SuspensionManager
+    static partial class Log
     {
-        const string ApplicationState = "ApplicationState";
-
-        static partial void Loading_SessionState()
+        static partial void Partial_LogMessage(Level level, string message)
         {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
+            switch (level)
             {
-                Services.App.State = applicationState.UnserializeFromString();
+                case Level.Success:
+                case Level.HighLight:
+                case Level.Info:
+                case Level.Warning:
+                    break;
+                case Level.Error:
+                case Level.Exception:
+                default:
+                    Services.Log.Error(message ?? "");
+                    break;
             }
         }
-
-        static partial void Saving_SessionState()
-        {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
-        }
-
     }
 }

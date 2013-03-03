@@ -10,29 +10,25 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
+using System.Collections.ObjectModel;
 
-namespace SASBikes.Common
+namespace SASBikes.Common.DataModel
 {
-    partial class SuspensionManager
+    public partial class DataModelCollection<T> : ObservableCollection<T>, IDataModelEntity
     {
-        const string ApplicationState = "ApplicationState";
+        readonly DataModelContext m_context;
 
-        static partial void Loading_SessionState()
+        public DataModelCollection(DataModelContext context)
         {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
+            m_context = context;
+        }
+
+        public DataModelContext Context
+        {
+            get
             {
-                Services.App.State = applicationState.UnserializeFromString();
+                return m_context;
             }
         }
-
-        static partial void Saving_SessionState()
-        {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
-        }
-
     }
 }

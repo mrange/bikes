@@ -4,28 +4,27 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3AF0C3FD-45B4-4F71-B069-FA796E24F366}</ProjectGuid>
-    <OutputType>AppContainerExe</OutputType>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FED42582-15E1-415E-A837-78D547F27ED5}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SASBikes</RootNamespace>
-    <AssemblyName>SASBikes</AssemblyName>
-    <DefaultLanguage>sv-SE</DefaultLanguage>
+    <RootNamespace>SASBikes.Common</RootNamespace>
+    <AssemblyName>SASBikes.Common</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>SASBikes_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NETFX_CORE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -101,132 +100,60 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <SDKReference Include="Bing.Maps.Xaml, Version=1.0">
-      <Name>Bing Maps for C#, C++, or Visual Basic</Name>
-    </SDKReference>
-    <SDKReference Include="Microsoft.VCLibs, version=11.0">
-      <Name>Microsoft Visual C++ Runtime Package</Name>
-    </SDKReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\keys\BingLicenseKey.cs">
-      <Link>BingLicenseKey.cs</Link>
-    </Compile>
-    <Compile Include="..\Global_AssemblyInfo.cs">
-      <Link>Properties\Global_AssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\BikeMap.xaml.cs">
-      <DependentUpon>BikeMap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CommonExtensions\SuspensionManager.cs" />
-    <Compile Include="Common\SuspensionManager.cs" />
-    <Compile Include="Controls\ErrorIndicator.xaml.cs">
-      <DependentUpon>ErrorIndicator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DataModel\DataModel.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Generated_DependencyProperties.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Generated_DependencyProperties.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\Generated_DependencyProperties.cs">
-      <DependentUpon>Generated_DependencyProperties.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Controls\StationPushPin.xaml.cs">
-      <DependentUpon>StationPushPin.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Internal\Log.cs" />
-    <Compile Include="Pages\ErrorsPage.xaml.cs">
-      <DependentUpon>ErrorsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\StationsPage.xaml.cs">
-      <DependentUpon>StationsPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Include_T4Include.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Include_T4Include.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Common\BindableBase.cs" />
-    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Common\BooleanNegationConverter.cs" />
-    <Compile Include="Common\LayoutAwarePage.cs" />
-    <Compile Include="Common\RichTextColumns.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest">
-      <SubType>Designer</SubType>
-    </AppxManifest>
-    <None Include="Common\ReadMe.txt" />
-    <None Include="Generated_DependencyProperties.tt">
+    <None Include="AppServices\Generated_Services.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Generated_DependencyProperties.cs</LastGenOutput>
+      <LastGenOutput>Generated_Services.cs</LastGenOutput>
+    </None>
+    <None Include="DataModel\Generated_DataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Generated_DataModel.cs</LastGenOutput>
     </None>
     <None Include="Include_T4Include.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Include_T4Include.cs</LastGenOutput>
     </None>
-    <None Include="Controls\Generated_DependencyProperties.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Generated_DependencyProperties.cs</LastGenOutput>
-    </None>
-    <None Include="packages.config" />
-    <None Include="SASBikes_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Logo.png" />
-    <Content Include="Assets\SmallLogo.png" />
-    <Content Include="Assets\SplashScreen.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\LightGray.png" />
-    <Content Include="Assets\MediumGray.png" />
-    <Content Include="Assets\DarkGray.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Page Include="Controls\BikeMap.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Common\StandardStyles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\ErrorIndicator.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\StationPushPin.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ErrorsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\StationsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="..\Global_AssemblyInfo.cs">
+      <Link>Properties\Global_AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AppServices\AppService.cs" />
+    <Compile Include="AppServices\Generated_Services.cs">
+      <DependentUpon>Generated_Services.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="AppServices\LocatorService.cs" />
+    <Compile Include="AppServices\LogService.cs" />
+    <Compile Include="AppServices\StationsService.cs" />
+    <Compile Include="C.cs" />
+    <Compile Include="Collections\ObservableDictionary.cs" />
+    <Compile Include="DataModel\DataModel.cs" />
+    <Compile Include="DataModel\DataModelBase.cs" />
+    <Compile Include="DataModel\DataModelCollection.cs" />
+    <Compile Include="DataModel\DataModelContext.cs" />
+    <Compile Include="DataModel\DataModelSerializer.cs" />
+    <Compile Include="DataModel\Generated_DataModel.cs">
+      <DependentUpon>Generated_DataModel.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="DataModel\IDataModelEntity.cs" />
+    <Compile Include="DataModel\IUnserializeErrorReporter.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="GeoCoordinate.cs" />
+    <Compile Include="Include_T4Include.cs">
+      <DependentUpon>Include_T4Include.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Internal\Log.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsAdaptors\ConcurrentDictionary.cs" />
+    <Compile Include="WindowsAdaptors\ConcurrentQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SASBikes.Common\SASBikes.Common.csproj">
-      <Project>{fed42582-15e1-415e-a837-78d547f27ed5}</Project>
-      <Name>SASBikes.Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

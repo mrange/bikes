@@ -10,29 +10,7 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using SASBikes.Common.AppServices;
-using SASBikes.Common.DataModel;
-using SASBikes.Source.Extensions;
+using System.Reflection;
 
-namespace SASBikes.Common
-{
-    partial class SuspensionManager
-    {
-        const string ApplicationState = "ApplicationState";
-
-        static partial void Loading_SessionState()
-        {
-            var applicationState = SessionState.Lookup(ApplicationState) as string;
-            if (!applicationState.IsNullOrEmpty())
-            {
-                Services.App.State = applicationState.UnserializeFromString();
-            }
-        }
-
-        static partial void Saving_SessionState()
-        {
-            SessionState[ApplicationState] = Services.App.State.SerializeToString();
-        }
-
-    }
-}
+[assembly: AssemblyTitle("Styr&Ställ(unofficial) Common for Windows Store")]
+[assembly: AssemblyDescription("Styr&Ställ(unofficial) Common is a common library to find the nearest open S&S station")]
