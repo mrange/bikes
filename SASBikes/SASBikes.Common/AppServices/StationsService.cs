@@ -37,10 +37,10 @@ namespace SASBikes.Common.AppServices
             m_source = new CancellationTokenSource();
             var token = m_source.Token;
 
-            m_updateTask = Task
-                    .Delay(Delay_InitialUpdateStations, token)
-                    .ContinueWith(t => UpdateStations(token), token)
-                    ;
+            //m_updateTask = Task
+            //        .Delay(Delay_InitialUpdateStations, token)
+            //        .ContinueWith(t => UpdateStations(token), token)
+            //        ;
         }
 
         public void Stop()

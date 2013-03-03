@@ -15,10 +15,13 @@
 
 // ############################################################################
 // @@@ SKIPPING (Blacklisted): C:\temp\GitHub\bikes\SASBikes\Global_AssemblyInfo.cs
-// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\Generated_Services.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LocatorService.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LogService.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\StationsService.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\C.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Collections\ObservableDictionary.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModel.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelBase.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelCollection.cs
@@ -46,13 +49,11 @@
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantAssignment
 // ReSharper disable RedundantNameQualifier
+// ReSharper disable RedundantThisQualifier
 // ############################################################################
 
 // ############################################################################
-// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs
-
-using Windows.Foundation.Collections;
-
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs
 namespace SASBikes.Common
 {
     // ----------------------------------------------------------------------------------------------
@@ -71,15 +72,20 @@ namespace SASBikes.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Xml.Linq;
+    using SASBikes.Common.Collections;
     using SASBikes.Common.DataModel;
     using SASBikes.Common.Source.Common;
     using SASBikes.Common.Source.Extensions;
     using SASBikes.Common.WindowsAdaptors;
+    using Windows.Foundation;
+    using Windows.Foundation.Collections;
     using Windows.UI.Core;
     
     namespace SASBikes.Common.AppServices
     {
+    
         public enum AsyncGroup
         {
             Model_UpdateStations            ,
@@ -92,20 +98,129 @@ namespace SASBikes.Common
             Log_UpdateErrors
         }
     
-        sealed class AppService : IService
+        public sealed class AppService : IService
         {
-            public State State;
+            public const string SampleData = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+    <carto>
+      <markers>
+        <marker name=""LILLA BOMMEN"" number=""1"" address=""001_LILLA BOMMEN"" fullAddress=""001_LILLA BOMMEN  "" lat=""57.711547"" lng=""11.966574"" open=""1"" bonus=""0""/>
+        <marker name=""LILLATORGET"" number=""2"" address=""002_LILLA TORGET"" fullAddress=""002_LILLA TORGET  "" lat=""57.705529"" lng=""11.962491"" open=""1"" bonus=""0""/>
+        <marker name=""POSTGATAN"" number=""3"" address=""003_POSTGATAN"" fullAddress=""003_POSTGATAN  "" lat=""57.707476"" lng=""11.963926"" open=""1"" bonus=""0""/>
+        <marker name=""STORA BADHUSGATAN"" number=""4"" address=""004_STORA BADHUSGATAN"" fullAddress=""004_STORA BADHUSGATAN  "" lat=""57.704819"" lng=""11.957907"" open=""1"" bonus=""0""/>
+        <marker name=""VASAGATAN/HEDEN"" number=""5"" address=""005_VASAGATAN/HEDEN"" fullAddress=""005_VASAGATAN/HEDEN  "" lat=""57.701419"" lng=""11.9766"" open=""0"" bonus=""0""/>
+        <marker name=""SLUSSPLATSEN"" number=""6"" address=""006_SLUSSPLATSEN"" fullAddress=""006_SLUSSPLATSEN  "" lat=""57.707316"" lng=""11.973448"" open=""1"" bonus=""0""/>
+        <marker name=""ESPERANTOPLATSEN"" number=""8"" address=""008_ESPERANTOPLATSEN"" fullAddress=""008_ESPERANTOPLATSEN  "" lat=""57.702793"" lng=""11.955461"" open=""1"" bonus=""0""/>
+        <marker name=""KANALTORGET"" number=""9"" address=""009_KANALTORGET"" fullAddress=""009_KANALTORGET  "" lat=""57.710396"" lng=""11.966421"" open=""1"" bonus=""0""/>
+        <marker name=""VALAND"" number=""10"" address=""010_VALAND"" fullAddress=""010_VALAND  "" lat=""57.700324"" lng=""11.973429"" open=""1"" bonus=""0""/>
+        <marker name=""STORAN"" number=""11"" address=""011_STORAN"" fullAddress=""011_STORAN  "" lat=""57.702482"" lng=""11.971552"" open=""1"" bonus=""0""/>
+        <marker name=""GRÖNSAKSTORGET"" number=""12"" address=""012_GRÖNSAKSTORGET"" fullAddress=""012_GRÖNSAKSTORGET  "" lat=""57.702459"" lng=""11.965179"" open=""1"" bonus=""0""/>
+        <marker name=""GUSTAF ADOLFS TORG"" number=""13"" address=""013_GUSTAF ADOLFS TORG"" fullAddress=""013_GUSTAF ADOLFS TORG  "" lat=""57.707233"" lng=""11.967502"" open=""1"" bonus=""0""/>
+        <marker name=""KUNGSTORGET"" number=""17"" address=""017_KUNGSTORGET"" fullAddress=""017_KUNGSTORGET  "" lat=""57.702542"" lng=""11.968875"" open=""1"" bonus=""0""/>
+        <marker name=""BASTIONSPLATSEN"" number=""21"" address=""021_BASTIONSPLATSEN"" fullAddress=""021_BASTIONSPLATSEN  "" lat=""57.704263"" lng=""11.972077"" open=""1"" bonus=""0""/>
+        <marker name=""KRISTINELUNDSGATAN"" number=""14"" address=""014_KRISTINELUNDSGATAN"" fullAddress=""014_KRISTINELUNDSGATAN  "" lat=""57.699939"" lng=""11.976176"" open=""1"" bonus=""0""/>
+        <marker name=""HEDEN/STENSTUREGATAN"" number=""15"" address=""015_HEDEN/STENSTUREGATAN"" fullAddress=""015_HEDEN/STENSTUREGATAN  "" lat=""57.702955"" lng=""11.98021"" open=""1"" bonus=""0""/>
+        <marker name=""BOHUSGATAN"" number=""16"" address=""016_BOHUSGATAN"" fullAddress=""016_BOHUSGATAN  "" lat=""57.70452"" lng=""11.984298"" open=""1"" bonus=""0""/>
+        <marker name=""ROSENLUNDSPLATSEN"" number=""18"" address=""018_ROSENLUNDSPLATSEN"" fullAddress=""018_ROSENLUNDSPLATSEN  "" lat=""57.700685"" lng=""11.960571"" open=""1"" bonus=""0""/>
+        <marker name=""OLOF PALMES PLATS"" number=""19"" address=""019_OLOF PALMES PLATS"" fullAddress=""019_OLOF PALMES PLATS  "" lat=""57.700662"" lng=""11.95364"" open=""1"" bonus=""0""/>
+        <marker name=""NILS-ERICSSON TERMINALEN"" number=""20"" address=""020_NILS-ERICSSON TERMINALEN"" fullAddress=""020_NILS-ERICSSON TERMINALEN  "" lat=""57.709752"" lng=""11.970787"" open=""1"" bonus=""0""/>
+        <marker name=""DÄMMEPLATSEN"" number=""22"" address=""022_Dämmeplatsen"" fullAddress=""022_Dämmeplatsen  "" lat=""57.707576"" lng=""11.989893"" open=""1"" bonus=""0""/>
+        <marker name=""SCANDINAVIUM"" number=""25"" address=""025_Scandinavium"" fullAddress=""025_Scandinavium  "" lat=""57.700094"" lng=""11.987908"" open=""1"" bonus=""0""/>
+        <marker name=""LISEBERG STATION"" number=""27"" address=""027_Liseberg station"" fullAddress=""027_Liseberg station  "" lat=""57.697923"" lng=""11.995107"" open=""1"" bonus=""0""/>
+        <marker name=""GÅRDATORGET"" number=""24"" address=""024_Gårdatorget"" fullAddress=""024_Gårdatorget  "" lat=""57.704675"" lng=""11.992441"" open=""1"" bonus=""0""/>
+        <marker name=""KORSVÄGEN /SÖDRA VÄGEN"" number=""28"" address=""028_Korsvägen 1"" fullAddress=""028_Korsvägen 1  "" lat=""57.696916"" lng=""11.985703"" open=""1"" bonus=""0""/>
+        <marker name=""KORSVÄGEN"" number=""29"" address=""029_Korsvägen 2"" fullAddress=""029_Korsvägen 2  "" lat=""57.696555"" lng=""11.987833"" open=""1"" bonus=""0""/>
+        <marker name=""SKÅNEGATAN"" number=""23"" address=""023_Skånegatan"" fullAddress=""023_Skånegatan  "" lat=""57.706096"" lng=""11.984646"" open=""1"" bonus=""0""/>
+        <marker name=""BERGAKUNGEN"" number=""30"" address=""030_Bergakungen"" fullAddress=""030_Bergakungen  "" lat=""57.702135"" lng=""11.985035"" open=""1"" bonus=""0""/>
+        <marker name=""HEDEN SYD"" number=""26"" address=""026_Heden syd"" fullAddress=""026_Heden syd  "" lat=""57.699941"" lng=""11.979867"" open=""0"" bonus=""0""/>
+        <marker name=""VASAGATAN/SCHILLERSKA"" number=""38"" address=""038_Vasagatan/Schillerska"" fullAddress=""038_Vasagatan/Schillerska  "" lat=""57.698265"" lng=""11.967115"" open=""1"" bonus=""0""/>
+        <marker name=""PACKHUSPLATSEN"" number=""43"" address=""043_PACKHUSPLATSEN"" fullAddress=""043_PACKHUSPLATSEN  "" lat=""57.706767"" lng=""11.959101"" open=""1"" bonus=""0""/>
+        <marker name=""ALSTRÖMER/FRIGGAGATAN"" number=""45"" address="""" fullAddress=""  "" lat=""57.71119"" lng=""11.98798"" open=""1"" bonus=""0""/>
+        <marker name=""SKANSTORGET"" number=""35"" address=""035_Skanstorget"" fullAddress=""035_Skanstorget  "" lat=""57.695909"" lng=""11.958548"" open=""1"" bonus=""0""/>
+        <marker name=""KASTELLGATAN"" number=""34"" address=""034_Kastellgatan"" fullAddress=""034_Kastellgatan  "" lat=""57.693029"" lng=""11.955692"" open=""1"" bonus=""0""/>
+        <marker name=""BRUNNSGATAN"" number=""32"" address=""032_Brunnsgatan"" fullAddress=""032_Brunnsgatan  "" lat=""57.693517"" lng=""11.958559"" open=""1"" bonus=""0""/>
+        <marker name=""MOLINSGATAN"" number=""37"" address=""037_Molinsgatan"" fullAddress=""037_Molinsgatan  "" lat=""57.69691"" lng=""11.97234"" open=""1"" bonus=""0""/>
+        <marker name=""ÅVÄGEN"" number=""31"" address=""031_Åvägen"" fullAddress=""031_Åvägen  "" lat=""57.701249"" lng=""11.992191"" open=""1"" bonus=""0""/>
+        <marker name=""FRIGÅNGSGATAN"" number=""39"" address=""039_Frigångsgatan"" fullAddress=""039_Frigångsgatan  "" lat=""57.697821"" lng=""11.952905"" open=""1"" bonus=""0""/>
+        <marker name=""SLOTTSKOGEN/PLIKTA"" number=""41"" address=""041_Slottskogen/Plikta"" fullAddress=""041_Slottskogen/Plikta  "" lat=""57.689983"" lng=""11.947047"" open=""1"" bonus=""0""/>
+        <marker name=""KAPELLPLATSEN"" number=""46"" address="""" fullAddress=""  "" lat=""57.69358"" lng=""11.97199"" open=""1"" bonus=""0""/>
+        <marker name=""DROTTNINGTORGET"" number=""42"" address=""042_Drottningtorget"" fullAddress=""042_Drottningtorget  "" lat=""57.708074"" lng=""11.972737"" open=""1"" bonus=""0""/>
+        <marker name=""BERZELIIGATAN"" number=""47"" address="""" fullAddress=""  "" lat=""57.69794"" lng=""11.98096"" open=""1"" bonus=""0""/>
+        <marker name=""CARLANDERSPLATSEN"" number=""48"" address="""" fullAddress=""  "" lat=""57.69312"" lng=""11.98661"" open=""1"" bonus=""0""/>
+        <marker name=""KAPONJÄRSGATAN"" number=""49"" address="""" fullAddress=""  "" lat=""57.69875"" lng=""11.95649"" open=""1"" bonus=""0""/>
+        <marker name=""KUNGSGATAN/TELEKASERN"" number=""50"" address="""" fullAddress=""  "" lat=""57.70337"" lng=""11.96012"" open=""1"" bonus=""0""/>
+        <marker name=""FÖRENINGSGATAN"" number=""33"" address=""033_Föreningsgatan"" fullAddress=""033_Föreningsgatan  "" lat=""57.694554"" lng=""11.961987"" open=""1"" bonus=""0""/>
+        <marker name=""ENGELBREKTSGATAN"" number=""44"" address="""" fullAddress=""  "" lat=""57.69841"" lng=""11.97694"" open=""1"" bonus=""0""/>
+        <marker name=""HAGAPARKEN"" number=""36"" address=""036_Hagaparken"" fullAddress=""036_Hagaparken  "" lat=""57.697984"" lng=""11.962405"" open=""1"" bonus=""0""/>
+        <marker name=""LINNÉPLATSEN"" number=""40"" address=""040_Linnéplatsen"" fullAddress=""040_Linnéplatsen  "" lat=""57.690278"" lng=""11.95165"" open=""1"" bonus=""0""/>
+        <marker name=""HAGABION"" number=""51"" address="""" fullAddress=""  "" lat=""57.696837"" lng=""11.951009"" open=""1"" bonus=""0""/>
+        <marker name=""POSTHUSET/ÅKAREPLATSEN"" number=""7"" address="""" fullAddress=""  "" lat=""57.707647"" lng=""11.976117"" open=""1"" bonus=""0""/>
+        <marker name=""GIBRALTARG/EKLANDAG"" number=""52"" address=""GIBRALTARGATAN/EKLANDAGATAN"" fullAddress=""GIBRALTARGATAN/EKLANDAGATAN  "" lat=""57.68542"" lng=""11.98322"" open=""1"" bonus=""0""/>
+        <marker name=""MOLINSGATAN/LÄRAREGATAN"" number=""53"" address="""" fullAddress=""  "" lat=""57.69418"" lng=""11.97451"" open=""1"" bonus=""0""/>
+        <marker name=""EKLANDA/UTLANDAGATAN"" number=""54"" address="""" fullAddress=""  "" lat=""57.69032"" lng=""11.98854"" open=""1"" bonus=""0""/>
+      </markers>
+      <arrondissements>
+        <arrondissement number=""0"" minLat=""57.68542"" minLng=""11.947047"" maxLat=""57.711547"" maxLng=""11.995107""/>
+      </arrondissements>
+    </carto>
+    ";
+    
+            public readonly IObservableMap<string, object> ViewModel = new ObservableDictionary<string, object>(); 
+    
+            public State State
+            {
+                get
+                {
+                    object state;
+                    return ViewModel.TryGetValue(C.ViewModel_ApplicationState, out state)
+                        ?   state as State
+                        :   default(State)
+                        ;
+                }
+                set
+                {
+                    ViewModel[C.ViewModel_ApplicationState] = value;
+                }
+            }
+            public CoreWindow     Window    ;
             public CoreDispatcher Dispatcher;
-            readonly IConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
+    
+            enum DispatcherState
+            {
+                Idle                ,
+                Triggered           ,
+                Dispatching         ,
+            }
+    
+            sealed class DispatcherStateManager
+            {
+                int m_state;
+    
+                public bool Edge(DispatcherState from, DispatcherState to)
+                {
+                    var t = (int) to;
+                    var f = (int) from;
+                    return Interlocked.CompareExchange (ref m_state, t, f) == f;
+                }
+            }
+    
+            readonly DispatcherStateManager m_dispatcherState = new DispatcherStateManager (); 
+            readonly IConcurrentQueue<Tuple<AsyncGroup, Action>> m_dispatchedAsyncCalls = new ConcurrentQueue<Tuple<AsyncGroup, Action>>();
+            IAsyncAction m_currentTask;
     
             public void Start()
             {
-                m_dispatchedAsyncCalls.Clear();
+                Window      = CoreWindow.GetForCurrentThread()  ;
+                Dispatcher  = Window.Dispatcher                 ;
+                if (State == null)
+                {
+                    State= CreateEmptyState()            ;
+                }
             }
     
             public void Stop()
             {
-                m_dispatchedAsyncCalls.Clear();
+                Dispatcher  = null                              ;
+                Window      = null                              ;
             }
     
             public void Async_Invoke(AsyncGroup group, Action action)
@@ -115,6 +230,8 @@ namespace SASBikes.Common
                     return;
                 }
     
+                m_dispatchedAsyncCalls.Enqueue(Tuple.Create (group, action));
+    
                 var dispatcher = Dispatcher;
     
                 if (dispatcher == null)
@@ -122,28 +239,74 @@ namespace SASBikes.Common
                     return;
                 }
     
-                if (!m_dispatchedAsyncCalls.TryAdd(group, true))
+                StartDispatcher(dispatcher);
+            }
+    
+            void StartDispatcher(CoreDispatcher dispatcher)
+            {
+                if (m_dispatcherState.Edge(DispatcherState.Idle, DispatcherState.Triggered))
                 {
-                    return;
+                    m_currentTask = dispatcher.RunIdleAsync(RunIdle_DispatchActions);
+                }
+            }
+    
+            void RunIdle_DispatchActions(IdleDispatchedHandlerArgs e)
+            {
+                if (!m_dispatcherState.Edge(DispatcherState.Triggered, DispatcherState.Dispatching))
+                {
+                    return;    
                 }
     
-                var task = dispatcher.RunIdleAsync(
-                    e =>
+                try
+                {
+                    var groupedActions = new Dictionary<AsyncGroup, Tuple<Action, int>> (); 
+    
+                    for(;;)
+                    {
+                        Tuple<AsyncGroup, Action> value;
+                        groupedActions.Clear();
+                        while (m_dispatchedAsyncCalls.TryDequeue(out value))
+                        {
+                            if (value.Item2 != null)
+                            {
+                                groupedActions[value.Item1] = Tuple.Create(value.Item2, groupedActions.Count);
+                            }
+                        }
+    
+                        if (groupedActions.Count == 0)
+                        {
+                            return;
+                        }
+    
+                        foreach (var kv in groupedActions.OrderBy(kv => kv.Value.Item2))
                         {
                             try
                             {
-                                action();
+                                kv.Value.Item1();
                             }
                             catch (Exception exc)
                             {
-                                Log.Exception ("Failed to dispatch async invoke {0}: {1}", group, exc);
+                                Log.Exception ("Failed to dispatch async action {0}: {1}", kv.Key, exc);                
                             }
-                            finally
-                            {
-                                bool val;
-                                m_dispatchedAsyncCalls.TryRemove(group, out val);
-                            }
-                        });
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    Log.Exception ("Failed to dispatch async actions: {0}", exc);                
+                }
+                finally
+                {
+                    m_currentTask = null;
+                    m_dispatcherState.Edge(DispatcherState.Dispatching, DispatcherState.Idle);
+    
+                    var dispatcher = Dispatcher;
+                    if (dispatcher != null && m_dispatchedAsyncCalls.Count > 0)
+                    {
+                        StartDispatcher(dispatcher);
+                    }
+    
+                }
             }
     
             public void UpdateStations (string xmlData)
@@ -193,10 +356,31 @@ namespace SASBikes.Common
                 }
             }
     
+            State CreateEmptyState()
+            {
+                var context = new DataModelContext();
+                var state = new State(context)
+                                {
+                                    State_Lo            = 11.973429     ,
+                                    State_La            = 57.700324     ,
+                                    State_StationName   = "VALAND"      ,
+                                    State_ZoomLevel     = 18            ,
+                                };
+    
+                var stations = CreateStations(state.Context, SampleData).ToArray();
+    
+                foreach (var station in stations)
+                {
+                    state.State_Stations.Add(station);
+                }
+    
+                return state;
+            }
+    
         }
     }
 }
-// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs
 // ############################################################################
 
 // ############################################################################
@@ -241,8 +425,9 @@ namespace SASBikes.Common
             void Stop ();
         }
     
-        static partial class Services
+        public static partial class Services
         {
+            public static readonly LogService Log = new LogService()      ;
             public static readonly AppService App = new AppService()      ;
             public static readonly LocatorService Locator = new LocatorService()      ;
             public static readonly StationsService Stations = new StationsService()      ;
@@ -252,9 +437,10 @@ namespace SASBikes.Common
                 var state = SetState(States.Started);
                 if (state == States.Stopped)
                 {
-                    StartService (Stations);
-                    StartService (Locator);
+                    StartService (Log);
                     StartService (App);
+                    StartService (Locator);
+                    StartService (Stations);
                 }
             }
     
@@ -263,9 +449,10 @@ namespace SASBikes.Common
                 var state = SetState(States.Stopped);
                 if (state == States.Started)
                 {
-                    StopService (App);
-                    StopService (Locator);
                     StopService (Stations);
+                    StopService (Locator);
+                    StopService (App);
+                    StopService (Log);
                 }
             }
     
@@ -279,7 +466,7 @@ namespace SASBikes.Common
                     }
                     catch (Exception exc)
                     {
-                        Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
+                        Source.Common.Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
                     }
                 }
                 
@@ -295,7 +482,7 @@ namespace SASBikes.Common
                     }
                     catch (Exception exc)
                     {
-                        Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
+                        Source.Common.Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
                     }
                 }
     
@@ -346,7 +533,7 @@ namespace SASBikes.Common
     
     namespace SASBikes.Common.AppServices
     {
-        sealed class LocatorService : IService
+        public sealed class LocatorService : IService
         {
             Geolocator m_locator;
             Geoposition m_lastKnownPosition;
@@ -402,6 +589,84 @@ namespace SASBikes.Common
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LogService.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    
+    using System;
+    using SASBikes.Common.DataModel;
+    using SASBikes.Common.WindowsAdaptors;
+    
+    namespace SASBikes.Common.AppServices
+    {
+        public sealed class LogService : IService
+        {
+            readonly IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
+            bool m_isRunning;
+    
+            public void Start()
+            {
+                m_isRunning = true;
+                Services.App.Async_Invoke(AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
+            }
+    
+            public void Stop()
+            {
+                m_isRunning = false;
+            }
+    
+            public void Error (string message)
+            {
+                s_errors.Enqueue(message ?? "");
+                if (m_isRunning)
+                {
+                    Services.App.Async_Invoke(AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
+                }
+            }
+    
+            void Log_UpdateErrors()
+            {
+                if (!m_isRunning)
+                {
+                    return;
+                }
+    
+                var state = Services.App.State;
+                if (state == null)
+                {                             
+                    return;
+                }
+    
+                string error;
+                while (s_errors.TryDequeue(out error))
+                {
+                    state.State_Errors.Add(
+                        new Error(state.Context) 
+                        {
+                            Error_TimeStamp = DateTime.Now  ,
+                            Error_Message   = error         ,
+                        });
+                }
+            }
+        }
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LogService.cs
+// ############################################################################
+
+// ############################################################################
 // @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\StationsService.cs
 namespace SASBikes.Common
 {
@@ -429,7 +694,7 @@ namespace SASBikes.Common
     
     namespace SASBikes.Common.AppServices
     {
-        sealed class StationsService : IService
+        public sealed class StationsService : IService
         {
             const int Delay_InitialUpdateStations   =        5   *1000   ;
             const int Delay_UpdateStations          = 5     *60  *1000   ;
@@ -443,10 +708,10 @@ namespace SASBikes.Common
                 m_source = new CancellationTokenSource();
                 var token = m_source.Token;
     
-                m_updateTask = Task
-                        .Delay(Delay_InitialUpdateStations, token)
-                        .ContinueWith(t => UpdateStations(token), token)
-                        ;
+                //m_updateTask = Task
+                //        .Delay(Delay_InitialUpdateStations, token)
+                //        .ContinueWith(t => UpdateStations(token), token)
+                //        ;
             }
     
             public void Stop()
@@ -553,6 +818,201 @@ namespace SASBikes.Common
     }
 }
 // @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\StationsService.cs
+// ############################################################################
+
+// ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\C.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    
+    namespace SASBikes.Common
+    {
+        static class C
+        {
+            public const string ViewModel_ApplicationState = "ViewModel_ApplicationState"  ;
+    
+        }
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\C.cs
+// ############################################################################
+
+// ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Collections\ObservableDictionary.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Windows.Foundation.Collections;
+    
+    
+    namespace SASBikes.Common.Collections
+    {
+        public sealed partial class ObservableDictionary<K, V> : IObservableMap<K, V>
+        {
+            private class ObservableDictionaryChangedEventArgs : IMapChangedEventArgs<K>
+            {
+                public ObservableDictionaryChangedEventArgs(CollectionChange change, K key)
+                {
+                    this.CollectionChange = change;
+                    this.Key = key;
+                }
+    
+                public CollectionChange CollectionChange { get; private set; }
+                public K Key { get; private set; }
+            }
+    
+            private Dictionary<K, V> _dictionary = new Dictionary<K, V>();
+            public event MapChangedEventHandler<K, V> MapChanged;
+    
+            private void InvokeMapChanged(CollectionChange change, K key)
+            {
+                var eventHandler = MapChanged;
+                if (eventHandler != null)
+                {
+                    eventHandler(this, new ObservableDictionaryChangedEventArgs(change, key));
+                }
+            }
+    
+            public void Add(K key, V value)
+            {
+                this._dictionary.Add(key, value);
+                this.InvokeMapChanged(CollectionChange.ItemInserted, key);
+            }
+    
+            public void Add(KeyValuePair<K, V> item)
+            {
+                this.Add(item.Key, item.Value);
+            }
+    
+            public bool Remove(K key)
+            {
+                if (this._dictionary.Remove(key))
+                {
+                    this.InvokeMapChanged(CollectionChange.ItemRemoved, key);
+                    return true;
+                }
+                return false;
+            }
+    
+            public bool Remove(KeyValuePair<K, V> item)
+            {
+                V currentValue;
+                if (this._dictionary.TryGetValue(item.Key, out currentValue) &&
+                    Object.Equals(item.Value, currentValue) && this._dictionary.Remove(item.Key))
+                {
+                    this.InvokeMapChanged(CollectionChange.ItemRemoved, item.Key);
+                    return true;
+                }
+                return false;
+            }
+    
+            public V this[K key]
+            {
+                get
+                {
+                    return this._dictionary[key];
+                }
+                set
+                {
+                    this._dictionary[key] = value;
+                    this.InvokeMapChanged(CollectionChange.ItemChanged, key);
+                }
+            }
+    
+            public void Clear()
+            {
+                var priorKeys = this._dictionary.Keys.ToArray();
+                this._dictionary.Clear();
+                foreach (var key in priorKeys)
+                {
+                    this.InvokeMapChanged(CollectionChange.ItemRemoved, key);
+                }
+            }
+    
+            public ICollection<K> Keys
+            {
+                get { return this._dictionary.Keys; }
+            }
+    
+            public bool ContainsKey(K key)
+            {
+                return this._dictionary.ContainsKey(key);
+            }
+    
+            public bool TryGetValue(K key, out V value)
+            {
+                return this._dictionary.TryGetValue(key, out value);
+            }
+    
+            public ICollection<V> Values
+            {
+                get { return this._dictionary.Values; }
+            }
+    
+            public bool Contains(KeyValuePair<K, V> item)
+            {
+                return this._dictionary.Contains(item);
+            }
+    
+            public int Count
+            {
+                get { return this._dictionary.Count; }
+            }
+    
+            public bool IsReadOnly
+            {
+                get { return false; }
+            }
+    
+            public IEnumerator<KeyValuePair<K, V>> GetEnumerator()
+            {
+                return this._dictionary.GetEnumerator();
+            }
+    
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return this._dictionary.GetEnumerator();
+            }
+    
+            public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex)
+            {
+                int arraySize = array.Length;
+                foreach (var pair in this._dictionary)
+                {
+                    if (arrayIndex >= arraySize) break;
+                    array[arrayIndex++] = pair;
+                }
+            }
+        }
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Collections\ObservableDictionary.cs
 // ############################################################################
 
 // ############################################################################
@@ -792,6 +1252,7 @@ namespace SASBikes.Common
     using System.IO;
     using System.Linq;
     using System.Xml.Linq;
+    using SASBikes.Common.AppServices;
     using SASBikes.Common.Source.Extensions;
     
     namespace SASBikes.Common.DataModel
@@ -920,6 +1381,10 @@ namespace SASBikes.Common
     
             public static string SerializeToString(this State state)
             {
+                if (state == null)
+                {
+                    return "";
+                }
                 var doc = new XDocument(state.Serialize(RootName));
     
                 using (var sw = new StringWriter())
@@ -931,6 +1396,11 @@ namespace SASBikes.Common
     
             public static State UnserializeFromString(this string value)
             {
+                if (value.IsNullOrWhiteSpace())
+                {
+                    value = AppService.SampleData;
+                }
+    
                 var doc = XDocument.Parse(value ?? "");
     
                 var context = new DataModelContext
@@ -3578,7 +4048,7 @@ namespace SASBikes.Common
         static partial class MetaData
         {
             public const string RootPath        = @"https://raw.github.com/";
-            public const string IncludeDate     = @"2013-03-02T10:39:28";
+            public const string IncludeDate     = @"2013-03-03T19:40:25";
     
             public const string Include_0       = @"https://raw.github.com/mrange/T4Include/master/Common/Log.cs";
             public const string Include_1       = @"https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs";
@@ -3600,16 +4070,12 @@ namespace SASBikes.Common
 namespace SASBikes.Common
 {
     
-    using System;
     using SASBikes.Common.AppServices;
-    using SASBikes.Common.DataModel;
-    using SASBikes.Common.WindowsAdaptors;
     
     namespace SASBikes.Common.Source.Common
     {
         static partial class Log
         {
-            readonly static IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
             static partial void Partial_LogMessage(Level level, string message)
             {
                 switch (level)
@@ -3622,31 +4088,11 @@ namespace SASBikes.Common
                     case Level.Error:
                     case Level.Exception:
                     default:
-                        s_errors.Enqueue (message ?? "");
-                        Services.App.Async_Invoke(AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
+                        Services.Log.Error(message ?? "");
                         break;
                 }
             }
     
-            static void Log_UpdateErrors()
-            {
-                var state = Services.App.State;
-                if (state == null)
-                {
-                    return;
-                }
-    
-                string error;
-                while (s_errors.TryDequeue(out error))
-                {
-                    state.State_Errors.Add(
-                        new Error(state.Context) 
-                        {
-                            Error_TimeStamp = DateTime.Now  ,
-                            Error_Message   = error         ,
-                        });
-                }
-            }
         }
     }
 }
@@ -3669,12 +4115,15 @@ namespace SASBikes.Common
     // You must not remove this notice, or any other, from this software.
     // ----------------------------------------------------------------------------------------------
     
+    using System;
+    
     namespace SASBikes.Common.WindowsAdaptors
     {
         partial interface IConcurrentDictionary<TKey, TValue>
         {
             bool TryAdd(TKey key, TValue value);        
             bool TryRemove(TKey key, out TValue value);
+            TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory);
             void Clear ();
         }
     
@@ -3712,9 +4161,31 @@ namespace SASBikes.Common
                 }
             }
     
+            public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+            {
+                lock (m_dictionary)
+                {
+                    TValue value;
+                    if (m_dictionary.TryGetValue (key, out value))
+                    {
+                        var newValue = updateValueFactory(key, value);
+                        m_dictionary[key] = newValue;
+                        return newValue;
+                    }
+                    else
+                    {
+                        m_dictionary.Add (key, addValue);
+                        return addValue;
+                    }
+                }
+            }
+    
             public void Clear()
             {
-                m_dictionary.Clear();
+                lock (m_dictionary)
+                {
+                    m_dictionary.Clear();
+                }
             }
         }
     #else
@@ -3729,6 +4200,11 @@ namespace SASBikes.Common
             public bool TryRemove(TKey key, out TValue value)
             {
                 return m_dictionary.TryRemove(key, out value);
+            }
+    
+            public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+            {
+                return m_dictionary.AddOrUpdate(key, addValue, updateValueFactory);
             }
     
             public void Clear()
@@ -3762,6 +4238,7 @@ namespace SASBikes.Common
     {
         partial interface IConcurrentQueue<TValue>
         {
+            int Count { get; }
             void Enqueue(TValue value);
             bool TryDequeue(out TValue value);
         }
@@ -3769,8 +4246,19 @@ namespace SASBikes.Common
     #if SILVERLIGHT || WINDOWS_PHONE
         sealed partial class ConcurrentQueue<TValue> : IConcurrentQueue<TValue>
         {
-            readonly System.Collections.Generic.Queue<TValue> m_queue = new System.Collections.Generic.Queue<TValue> ();
+            readonly System.Collections.Generic.Queue<TValue> m_queue = new System.Collections.Generic.Queue<TValue>();
     
+    
+            public int Count
+            {
+                get
+                {
+                    lock (m_queue)
+                    {
+                        return m_queue.Count;
+                    }
+                }
+            }
     
             public void Enqueue(TValue value)
             {
@@ -3793,7 +4281,7 @@ namespace SASBikes.Common
                     {
                         value = default(TValue);
                         return false;
-                        
+    
                     }
                 }
             }
@@ -3803,6 +4291,8 @@ namespace SASBikes.Common
         {
             readonly System.Collections.Concurrent.ConcurrentQueue<TValue> m_queue = new System.Collections.Concurrent.ConcurrentQueue<TValue> ();
     
+    
+            public int Count { get { return m_queue.Count; }}
     
             public void Enqueue(TValue value)
             {
@@ -3826,26 +4316,29 @@ namespace SASBikes.Common.Include
     static partial class MetaData
     {
         public const string RootPath        = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.WP8.Common\..\SASBikes.Common";
-        public const string IncludeDate     = @"2013-03-03T09:26:47";
+        public const string IncludeDate     = @"2013-03-03T19:48:48";
 
-        public const string Include_0       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppStateService.cs";
+        public const string Include_0       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs";
         public const string Include_1       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\Generated_Services.cs";
         public const string Include_2       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LocatorService.cs";
-        public const string Include_3       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\StationsService.cs";
-        public const string Include_4       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModel.cs";
-        public const string Include_5       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelBase.cs";
-        public const string Include_6       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelCollection.cs";
-        public const string Include_7       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelContext.cs";
-        public const string Include_8       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelSerializer.cs";
-        public const string Include_9       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\Generated_DataModel.cs";
-        public const string Include_10       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\IDataModelEntity.cs";
-        public const string Include_11       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\IUnserializeErrorReporter.cs";
-        public const string Include_12       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Extensions.cs";
-        public const string Include_13       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\GeoCoordinate.cs";
-        public const string Include_14       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Include_T4Include.cs";
-        public const string Include_15       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Internal\Log.cs";
-        public const string Include_16       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs";
-        public const string Include_17       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs";
+        public const string Include_3       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\LogService.cs";
+        public const string Include_4       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\StationsService.cs";
+        public const string Include_5       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\C.cs";
+        public const string Include_6       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Collections\ObservableDictionary.cs";
+        public const string Include_7       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModel.cs";
+        public const string Include_8       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelBase.cs";
+        public const string Include_9       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelCollection.cs";
+        public const string Include_10       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelContext.cs";
+        public const string Include_11       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\DataModelSerializer.cs";
+        public const string Include_12       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\Generated_DataModel.cs";
+        public const string Include_13       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\IDataModelEntity.cs";
+        public const string Include_14       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\DataModel\IUnserializeErrorReporter.cs";
+        public const string Include_15       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Extensions.cs";
+        public const string Include_16       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\GeoCoordinate.cs";
+        public const string Include_17       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Include_T4Include.cs";
+        public const string Include_18       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Internal\Log.cs";
+        public const string Include_19       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs";
+        public const string Include_20       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs";
     }
 }
 // ############################################################################

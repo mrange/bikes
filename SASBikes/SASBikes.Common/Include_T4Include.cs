@@ -1168,7 +1168,7 @@ namespace SASBikes.Common.Include
     static partial class MetaData
     {
         public const string RootPath        = @"https://raw.github.com/";
-        public const string IncludeDate     = @"2013-03-02T10:39:28";
+        public const string IncludeDate     = @"2013-03-03T19:40:25";
 
         public const string Include_0       = @"https://raw.github.com/mrange/T4Include/master/Common/Log.cs";
         public const string Include_1       = @"https://raw.github.com/mrange/T4Include/master/Extensions/BasicExtensions.cs";

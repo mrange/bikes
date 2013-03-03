@@ -10,12 +10,15 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using System;
+
 namespace SASBikes.Common.WindowsAdaptors
 {
     partial interface IConcurrentDictionary<TKey, TValue>
     {
         bool TryAdd(TKey key, TValue value);        
         bool TryRemove(TKey key, out TValue value);
+        TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory);
         void Clear ();
     }
 
@@ -53,9 +56,31 @@ namespace SASBikes.Common.WindowsAdaptors
             }
         }
 
+        public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            lock (m_dictionary)
+            {
+                TValue value;
+                if (m_dictionary.TryGetValue (key, out value))
+                {
+                    var newValue = updateValueFactory(key, value);
+                    m_dictionary[key] = newValue;
+                    return newValue;
+                }
+                else
+                {
+                    m_dictionary.Add (key, addValue);
+                    return addValue;
+                }
+            }
+        }
+
         public void Clear()
         {
-            m_dictionary.Clear();
+            lock (m_dictionary)
+            {
+                m_dictionary.Clear();
+            }
         }
     }
 #else
@@ -70,6 +95,11 @@ namespace SASBikes.Common.WindowsAdaptors
         public bool TryRemove(TKey key, out TValue value)
         {
             return m_dictionary.TryRemove(key, out value);
+        }
+
+        public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            return m_dictionary.AddOrUpdate(key, addValue, updateValueFactory);
         }
 
         public void Clear()

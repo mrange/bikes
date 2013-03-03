@@ -14,6 +14,7 @@ namespace SASBikes.Common.WindowsAdaptors
 {
     partial interface IConcurrentQueue<TValue>
     {
+        int Count { get; }
         void Enqueue(TValue value);
         bool TryDequeue(out TValue value);
     }
@@ -21,8 +22,19 @@ namespace SASBikes.Common.WindowsAdaptors
 #if SILVERLIGHT || WINDOWS_PHONE
     sealed partial class ConcurrentQueue<TValue> : IConcurrentQueue<TValue>
     {
-        readonly System.Collections.Generic.Queue<TValue> m_queue = new System.Collections.Generic.Queue<TValue> ();
+        readonly System.Collections.Generic.Queue<TValue> m_queue = new System.Collections.Generic.Queue<TValue>();
 
+
+        public int Count
+        {
+            get
+            {
+                lock (m_queue)
+                {
+                    return m_queue.Count;
+                }
+            }
+        }
 
         public void Enqueue(TValue value)
         {
@@ -45,7 +57,7 @@ namespace SASBikes.Common.WindowsAdaptors
                 {
                     value = default(TValue);
                     return false;
-                    
+
                 }
             }
         }
@@ -55,6 +67,8 @@ namespace SASBikes.Common.WindowsAdaptors
     {
         readonly System.Collections.Concurrent.ConcurrentQueue<TValue> m_queue = new System.Collections.Concurrent.ConcurrentQueue<TValue> ();
 
+
+        public int Count { get { return m_queue.Count; }}
 
         public void Enqueue(TValue value)
         {

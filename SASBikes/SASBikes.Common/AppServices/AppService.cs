@@ -15,17 +15,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Xml.Linq;
 using SASBikes.Common.Collections;
 using SASBikes.Common.DataModel;
 using SASBikes.Common.Source.Common;
 using SASBikes.Common.Source.Extensions;
 using SASBikes.Common.WindowsAdaptors;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
 
 namespace SASBikes.Common.AppServices
 {
+
     public enum AsyncGroup
     {
         Model_UpdateStations            ,
@@ -124,7 +127,28 @@ namespace SASBikes.Common.AppServices
         public CoreWindow     Window    ;
         public CoreDispatcher Dispatcher;
 
-        readonly IConcurrentDictionary<AsyncGroup, bool> m_dispatchedAsyncCalls = new ConcurrentDictionary<AsyncGroup, bool>();
+        enum DispatcherState
+        {
+            Idle                ,
+            Triggered           ,
+            Dispatching         ,
+        }
+
+        sealed class DispatcherStateManager
+        {
+            int m_state;
+
+            public bool Edge(DispatcherState from, DispatcherState to)
+            {
+                var t = (int) to;
+                var f = (int) from;
+                return Interlocked.CompareExchange (ref m_state, t, f) == f;
+            }
+        }
+
+        readonly DispatcherStateManager m_dispatcherState = new DispatcherStateManager (); 
+        readonly IConcurrentQueue<Tuple<AsyncGroup, Action>> m_dispatchedAsyncCalls = new ConcurrentQueue<Tuple<AsyncGroup, Action>>();
+        IAsyncAction m_currentTask;
 
         public void Start()
         {
@@ -134,12 +158,10 @@ namespace SASBikes.Common.AppServices
             {
                 State= CreateEmptyState()            ;
             }
-            m_dispatchedAsyncCalls.Clear()                  ;
         }
 
         public void Stop()
         {
-            m_dispatchedAsyncCalls.Clear()                  ;
             Dispatcher  = null                              ;
             Window      = null                              ;
         }
@@ -151,6 +173,8 @@ namespace SASBikes.Common.AppServices
                 return;
             }
 
+            m_dispatchedAsyncCalls.Enqueue(Tuple.Create (group, action));
+
             var dispatcher = Dispatcher;
 
             if (dispatcher == null)
@@ -158,28 +182,74 @@ namespace SASBikes.Common.AppServices
                 return;
             }
 
-            if (!m_dispatchedAsyncCalls.TryAdd(group, true))
+            StartDispatcher(dispatcher);
+        }
+
+        void StartDispatcher(CoreDispatcher dispatcher)
+        {
+            if (m_dispatcherState.Edge(DispatcherState.Idle, DispatcherState.Triggered))
             {
-                return;
+                m_currentTask = dispatcher.RunIdleAsync(RunIdle_DispatchActions);
+            }
+        }
+
+        void RunIdle_DispatchActions(IdleDispatchedHandlerArgs e)
+        {
+            if (!m_dispatcherState.Edge(DispatcherState.Triggered, DispatcherState.Dispatching))
+            {
+                return;    
             }
 
-            var task = dispatcher.RunIdleAsync(
-                e =>
+            try
+            {
+                var groupedActions = new Dictionary<AsyncGroup, Tuple<Action, int>> (); 
+
+                for(;;)
+                {
+                    Tuple<AsyncGroup, Action> value;
+                    groupedActions.Clear();
+                    while (m_dispatchedAsyncCalls.TryDequeue(out value))
+                    {
+                        if (value.Item2 != null)
+                        {
+                            groupedActions[value.Item1] = Tuple.Create(value.Item2, groupedActions.Count);
+                        }
+                    }
+
+                    if (groupedActions.Count == 0)
+                    {
+                        return;
+                    }
+
+                    foreach (var kv in groupedActions.OrderBy(kv => kv.Value.Item2))
                     {
                         try
                         {
-                            action();
+                            kv.Value.Item1();
                         }
                         catch (Exception exc)
                         {
-                            Log.Exception ("Failed to dispatch async invoke {0}: {1}", group, exc);
+                            Log.Exception ("Failed to dispatch async action {0}: {1}", kv.Key, exc);                
                         }
-                        finally
-                        {
-                            bool val;
-                            m_dispatchedAsyncCalls.TryRemove(group, out val);
-                        }
-                    });
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                Log.Exception ("Failed to dispatch async actions: {0}", exc);                
+            }
+            finally
+            {
+                m_currentTask = null;
+                m_dispatcherState.Edge(DispatcherState.Dispatching, DispatcherState.Idle);
+
+                var dispatcher = Dispatcher;
+                if (dispatcher != null && m_dispatchedAsyncCalls.Count > 0)
+                {
+                    StartDispatcher(dispatcher);
+                }
+
+            }
         }
 
         public void UpdateStations (string xmlData)
