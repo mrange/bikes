@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SASBikes", "SASBikes\SASBikes.csproj", "{3AF0C3FD-45B4-4F71-B069-FA796E24F366}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Windows Store", "1. Windows Store", "{09EEC38C-D931-42DA-9708-C628F080822C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SASBikes.WP8", "SASBikes.WP8\SASBikes.WP8.csproj", "{863BC33D-0A72-4FA5-A463-9F4BA9EA2007}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Windows Store", "1. Windows Store", "{09EEC38C-D931-42DA-9708-C628F080822C}"
