@@ -15,7 +15,8 @@
 using System.Collections.Specialized;
 using System.Linq;
 using Bing.Maps;
-using SASBikes.DataModel;
+using SASBikes.Common.AppServices;
+using SASBikes.Common.DataModel;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
@@ -111,7 +112,7 @@ namespace SASBikes.Controls
 
         void Async_UpdateStations()
         {
-            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMapStations, Map_UpdateMapStations);
+            Services.App.Async_Invoke(AsyncGroup.Map_UpdateMapStations, Map_UpdateMapStations);
         }
 
         void Map_UpdateMapStations()
@@ -139,7 +140,7 @@ namespace SASBikes.Controls
 
         void Async_UpateView()
         {
-            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateView, Map_UpdateView);
+            Services.App.Async_Invoke(AsyncGroup.Map_UpdateView, Map_UpdateView);
         }
 
         void Map_UpdateView()
@@ -149,12 +150,12 @@ namespace SASBikes.Controls
 
         partial void Changed_My_La(double oldValue, double newValue)
         {
-            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
+            Services.App.Async_Invoke(AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
         }
 
         partial void Changed_My_Lo(double oldValue, double newValue)
         {
-            App.Value.Async_Invoke(App.AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
+            Services.App.Async_Invoke(AsyncGroup.Map_UpdateMyPosition, Map_UpdateMyPosition);
         }
 
         void Map_UpdateMyPosition()

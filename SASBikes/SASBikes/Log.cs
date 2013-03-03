@@ -14,43 +14,11 @@
 
 using System;
 using System.Collections.Concurrent;
-using SASBikes.DataModel;
 
 namespace SASBikes.Source.Common
 {
     static partial class Log
     {
-        static ConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
-        static partial void Partial_LogMessage(Log.Level level, string message)
-        {
-            switch (level)
-            {
-                case Level.Success:
-                case Level.HighLight:
-                case Level.Info:
-                case Level.Warning:
-                    break;
-                case Level.Error:
-                case Level.Exception:
-                default:
-                    s_errors.Enqueue (message ?? "");
-                    App.Value.Async_Invoke(App.AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
-                    break;
-            }
-        }
-
-        static void Log_UpdateErrors()
-        {
-            string error;
-            while (s_errors.TryDequeue(out error))
-            {
-                App.Value.AppState.State_Errors.Add(
-                    new Error(App.Value.AppState.Context) 
-                    {
-                        Error_TimeStamp = DateTime.Now  ,
-                        Error_Message   = error         ,
-                    });
-            }
-        }
+        // TODO:
     }
 }

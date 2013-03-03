@@ -36,7 +36,7 @@ namespace SASBikes.Common.AppServices
         void Stop ();
     }
 
-    static partial class Services
+    public static partial class Services
     {
         public static readonly AppService App = new AppService()      ;
         public static readonly LocatorService Locator = new LocatorService()      ;

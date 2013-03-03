@@ -11,8 +11,8 @@
 // ----------------------------------------------------------------------------------------------
 
 using Bing.Maps;
+using SASBikes.Common.DataModel;
 using Windows.UI.Xaml.Media;
-using SASBikes.DataModel;
 
 <#
     // -------------------------------------------------------------------------
@@ -57,4 +57,4 @@ using SASBikes.DataModel;
     };
     // ------------------------------------------------------------------------
 #>
-<#@ include file="$(ProjectDir)\T4\DependencyPropertiesWinRT.ttinclude" #>
+<#@ include file="$(SolutionDir)\T4\DependencyPropertiesWinRT.ttinclude" #>

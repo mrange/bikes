@@ -33,4 +33,4 @@
     };
     // ------------------------------------------------------------------------
 #>
-<#@ include file="$(ProjectDir)\T4\DependencyPropertiesWinRT.ttinclude" #>
+<#@ include file="$(SolutionDir)\T4\DependencyPropertiesWinRT.ttinclude" #>

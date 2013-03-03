@@ -118,13 +118,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppServices\Generated_Services.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Generated_Services.tt</DependentUpon>
-    </Compile>
-    <Compile Include="AppServices\LocatorService.cs" />
-    <Compile Include="AppServices\StationsService.cs" />
     <Compile Include="Controls\BikeMap.xaml.cs">
       <DependentUpon>BikeMap.xaml</DependentUpon>
     </Compile>
@@ -134,8 +127,6 @@
     <Compile Include="Controls\ErrorIndicator.xaml.cs">
       <DependentUpon>ErrorIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DataModel\DataModel.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Generated_DependencyProperties.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -156,25 +147,6 @@
     <Compile Include="Pages\StationsPage.xaml.cs">
       <DependentUpon>StationsPage.xaml</DependentUpon>
     </Compile>
-    <None Include="AppServices\Generated_Services.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Generated_Services.cs</LastGenOutput>
-    </None>
-    <None Include="DataModel\Generated_DataModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Generated_DataModel.cs</LastGenOutput>
-    </None>
-    <Compile Include="DataModel\DataModelBase.cs" />
-    <Compile Include="DataModel\DataModelCollection.cs" />
-    <Compile Include="DataModel\DataModelContext.cs" />
-    <Compile Include="DataModel\Generated_DataModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Generated_DataModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DataModel\DataModelSerializer.cs" />
-    <Compile Include="DataModel\IDataModelEntity.cs" />
-    <Compile Include="DataModel\IUnserializeErrorReporter.cs" />
     <Compile Include="Include_T4Include.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -206,9 +178,6 @@
     </None>
     <None Include="packages.config" />
     <None Include="SASBikes_TemporaryKey.pfx" />
-    <None Include="T4\DataModel.ttinclude" />
-    <None Include="T4\DependencyPropertiesWinRT.ttinclude" />
-    <None Include="T4\Header.ttinclude" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Logo.png" />
@@ -251,6 +220,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SASBikes.Common\SASBikes.Common.csproj">
+      <Project>{fed42582-15e1-415e-a837-78d547f27ed5}</Project>
+      <Name>SASBikes.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>

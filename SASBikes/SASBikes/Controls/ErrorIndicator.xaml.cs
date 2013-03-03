@@ -16,9 +16,8 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using SASBikes.DataModel;
+using SASBikes.Common.DataModel;
 using SASBikes.Pages;
-using SASBikes.Source.Common;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
