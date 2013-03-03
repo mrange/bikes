@@ -112,14 +112,16 @@ namespace SASBikes.Common.AppServices
         {
             Window      = CoreWindow.GetForCurrentThread()  ;
             Dispatcher  = Window.Dispatcher                 ;
-            State       = CreateEmptyState()                ;
+            if (State == null)
+            {
+                State       = CreateEmptyState()            ;
+            }
             m_dispatchedAsyncCalls.Clear()                  ;
         }
 
         public void Stop()
         {
             m_dispatchedAsyncCalls.Clear()                  ;
-            State       = null                              ;
             Dispatcher  = null                              ;
             Window      = null                              ;
         }

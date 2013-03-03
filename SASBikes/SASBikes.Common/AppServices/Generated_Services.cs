@@ -48,10 +48,10 @@ namespace SASBikes.Common.AppServices
             var state = SetState(States.Started);
             if (state == States.Stopped)
             {
-                StartService (Stations);
-                StartService (Locator);
-                StartService (App);
                 StartService (Log);
+                StartService (App);
+                StartService (Locator);
+                StartService (Stations);
             }
         }
 
@@ -60,10 +60,10 @@ namespace SASBikes.Common.AppServices
             var state = SetState(States.Stopped);
             if (state == States.Started)
             {
-                StopService (Log);
-                StopService (App);
-                StopService (Locator);
                 StopService (Stations);
+                StopService (Locator);
+                StopService (App);
+                StopService (Log);
             }
         }
 
@@ -77,7 +77,7 @@ namespace SASBikes.Common.AppServices
                 }
                 catch (Exception exc)
                 {
-                   Source.Common.Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
+                    Source.Common.Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
                 }
             }
             

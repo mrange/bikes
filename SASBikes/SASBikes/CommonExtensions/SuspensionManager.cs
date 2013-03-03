@@ -10,6 +10,7 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
+using SASBikes.Common.AppServices;
 using SASBikes.Common.DataModel;
 using SASBikes.Source.Extensions;
 
@@ -19,20 +20,18 @@ namespace SASBikes.Common
     {
         const string ApplicationState = "ApplicationState";
 
-        public static State AppState { get; set; }
-
         static partial void Loading_SessionState()
         {
             var applicationState = SessionState.Lookup(ApplicationState) as string;
             if (!applicationState.IsNullOrEmpty())
             {
-                AppState = applicationState.UnserializeFromString();
+                Services.App.State = applicationState.UnserializeFromString();
             }
         }
 
         static partial void Saving_SessionState()
         {
-            SessionState[ApplicationState] = AppState.SerializeToString();
+            SessionState[ApplicationState] = Services.App.State.SerializeToString();
         }
 
     }

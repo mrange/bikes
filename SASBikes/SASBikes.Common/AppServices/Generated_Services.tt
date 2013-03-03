@@ -65,7 +65,7 @@ namespace <#=Namespace#>
             if (state == States.Stopped)
             {
 <#
-    foreach (var serviceDef in Model.Reverse ())
+    foreach (var serviceDef in Model)
     {
 #>
                 StartService (<#=serviceDef.Name#>);
@@ -81,7 +81,7 @@ namespace <#=Namespace#>
             if (state == States.Started)
             {
 <#
-    foreach (var serviceDef in Model)
+    foreach (var serviceDef in Model.Reverse ())
     {
 #>
                 StopService (<#=serviceDef.Name#>);
@@ -101,7 +101,7 @@ namespace <#=Namespace#>
                 }
                 catch (Exception exc)
                 {
-                    Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
+                    Source.Common.Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
                 }
             }
             
@@ -117,7 +117,7 @@ namespace <#=Namespace#>
                 }
                 catch (Exception exc)
                 {
-                    Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
+                    Source.Common.Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
                 }
             }
 
