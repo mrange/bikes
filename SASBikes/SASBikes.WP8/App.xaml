@@ -4,12 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    
-    >
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <!--Application Resources-->
     <Application.Resources>
-        <local:LocalizedStrings xmlns:local="clr-namespace:SASBikes.WP8" x:Key="LocalizedStrings"/>
+        <ResourceDictionary>
+            <local:LocalizedStrings xmlns:local="clr-namespace:SASBikes.WP8" x:Key="LocalizedStrings"/>
+            <system:String x:Key="AppName">Styr&amp;Ställ (unofficial)</system:String>
+            <system:String x:Key="ErrorsPage">Errors</system:String>
+            <system:String x:Key="TrackMyPosition">Följ mig</system:String>
+            <system:String x:Key="FindNearestStation">Finn närmaste station</system:String>
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

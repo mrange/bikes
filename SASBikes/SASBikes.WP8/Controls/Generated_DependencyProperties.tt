@@ -1,0 +1,53 @@
+﻿// ----------------------------------------------------------------------------------------------
+// Copyright (c) Mårten Rånge.
+// ----------------------------------------------------------------------------------------------
+// This source code is subject to terms and conditions of the Microsoft Public License. A 
+// copy of the license can be found in the License.html file at the root of this distribution. 
+// If you cannot locate the  Microsoft Public License, please send an email to 
+// dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+//  by the terms of the Microsoft Public License.
+// ----------------------------------------------------------------------------------------------
+// You must not remove this notice, or any other, from this software.
+// ----------------------------------------------------------------------------------------------
+
+using System.Windows.Media;
+using SASBikes.Common.SASBikes.Common;
+using SASBikes.Common.SASBikes.Common.DataModel;
+
+
+<#
+    // -------------------------------------------------------------------------
+    //  ___      ___     ______    ________    _______  ___
+    // |"  \    /"  |   /    " \  |"      "\  /"     "||"  |
+    //  \   \  //   |  // ____  \ (.  ___  :)(: ______)||  |
+    //  /\\  \/.    | /  /    ) :)|: \   ) || \/    |  |:  |
+    // |: \.        |(: (____/ // (| (___\ || // ___)_  \  |___
+    // |.  \    /:  | \        /  |:       :)(:      "|( \_|:  \
+    // |___|\__/|___|  \"_____/   (________/  \_______) \_______)
+    // -------------------------------------------------------------------------
+    Namespace ="SASBikes.WP8.Controls";
+
+    Model = new []
+    {
+        new ClassDefinition ("BikeMap"                                                                              )
+            {
+                P ("double"                                 , "My_Lo"                                               , defaultValue:"C.Default.My_Lo"    ),
+                P ("double"                                 , "My_La"                                               , defaultValue:"C.Default.My_La"    ),
+                P ("double"                                 , "View_Lo"                                             , defaultValue:"C.Default.View_Lo"  ),
+                P ("double"                                 , "View_La"                                             , defaultValue:"C.Default.View_La"  ),
+                P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"C.Default.View_Zoom"),
+                P ("StationList"                            , "Stations"                                            ),
+            },
+        new ClassDefinition ("StationPushPin"                                                                       )
+            {
+                P ("bool"           , "IsOpen"                                      ),
+                P ("string"         , "StationName"                                 ),
+                P ("System.Device.Location.GeoCoordinate"  , "Location"                                    ),
+
+                P ("Brush"          , "StationBackground"                           , flags:PropertyFlags.IsReadOnly    ),
+
+            },
+    };
+    // ------------------------------------------------------------------------
+#>
+<#@ include file="$(SolutionDir)\T4\DependencyPropertiesWinRT.ttinclude" #>

@@ -10,10 +10,10 @@
 // You must not remove this notice, or any other, from this software.
 // ----------------------------------------------------------------------------------------------
 
-using Bing.Maps;
-using SASBikes.Common;
-using SASBikes.Common.DataModel;
-using Windows.UI.Xaml.Media;
+using System.Windows.Media;
+using SASBikes.Common.SASBikes.Common;
+using SASBikes.Common.SASBikes.Common.DataModel;
+
 
 // ############################################################################
 // #                                                                          #
@@ -36,7 +36,7 @@ using Windows.UI.Xaml.Media;
 // ReSharper disable RedundantAssignment
 // ReSharper disable RedundantUsingDirective
 
-namespace SASBikes.Controls
+namespace SASBikes.WP8.Controls
 {
     using System.Collections;
     using System.Collections.ObjectModel;
@@ -47,201 +47,6 @@ namespace SASBikes.Controls
 #if NETFX_CORE
     using Windows.UI.Xaml;
 #endif
-
-    // ------------------------------------------------------------------------
-    // StationPushPin
-    // ------------------------------------------------------------------------
-    partial class StationPushPin
-    {
-        #region Uninteresting generated code
-        public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register (
-            "IsOpen",
-            typeof (bool),
-            typeof (StationPushPin),
-            new PropertyMetadata (
-                default (bool),
-                Changed_IsOpen
-            ));
-
-        static void Changed_IsOpen (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as StationPushPin;
-            if (instance != null)
-            {
-                var oldValue = (bool)eventArgs.OldValue;
-                var newValue = (bool)eventArgs.NewValue;
-
-                instance.Changed_IsOpen (oldValue, newValue);
-            }
-        }
-
-        public static readonly DependencyProperty StationNameProperty = DependencyProperty.Register (
-            "StationName",
-            typeof (string),
-            typeof (StationPushPin),
-            new PropertyMetadata (
-                default (string),
-                Changed_StationName
-            ));
-
-        static void Changed_StationName (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as StationPushPin;
-            if (instance != null)
-            {
-                var oldValue = (string)eventArgs.OldValue;
-                var newValue = (string)eventArgs.NewValue;
-
-                instance.Changed_StationName (oldValue, newValue);
-            }
-        }
-
-        public static readonly DependencyProperty LocationProperty = DependencyProperty.Register (
-            "Location",
-            typeof (Location),
-            typeof (StationPushPin),
-            new PropertyMetadata (
-                default (Location),
-                Changed_Location
-            ));
-
-        static void Changed_Location (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as StationPushPin;
-            if (instance != null)
-            {
-                var oldValue = (Location)eventArgs.OldValue;
-                var newValue = (Location)eventArgs.NewValue;
-
-                instance.Changed_Location (oldValue, newValue);
-            }
-        }
-
-        public static readonly DependencyProperty StationBackgroundProperty = DependencyProperty.Register (
-            "StationBackground",
-            typeof (Brush),
-            typeof (StationPushPin),
-            new PropertyMetadata (
-                default (Brush),
-                Changed_StationBackground
-            ));
-
-        static void Changed_StationBackground (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as StationPushPin;
-            if (instance != null)
-            {
-                var oldValue = (Brush)eventArgs.OldValue;
-                var newValue = (Brush)eventArgs.NewValue;
-
-                instance.Changed_StationBackground (oldValue, newValue);
-            }
-        }
-
-        #endregion
-
-        // --------------------------------------------------------------------
-        // Constructor
-        // --------------------------------------------------------------------
-        public StationPushPin ()
-        {
-            Constructed__StationPushPin ();
-        }
-        // --------------------------------------------------------------------
-        partial void Constructed__StationPushPin ();
-        // --------------------------------------------------------------------
-
-
-        // --------------------------------------------------------------------
-        // Properties
-        // --------------------------------------------------------------------
-
-           
-        // --------------------------------------------------------------------
-        public bool IsOpen
-        {
-            get
-            {
-                return (bool)GetValue (IsOpenProperty);
-            }
-            set
-            {
-                if (IsOpen != value)
-                {
-                    SetValue (IsOpenProperty, value);
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        partial void Changed_IsOpen (bool oldValue, bool newValue);
-        // --------------------------------------------------------------------
-
-
-           
-        // --------------------------------------------------------------------
-        public string StationName
-        {
-            get
-            {
-                return (string)GetValue (StationNameProperty);
-            }
-            set
-            {
-                if (StationName != value)
-                {
-                    SetValue (StationNameProperty, value);
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        partial void Changed_StationName (string oldValue, string newValue);
-        // --------------------------------------------------------------------
-
-
-           
-        // --------------------------------------------------------------------
-        public Location Location
-        {
-            get
-            {
-                return (Location)GetValue (LocationProperty);
-            }
-            set
-            {
-                if (Location != value)
-                {
-                    SetValue (LocationProperty, value);
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        partial void Changed_Location (Location oldValue, Location newValue);
-        // --------------------------------------------------------------------
-
-
-           
-        // --------------------------------------------------------------------
-        public Brush StationBackground
-        {
-            get
-            {
-                return (Brush)GetValue (StationBackgroundProperty);
-            }
-            private set
-            {
-                if (StationBackground != value)
-                {
-                    SetValue (StationBackgroundProperty, value);
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        partial void Changed_StationBackground (Brush oldValue, Brush newValue);
-        // --------------------------------------------------------------------
-
-
-    }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     // BikeMap
@@ -523,92 +328,92 @@ namespace SASBikes.Controls
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    // ErrorIndicator
+    // StationPushPin
     // ------------------------------------------------------------------------
-    partial class ErrorIndicator
+    partial class StationPushPin
     {
         #region Uninteresting generated code
-        public static readonly DependencyProperty ErrorsProperty = DependencyProperty.Register (
-            "Errors",
-            typeof (ErrorList),
-            typeof (ErrorIndicator),
+        public static readonly DependencyProperty IsOpenProperty = DependencyProperty.Register (
+            "IsOpen",
+            typeof (bool),
+            typeof (StationPushPin),
             new PropertyMetadata (
-                default (ErrorList),
-                Changed_Errors
+                default (bool),
+                Changed_IsOpen
             ));
 
-        static void Changed_Errors (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        static void Changed_IsOpen (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            var instance = dependencyObject as ErrorIndicator;
+            var instance = dependencyObject as StationPushPin;
             if (instance != null)
             {
-                var oldValue = (ErrorList)eventArgs.OldValue;
-                var newValue = (ErrorList)eventArgs.NewValue;
+                var oldValue = (bool)eventArgs.OldValue;
+                var newValue = (bool)eventArgs.NewValue;
 
-                instance.Changed_Errors (oldValue, newValue);
+                instance.Changed_IsOpen (oldValue, newValue);
             }
         }
 
-        public static readonly DependencyProperty ErrorCountProperty = DependencyProperty.Register (
-            "ErrorCount",
-            typeof (int),
-            typeof (ErrorIndicator),
-            new PropertyMetadata (
-                default (int),
-                Changed_ErrorCount
-            ));
-
-        static void Changed_ErrorCount (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as ErrorIndicator;
-            if (instance != null)
-            {
-                var oldValue = (int)eventArgs.OldValue;
-                var newValue = (int)eventArgs.NewValue;
-
-                instance.Changed_ErrorCount (oldValue, newValue);
-            }
-        }
-
-        public static readonly DependencyProperty ErrorTextProperty = DependencyProperty.Register (
-            "ErrorText",
+        public static readonly DependencyProperty StationNameProperty = DependencyProperty.Register (
+            "StationName",
             typeof (string),
-            typeof (ErrorIndicator),
+            typeof (StationPushPin),
             new PropertyMetadata (
                 default (string),
-                Changed_ErrorText
+                Changed_StationName
             ));
 
-        static void Changed_ErrorText (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        static void Changed_StationName (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            var instance = dependencyObject as ErrorIndicator;
+            var instance = dependencyObject as StationPushPin;
             if (instance != null)
             {
                 var oldValue = (string)eventArgs.OldValue;
                 var newValue = (string)eventArgs.NewValue;
 
-                instance.Changed_ErrorText (oldValue, newValue);
+                instance.Changed_StationName (oldValue, newValue);
             }
         }
 
-        public static readonly DependencyProperty ErrorTextVisibilityProperty = DependencyProperty.Register (
-            "ErrorTextVisibility",
-            typeof (Visibility),
-            typeof (ErrorIndicator),
+        public static readonly DependencyProperty LocationProperty = DependencyProperty.Register (
+            "Location",
+            typeof (System.Device.Location.GeoCoordinate),
+            typeof (StationPushPin),
             new PropertyMetadata (
-                default (Visibility),
-                Changed_ErrorTextVisibility
+                default (System.Device.Location.GeoCoordinate),
+                Changed_Location
             ));
 
-        static void Changed_ErrorTextVisibility (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        static void Changed_Location (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            var instance = dependencyObject as ErrorIndicator;
+            var instance = dependencyObject as StationPushPin;
             if (instance != null)
             {
-                var oldValue = (Visibility)eventArgs.OldValue;
-                var newValue = (Visibility)eventArgs.NewValue;
+                var oldValue = (System.Device.Location.GeoCoordinate)eventArgs.OldValue;
+                var newValue = (System.Device.Location.GeoCoordinate)eventArgs.NewValue;
 
-                instance.Changed_ErrorTextVisibility (oldValue, newValue);
+                instance.Changed_Location (oldValue, newValue);
+            }
+        }
+
+        public static readonly DependencyProperty StationBackgroundProperty = DependencyProperty.Register (
+            "StationBackground",
+            typeof (Brush),
+            typeof (StationPushPin),
+            new PropertyMetadata (
+                default (Brush),
+                Changed_StationBackground
+            ));
+
+        static void Changed_StationBackground (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            var instance = dependencyObject as StationPushPin;
+            if (instance != null)
+            {
+                var oldValue = (Brush)eventArgs.OldValue;
+                var newValue = (Brush)eventArgs.NewValue;
+
+                instance.Changed_StationBackground (oldValue, newValue);
             }
         }
 
@@ -617,12 +422,12 @@ namespace SASBikes.Controls
         // --------------------------------------------------------------------
         // Constructor
         // --------------------------------------------------------------------
-        public ErrorIndicator ()
+        public StationPushPin ()
         {
-            Constructed__ErrorIndicator ();
+            Constructed__StationPushPin ();
         }
         // --------------------------------------------------------------------
-        partial void Constructed__ErrorIndicator ();
+        partial void Constructed__StationPushPin ();
         // --------------------------------------------------------------------
 
 
@@ -632,85 +437,85 @@ namespace SASBikes.Controls
 
            
         // --------------------------------------------------------------------
-        public ErrorList Errors
+        public bool IsOpen
         {
             get
             {
-                return (ErrorList)GetValue (ErrorsProperty);
+                return (bool)GetValue (IsOpenProperty);
             }
             set
             {
-                if (Errors != value)
+                if (IsOpen != value)
                 {
-                    SetValue (ErrorsProperty, value);
+                    SetValue (IsOpenProperty, value);
                 }
             }
         }
         // --------------------------------------------------------------------
-        partial void Changed_Errors (ErrorList oldValue, ErrorList newValue);
+        partial void Changed_IsOpen (bool oldValue, bool newValue);
         // --------------------------------------------------------------------
 
 
            
         // --------------------------------------------------------------------
-        public int ErrorCount
+        public string StationName
         {
             get
             {
-                return (int)GetValue (ErrorCountProperty);
+                return (string)GetValue (StationNameProperty);
             }
             set
             {
-                if (ErrorCount != value)
+                if (StationName != value)
                 {
-                    SetValue (ErrorCountProperty, value);
+                    SetValue (StationNameProperty, value);
                 }
             }
         }
         // --------------------------------------------------------------------
-        partial void Changed_ErrorCount (int oldValue, int newValue);
+        partial void Changed_StationName (string oldValue, string newValue);
         // --------------------------------------------------------------------
 
 
            
         // --------------------------------------------------------------------
-        public string ErrorText
+        public System.Device.Location.GeoCoordinate Location
         {
             get
             {
-                return (string)GetValue (ErrorTextProperty);
+                return (System.Device.Location.GeoCoordinate)GetValue (LocationProperty);
             }
-            private set
+            set
             {
-                if (ErrorText != value)
+                if (Location != value)
                 {
-                    SetValue (ErrorTextProperty, value);
+                    SetValue (LocationProperty, value);
                 }
             }
         }
         // --------------------------------------------------------------------
-        partial void Changed_ErrorText (string oldValue, string newValue);
+        partial void Changed_Location (System.Device.Location.GeoCoordinate oldValue, System.Device.Location.GeoCoordinate newValue);
         // --------------------------------------------------------------------
 
 
            
         // --------------------------------------------------------------------
-        public Visibility ErrorTextVisibility
+        public Brush StationBackground
         {
             get
             {
-                return (Visibility)GetValue (ErrorTextVisibilityProperty);
+                return (Brush)GetValue (StationBackgroundProperty);
             }
             private set
             {
-                if (ErrorTextVisibility != value)
+                if (StationBackground != value)
                 {
-                    SetValue (ErrorTextVisibilityProperty, value);
+                    SetValue (StationBackgroundProperty, value);
                 }
             }
         }
         // --------------------------------------------------------------------
-        partial void Changed_ErrorTextVisibility (Visibility oldValue, Visibility newValue);
+        partial void Changed_StationBackground (Brush oldValue, Brush newValue);
         // --------------------------------------------------------------------
 
 

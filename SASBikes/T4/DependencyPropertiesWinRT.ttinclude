@@ -29,7 +29,9 @@ namespace <#=Namespace#>
 
     using System.Windows;
 
+#if NETFX_CORE
     using Windows.UI.Xaml;
+#endif
 
 <#
     // ------------------------------------------------------------------------
