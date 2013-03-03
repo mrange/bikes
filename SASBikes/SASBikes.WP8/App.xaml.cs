@@ -20,7 +20,9 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using SASBikes.Common.SASBikes.Common.AppServices;
+using SASBikes.Common.SASBikes.Common.WindowsAdaptors;
 using SASBikes.WP8.Resources;
+using Windows.UI.Core;
 
 namespace SASBikes.WP8
 {
@@ -75,28 +77,38 @@ namespace SASBikes.WP8
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            Services.Start ();
+            StartServices();
+        }
+
+        static void StartServices()
+        {
+            Services.Start(new StartServiceContext{Runner = new Runner (RootFrame.Dispatcher),});
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            Services.Start ();
+            StartServices();
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            Services.Stop ();
+            StopServices();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            Services.Stop ();
+            StopServices();
+        }
+
+        static void StopServices()
+        {
+            Services.Stop(new StopServiceContext());
         }
 
         // Code to execute if a navigation fails

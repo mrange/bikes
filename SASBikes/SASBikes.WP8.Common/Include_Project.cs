@@ -37,6 +37,7 @@
 // @@@ SKIPPING (Blacklisted): C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Properties\AssemblyInfo.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs
 // @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs
+// @@@ INCLUDING: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\Runner.cs
 // ############################################################################
 // Certains directives such as #define and // Resharper comments has to be 
 // moved to top in order to work properly    
@@ -85,6 +86,10 @@ namespace SASBikes.Common
     
     namespace SASBikes.Common.AppServices
     {
+        partial class StartServiceContext
+        {
+            public IRunner Runner;
+        }
     
         public enum AsyncGroup
         {
@@ -181,8 +186,7 @@ namespace SASBikes.Common
                     ViewModel[C.ViewModel.ApplicationState] = value;
                 }
             }
-            public CoreWindow     Window    ;
-            public CoreDispatcher Dispatcher;
+            public IRunner Runner;
     
             enum DispatcherState
             {
@@ -205,22 +209,19 @@ namespace SASBikes.Common
     
             readonly DispatcherStateManager m_dispatcherState = new DispatcherStateManager (); 
             readonly IConcurrentQueue<Tuple<AsyncGroup, Action>> m_dispatchedAsyncCalls = new ConcurrentQueue<Tuple<AsyncGroup, Action>>();
-            IAsyncAction m_currentTask;
     
-            public void Start()
+            public void Start(StartServiceContext context)
             {
-                Window      = CoreWindow.GetForCurrentThread()  ;
-                Dispatcher  = Window.Dispatcher                 ;
+                Runner  = context.Runner        ;
                 if (State == null)
                 {
                     State= CreateEmptyState()            ;
                 }
             }
     
-            public void Stop()
+            public void Stop(StopServiceContext context)
             {
-                Dispatcher  = null                              ;
-                Window      = null                              ;
+                Runner  = null                              ;
             }
     
             public void Async_Invoke(AsyncGroup group, Action action)
@@ -232,7 +233,7 @@ namespace SASBikes.Common
     
                 m_dispatchedAsyncCalls.Enqueue(Tuple.Create (group, action));
     
-                var dispatcher = Dispatcher;
+                var dispatcher = Runner;
     
                 if (dispatcher == null)
                 {
@@ -242,15 +243,15 @@ namespace SASBikes.Common
                 StartDispatcher(dispatcher);
             }
     
-            void StartDispatcher(CoreDispatcher dispatcher)
+            void StartDispatcher(IRunner runner)
             {
                 if (m_dispatcherState.Edge(DispatcherState.Idle, DispatcherState.Triggered))
                 {
-                    m_currentTask = dispatcher.RunIdleAsync(RunIdle_DispatchActions);
+                    runner.RunOnApplicationIdle(RunIdle_DispatchActions);
                 }
             }
     
-            void RunIdle_DispatchActions(IdleDispatchedHandlerArgs e)
+            void RunIdle_DispatchActions()
             {
                 if (!m_dispatcherState.Edge(DispatcherState.Triggered, DispatcherState.Dispatching))
                 {
@@ -297,10 +298,9 @@ namespace SASBikes.Common
                 }
                 finally
                 {
-                    m_currentTask = null;
                     m_dispatcherState.Edge(DispatcherState.Dispatching, DispatcherState.Idle);
     
-                    var dispatcher = Dispatcher;
+                    var dispatcher = Runner;
                     if (dispatcher != null && m_dispatchedAsyncCalls.Count > 0)
                     {
                         StartDispatcher(dispatcher);
@@ -419,50 +419,58 @@ namespace SASBikes.Common
     
     namespace SASBikes.Common.AppServices
     {
-        partial interface IService
+        public partial class StartServiceContext
         {
-            void Start ();
-            void Stop ();
+        }
+    
+        public partial class StopServiceContext
+        {
+        }
+    
+        public partial interface IService
+        {
+            void Start (StartServiceContext context);
+            void Stop (StopServiceContext context);
         }
     
         public static partial class Services
         {
-            public static readonly LogService Log = new LogService()      ;
             public static readonly AppService App = new AppService()      ;
+            public static readonly LogService Log = new LogService()      ;
             public static readonly LocatorService Locator = new LocatorService()      ;
             public static readonly StationsService Stations = new StationsService()      ;
     
-            public static void Start()
+            public static void Start(StartServiceContext context)
             {
                 var state = SetState(States.Started);
                 if (state == States.Stopped)
                 {
-                    StartService (Log);
-                    StartService (App);
-                    StartService (Locator);
-                    StartService (Stations);
+                    StartService (App, context);
+                    StartService (Log, context);
+                    StartService (Locator, context);
+                    StartService (Stations, context);
                 }
             }
     
-            public static void Stop()
+            public static void Stop(StopServiceContext context)
             {
                 var state = SetState(States.Stopped);
                 if (state == States.Started)
                 {
-                    StopService (Stations);
-                    StopService (Locator);
-                    StopService (App);
-                    StopService (Log);
+                    StopService (Stations, context);
+                    StopService (Locator, context);
+                    StopService (Log, context);
+                    StopService (App, context);
                 }
             }
     
-            static void StopService(this IService service)
+            static void StopService(this IService service, StopServiceContext context)
             {
                 if (service != null)
                 {
                     try
                     {
-                        service.Stop();
+                        service.Stop(context);
                     }
                     catch (Exception exc)
                     {
@@ -472,13 +480,13 @@ namespace SASBikes.Common
                 
             }
     
-            static void StartService(this IService service)
+            static void StartService(this IService service, StartServiceContext context)
             {
                 if (service != null)
                 {
                     try
                     {
-                        service.Start();
+                        service.Start(context);
                     }
                     catch (Exception exc)
                     {
@@ -538,7 +546,7 @@ namespace SASBikes.Common
             Geolocator m_locator;
             Geoposition m_lastKnownPosition;
     
-            public void Start()
+            public void Start(StartServiceContext context)
             {
                 m_locator = new Geolocator
                                 {
@@ -574,7 +582,7 @@ namespace SASBikes.Common
                 }
             }
     
-            public void Stop()
+            public void Stop(StopServiceContext context)
             {
                 if (m_locator != null)
                 {
@@ -619,13 +627,13 @@ namespace SASBikes.Common
             readonly IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
             bool m_isRunning;
     
-            public void Start()
+            public void Start(StartServiceContext context)
             {
                 m_isRunning = true;
                 Services.App.Async_Invoke(AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
             }
     
-            public void Stop()
+            public void Stop(StopServiceContext context)
             {
                 m_isRunning = false;
             }
@@ -706,18 +714,18 @@ namespace SASBikes.Common
             Task m_updateTask;
             string m_lastXmlData;
     
-            public void Start()
+            public void Start(StartServiceContext context)
             {
                 m_source = new CancellationTokenSource();
                 var token = m_source.Token;
     
-                //m_updateTask = Task
-                //        .Delay(Delay_InitialUpdateStations, token)
-                //        .ContinueWith(t => UpdateStations(token), token)
-                //        ;
+                m_updateTask = Task
+                        .Delay(Delay_InitialUpdateStations, token)
+                        .ContinueWith(t => UpdateStations(token), token)
+                        ;
             }
     
-            public void Stop()
+            public void Stop(StopServiceContext context)
             {
                 if (m_source != null)
                 {
@@ -4342,12 +4350,94 @@ namespace SASBikes.Common
 // ############################################################################
 
 // ############################################################################
+// @@@ BEGIN_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\Runner.cs
+namespace SASBikes.Common
+{
+    // ----------------------------------------------------------------------------------------------
+    // Copyright (c) Mårten Rånge.
+    // ----------------------------------------------------------------------------------------------
+    // This source code is subject to terms and conditions of the Microsoft Public License. A 
+    // copy of the license can be found in the License.html file at the root of this distribution. 
+    // If you cannot locate the  Microsoft Public License, please send an email to 
+    // dlr@microsoft.com. By using this source code in any fashion, you are agreeing to be bound 
+    //  by the terms of the Microsoft Public License.
+    // ----------------------------------------------------------------------------------------------
+    // You must not remove this notice, or any other, from this software.
+    // ----------------------------------------------------------------------------------------------
+    
+    namespace SASBikes.Common.WindowsAdaptors
+    {
+    #if SILVERLIGHT || WINDOWS_PHONE
+        using System;
+        using System.Windows.Threading;
+        using Windows.UI.Core;
+    
+        public class Runner : IRunner
+        {
+            public readonly Dispatcher Dispatcher;
+        
+            public Runner(Dispatcher dispatcher)
+            {
+                Dispatcher = dispatcher;
+            }
+        
+            public void RunOnApplicationIdle(Action action)
+            {
+                if (action == null)
+                {
+                    return;
+                }
+        
+                if (Dispatcher == null)
+                {
+                    return;
+                }
+    
+                Dispatcher.BeginInvoke(action);
+            }
+        }
+    #else
+        using System;
+        using Windows.UI.Core;
+    
+        public class Runner : IRunner
+        {
+            public readonly CoreDispatcher CoreDispatcher;
+    
+            public Runner(CoreDispatcher coreDispatcher)
+            {
+                CoreDispatcher = coreDispatcher ?? CoreWindow.GetForCurrentThread().Dispatcher;
+            }
+    
+            public void RunOnApplicationIdle(Action action)
+            {
+                if (action == null)
+                {
+                    return;
+                }
+    
+                var task = CoreDispatcher.RunIdleAsync(e => action());
+            }
+        }
+    #endif
+    
+        public partial interface IRunner
+        {
+            void RunOnApplicationIdle (Action action);
+        }
+    
+    }
+}
+// @@@ END_INCLUDE: C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\Runner.cs
+// ############################################################################
+
+// ############################################################################
 namespace SASBikes.Common.Include
 {
     static partial class MetaData
     {
         public const string RootPath        = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.WP8.Common\..\SASBikes.Common";
-        public const string IncludeDate     = @"2013-03-03T20:36:43";
+        public const string IncludeDate     = @"2013-03-03T21:47:03";
 
         public const string Include_0       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\AppService.cs";
         public const string Include_1       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\AppServices\Generated_Services.cs";
@@ -4370,6 +4460,7 @@ namespace SASBikes.Common.Include
         public const string Include_18       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\Internal\Log.cs";
         public const string Include_19       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentDictionary.cs";
         public const string Include_20       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\ConcurrentQueue.cs";
+        public const string Include_21       = @"C:\temp\GitHub\bikes\SASBikes\SASBikes.Common\WindowsAdaptors\Runner.cs";
     }
 }
 // ############################################################################

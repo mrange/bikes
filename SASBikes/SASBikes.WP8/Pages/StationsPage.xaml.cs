@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace SASBikes.WP8.Pages
 {
@@ -15,6 +17,7 @@ namespace SASBikes.WP8.Pages
         public StationsPage()
         {
             InitializeComponent();
+
         }
     }
 }

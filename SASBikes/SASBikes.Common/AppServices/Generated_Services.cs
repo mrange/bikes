@@ -30,50 +30,58 @@ using SASBikes.Common.Source.Common;
 
 namespace SASBikes.Common.AppServices
 {
-    partial interface IService
+    public partial class StartServiceContext
     {
-        void Start ();
-        void Stop ();
+    }
+
+    public partial class StopServiceContext
+    {
+    }
+
+    public partial interface IService
+    {
+        void Start (StartServiceContext context);
+        void Stop (StopServiceContext context);
     }
 
     public static partial class Services
     {
-        public static readonly LogService Log = new LogService()      ;
         public static readonly AppService App = new AppService()      ;
+        public static readonly LogService Log = new LogService()      ;
         public static readonly LocatorService Locator = new LocatorService()      ;
         public static readonly StationsService Stations = new StationsService()      ;
 
-        public static void Start()
+        public static void Start(StartServiceContext context)
         {
             var state = SetState(States.Started);
             if (state == States.Stopped)
             {
-                StartService (Log);
-                StartService (App);
-                StartService (Locator);
-                StartService (Stations);
+                StartService (App, context);
+                StartService (Log, context);
+                StartService (Locator, context);
+                StartService (Stations, context);
             }
         }
 
-        public static void Stop()
+        public static void Stop(StopServiceContext context)
         {
             var state = SetState(States.Stopped);
             if (state == States.Started)
             {
-                StopService (Stations);
-                StopService (Locator);
-                StopService (App);
-                StopService (Log);
+                StopService (Stations, context);
+                StopService (Locator, context);
+                StopService (Log, context);
+                StopService (App, context);
             }
         }
 
-        static void StopService(this IService service)
+        static void StopService(this IService service, StopServiceContext context)
         {
             if (service != null)
             {
                 try
                 {
-                    service.Stop();
+                    service.Stop(context);
                 }
                 catch (Exception exc)
                 {
@@ -83,13 +91,13 @@ namespace SASBikes.Common.AppServices
             
         }
 
-        static void StartService(this IService service)
+        static void StartService(this IService service, StartServiceContext context)
         {
             if (service != null)
             {
                 try
                 {
-                    service.Start();
+                    service.Start(context);
                 }
                 catch (Exception exc)
                 {

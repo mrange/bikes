@@ -23,13 +23,13 @@ namespace SASBikes.Common.AppServices
         readonly IConcurrentQueue<string> s_errors = new ConcurrentQueue<string> ();
         bool m_isRunning;
 
-        public void Start()
+        public void Start(StartServiceContext context)
         {
             m_isRunning = true;
             Services.App.Async_Invoke(AsyncGroup.Log_UpdateErrors, Log_UpdateErrors);
         }
 
-        public void Stop()
+        public void Stop(StopServiceContext context)
         {
             m_isRunning = false;
         }

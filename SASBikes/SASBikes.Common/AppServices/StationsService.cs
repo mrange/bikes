@@ -32,18 +32,18 @@ namespace SASBikes.Common.AppServices
         Task m_updateTask;
         string m_lastXmlData;
 
-        public void Start()
+        public void Start(StartServiceContext context)
         {
             m_source = new CancellationTokenSource();
             var token = m_source.Token;
 
-            //m_updateTask = Task
-            //        .Delay(Delay_InitialUpdateStations, token)
-            //        .ContinueWith(t => UpdateStations(token), token)
-            //        ;
+            m_updateTask = Task
+                    .Delay(Delay_InitialUpdateStations, token)
+                    .ContinueWith(t => UpdateStations(token), token)
+                    ;
         }
 
-        public void Stop()
+        public void Stop(StopServiceContext context)
         {
             if (m_source != null)
             {

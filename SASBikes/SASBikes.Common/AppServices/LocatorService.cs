@@ -23,7 +23,7 @@ namespace SASBikes.Common.AppServices
         Geolocator m_locator;
         Geoposition m_lastKnownPosition;
 
-        public void Start()
+        public void Start(StartServiceContext context)
         {
             m_locator = new Geolocator
                             {
@@ -59,7 +59,7 @@ namespace SASBikes.Common.AppServices
             }
         }
 
-        public void Stop()
+        public void Stop(StopServiceContext context)
         {
             if (m_locator != null)
             {

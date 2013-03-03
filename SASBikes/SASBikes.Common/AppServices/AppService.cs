@@ -28,6 +28,10 @@ using Windows.UI.Core;
 
 namespace SASBikes.Common.AppServices
 {
+    partial class StartServiceContext
+    {
+        public IRunner Runner;
+    }
 
     public enum AsyncGroup
     {
@@ -124,8 +128,7 @@ namespace SASBikes.Common.AppServices
                 ViewModel[C.ViewModel.ApplicationState] = value;
             }
         }
-        public CoreWindow     Window    ;
-        public CoreDispatcher Dispatcher;
+        public IRunner Runner;
 
         enum DispatcherState
         {
@@ -148,22 +151,19 @@ namespace SASBikes.Common.AppServices
 
         readonly DispatcherStateManager m_dispatcherState = new DispatcherStateManager (); 
         readonly IConcurrentQueue<Tuple<AsyncGroup, Action>> m_dispatchedAsyncCalls = new ConcurrentQueue<Tuple<AsyncGroup, Action>>();
-        IAsyncAction m_currentTask;
 
-        public void Start()
+        public void Start(StartServiceContext context)
         {
-            Window      = CoreWindow.GetForCurrentThread()  ;
-            Dispatcher  = Window.Dispatcher                 ;
+            Runner  = context.Runner        ;
             if (State == null)
             {
                 State= CreateEmptyState()            ;
             }
         }
 
-        public void Stop()
+        public void Stop(StopServiceContext context)
         {
-            Dispatcher  = null                              ;
-            Window      = null                              ;
+            Runner  = null                              ;
         }
 
         public void Async_Invoke(AsyncGroup group, Action action)
@@ -175,7 +175,7 @@ namespace SASBikes.Common.AppServices
 
             m_dispatchedAsyncCalls.Enqueue(Tuple.Create (group, action));
 
-            var dispatcher = Dispatcher;
+            var dispatcher = Runner;
 
             if (dispatcher == null)
             {
@@ -185,15 +185,15 @@ namespace SASBikes.Common.AppServices
             StartDispatcher(dispatcher);
         }
 
-        void StartDispatcher(CoreDispatcher dispatcher)
+        void StartDispatcher(IRunner runner)
         {
             if (m_dispatcherState.Edge(DispatcherState.Idle, DispatcherState.Triggered))
             {
-                m_currentTask = dispatcher.RunIdleAsync(RunIdle_DispatchActions);
+                runner.RunOnApplicationIdle(RunIdle_DispatchActions);
             }
         }
 
-        void RunIdle_DispatchActions(IdleDispatchedHandlerArgs e)
+        void RunIdle_DispatchActions()
         {
             if (!m_dispatcherState.Edge(DispatcherState.Triggered, DispatcherState.Dispatching))
             {
@@ -240,10 +240,9 @@ namespace SASBikes.Common.AppServices
             }
             finally
             {
-                m_currentTask = null;
                 m_dispatcherState.Edge(DispatcherState.Dispatching, DispatcherState.Idle);
 
-                var dispatcher = Dispatcher;
+                var dispatcher = Runner;
                 if (dispatcher != null && m_dispatchedAsyncCalls.Count > 0)
                 {
                     StartDispatcher(dispatcher);

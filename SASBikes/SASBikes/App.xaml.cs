@@ -16,10 +16,12 @@ using SASBikes.Common;
 
 using System;
 using SASBikes.Common.AppServices;
+using SASBikes.Common.WindowsAdaptors;
 using SASBikes.Pages;
 using SASBikes.Source.Common;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -44,7 +46,18 @@ namespace SASBikes
 
         void OnResuming(object sender, object e)
         {
-            Services.Start();
+            StartServices();
+        }
+
+        static void StartServices()
+        {
+            var window = CoreWindow.GetForCurrentThread();
+            Services.Start(new StartServiceContext {Runner = new Runner(window.Dispatcher),});
+        }
+
+        static void StopServices()
+        {
+            Services.Stop(new StopServiceContext());
         }
 
         /// <summary>
@@ -55,7 +68,7 @@ namespace SASBikes
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            Services.Start();
+            StartServices();
 
             var rootFrame = Window.Current.Content as Frame;
 
@@ -110,7 +123,7 @@ namespace SASBikes
         /// <param name="e">Details about the suspend request.</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            Services.Stop();
+            StopServices();
          
             var deferral = e.SuspendingOperation.GetDeferral();
 
@@ -120,7 +133,7 @@ namespace SASBikes
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            Services.Start();
+            StartServices();
 
             base.OnActivated(args);
         }
