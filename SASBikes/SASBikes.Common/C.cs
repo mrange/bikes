@@ -14,9 +14,20 @@
 
 namespace SASBikes.Common
 {
-    static class C
+    public static class C
     {
-        public const string ViewModel_ApplicationState = "ViewModel_ApplicationState"  ;
+        public static class ViewModel
+        {
+            public const string ApplicationState = "ViewModel_ApplicationState"  ;
+        }
 
+        public static class Default
+        {
+            public const double   My_Lo    = 11.973429  ;
+            public const double   My_La    = 57.700324  ;
+            public const double   View_Lo  = 11.973429  ;
+            public const double   View_La  = 57.700324  ;
+            public const double   View_Zoom= 18         ;
+        }
     }
 }

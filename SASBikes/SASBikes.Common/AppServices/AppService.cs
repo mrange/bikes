@@ -114,14 +114,14 @@ namespace SASBikes.Common.AppServices
             get
             {
                 object state;
-                return ViewModel.TryGetValue(C.ViewModel_ApplicationState, out state)
+                return ViewModel.TryGetValue(C.ViewModel.ApplicationState, out state)
                     ?   state as State
                     :   default(State)
                     ;
             }
             set
             {
-                ViewModel[C.ViewModel_ApplicationState] = value;
+                ViewModel[C.ViewModel.ApplicationState] = value;
             }
         }
         public CoreWindow     Window    ;

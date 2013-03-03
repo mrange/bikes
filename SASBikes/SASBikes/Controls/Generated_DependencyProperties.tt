@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------------------------
 
 using Bing.Maps;
+using SASBikes.Common;
 using SASBikes.Common.DataModel;
 using Windows.UI.Xaml.Media;
 
@@ -39,11 +40,11 @@ using Windows.UI.Xaml.Media;
             },
         new ClassDefinition ("BikeMap"                                                                              )
             {
-                P ("double"                                 , "My_Lo"                                               , defaultValue:"11.973429"  ),
-                P ("double"                                 , "My_La"                                               , defaultValue:"57.700324"  ),
-                P ("double"                                 , "View_Lo"                                             , defaultValue:"11.973429"  ),
-                P ("double"                                 , "View_La"                                             , defaultValue:"57.700324"  ),
-                P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"18.0"       ),
+                P ("double"                                 , "My_Lo"                                               , defaultValue:"C.Default.My_Lo"    ),
+                P ("double"                                 , "My_La"                                               , defaultValue:"C.Default.My_La"    ),
+                P ("double"                                 , "View_Lo"                                             , defaultValue:"C.Default.View_Lo"  ),
+                P ("double"                                 , "View_La"                                             , defaultValue:"C.Default.View_La"  ),
+                P ("double"                                 , "View_ZoomLevel"                                      , defaultValue:"C.Default.View_Zoom"),
                 P ("StationList"                            , "Stations"                                            ),
             },
         new ClassDefinition ("ErrorIndicator"                                                                       )

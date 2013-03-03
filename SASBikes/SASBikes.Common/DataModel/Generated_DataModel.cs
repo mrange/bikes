@@ -54,11 +54,11 @@ namespace SASBikes.Common.DataModel
         public State (DataModelContext context) : base (context)
         {
             _State_IsTrackingMyPosition = true   ;
-            _State_ZoomLevel = default (double)   ;
-            _State_Lo = default (double)   ;
-            _State_La = default (double)   ;
-            _State_MyLo = default (double)   ;
-            _State_MyLa = default (double)   ;
+            _State_ZoomLevel = C.Default.View_Zoom   ;
+            _State_Lo = C.Default.View_Lo   ;
+            _State_La = C.Default.View_La   ;
+            _State_MyLo = C.Default.My_Lo   ;
+            _State_MyLa = C.Default.My_La   ;
             _State_StationName = ""   ;
             _State_SearchingFor = ""   ;
             _State_Stations = new StationList (context)   ;
@@ -915,7 +915,7 @@ namespace SASBikes.Common.DataModel
                         break;
                     case "ZoomLevel":
                         {
-                            var value = default (double);
+                            var value = C.Default.View_Zoom;
 
                             subElement.Unserialize (
                                 context,
@@ -928,7 +928,7 @@ namespace SASBikes.Common.DataModel
                         break;
                     case "Lo":
                         {
-                            var value = default (double);
+                            var value = C.Default.View_Lo;
 
                             subElement.Unserialize (
                                 context,
@@ -941,7 +941,7 @@ namespace SASBikes.Common.DataModel
                         break;
                     case "La":
                         {
-                            var value = default (double);
+                            var value = C.Default.View_La;
 
                             subElement.Unserialize (
                                 context,
@@ -954,7 +954,7 @@ namespace SASBikes.Common.DataModel
                         break;
                     case "MyLo":
                         {
-                            var value = default (double);
+                            var value = C.Default.My_Lo;
 
                             subElement.Unserialize (
                                 context,
@@ -967,7 +967,7 @@ namespace SASBikes.Common.DataModel
                         break;
                     case "MyLa":
                         {
-                            var value = default (double);
+                            var value = C.Default.My_La;
 
                             subElement.Unserialize (
                                 context,

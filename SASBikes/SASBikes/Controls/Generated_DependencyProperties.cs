@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------------------------
 
 using Bing.Maps;
+using SASBikes.Common;
 using SASBikes.Common.DataModel;
 using Windows.UI.Xaml.Media;
 
@@ -251,7 +252,7 @@ namespace SASBikes.Controls
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                11.973429,
+                C.Default.My_Lo,
                 Changed_My_Lo
             ));
 
@@ -272,7 +273,7 @@ namespace SASBikes.Controls
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                57.700324,
+                C.Default.My_La,
                 Changed_My_La
             ));
 
@@ -293,7 +294,7 @@ namespace SASBikes.Controls
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                11.973429,
+                C.Default.View_Lo,
                 Changed_View_Lo
             ));
 
@@ -314,7 +315,7 @@ namespace SASBikes.Controls
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                57.700324,
+                C.Default.View_La,
                 Changed_View_La
             ));
 
@@ -335,7 +336,7 @@ namespace SASBikes.Controls
             typeof (double),
             typeof (BikeMap),
             new PropertyMetadata (
-                18.0,
+                C.Default.View_Zoom,
                 Changed_View_ZoomLevel
             ));
 

@@ -18,12 +18,12 @@ using System;
     {
         new ClassDefinition ("State")
         {
-            P ("bool"               , "IsTrackingMyPosition", defaultValue:"true"   ),
-            P ("double"             , "ZoomLevel"           ),
-            P ("double"             , "Lo"                  ),
-            P ("double"             , "La"                  ),              
-            P ("double"             , "MyLo"                ),
-            P ("double"             , "MyLa"                ),              
+            P ("bool"               , "IsTrackingMyPosition", defaultValue:"true"                   ),
+            P ("double"             , "ZoomLevel"           , defaultValue:"C.Default.View_Zoom"    ),
+            P ("double"             , "Lo"                  , defaultValue:"C.Default.View_Lo"      ),
+            P ("double"             , "La"                  , defaultValue:"C.Default.View_La"      ),              
+            P ("double"             , "MyLo"                , defaultValue:"C.Default.My_Lo"        ),
+            P ("double"             , "MyLa"                , defaultValue:"C.Default.My_La"        ),              
             P ("string"             , "StationName"         ),
             P ("string"             , "SearchingFor"        ),
             C ("Station"            , "Stations"            ),
