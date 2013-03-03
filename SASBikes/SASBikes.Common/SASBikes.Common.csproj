@@ -117,13 +117,14 @@
     <Compile Include="..\Global_AssemblyInfo.cs">
       <Link>Properties\Global_AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AppServices\AppStateService.cs" />
+    <Compile Include="AppServices\AppService.cs" />
     <Compile Include="AppServices\Generated_Services.cs">
       <DependentUpon>Generated_Services.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="AppServices\LocatorService.cs" />
+    <Compile Include="AppServices\LogService.cs" />
     <Compile Include="AppServices\StationsService.cs" />
     <Compile Include="DataModel\DataModel.cs" />
     <Compile Include="DataModel\DataModelBase.cs" />

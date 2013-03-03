@@ -38,6 +38,7 @@ namespace SASBikes.Common.AppServices
 
     public static partial class Services
     {
+        public static readonly LogService Log = new LogService()      ;
         public static readonly AppService App = new AppService()      ;
         public static readonly LocatorService Locator = new LocatorService()      ;
         public static readonly StationsService Stations = new StationsService()      ;
@@ -50,6 +51,7 @@ namespace SASBikes.Common.AppServices
                 StartService (Stations);
                 StartService (Locator);
                 StartService (App);
+                StartService (Log);
             }
         }
 
@@ -58,6 +60,7 @@ namespace SASBikes.Common.AppServices
             var state = SetState(States.Stopped);
             if (state == States.Started)
             {
+                StopService (Log);
                 StopService (App);
                 StopService (Locator);
                 StopService (Stations);
@@ -74,7 +77,7 @@ namespace SASBikes.Common.AppServices
                 }
                 catch (Exception exc)
                 {
-                    Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
+                   Source.Common.Log.Exception ("Failed to stop service {0}: {1}", service.GetType().Name, exc);
                 }
             }
             
@@ -90,7 +93,7 @@ namespace SASBikes.Common.AppServices
                 }
                 catch (Exception exc)
                 {
-                    Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
+                    Source.Common.Log.Exception ("Failed to start service {0}: {1}", service.GetType().Name, exc);
                 }
             }
 

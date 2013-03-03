@@ -29,6 +29,7 @@
     Namespace   = "SASBikes.Common.AppServices";
     Model       = new []
     {
+        S("Log"             ),
         S("App"             ),
         S("Locator"         ),
         S("Stations"        ),

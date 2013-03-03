@@ -140,7 +140,7 @@
     <Compile Include="Controls\StationPushPin.xaml.cs">
       <DependentUpon>StationPushPin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Log.cs" />
+    <Compile Include="Internal\Log.cs" />
     <Compile Include="Pages\ErrorsPage.xaml.cs">
       <DependentUpon>ErrorsPage.xaml</DependentUpon>
     </Compile>

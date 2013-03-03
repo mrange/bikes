@@ -12,13 +12,27 @@
 
 // ReSharper disable InconsistentNaming
 
-using System;
-using System.Collections.Concurrent;
+using SASBikes.Common.AppServices;
 
 namespace SASBikes.Source.Common
 {
     static partial class Log
     {
-        // TODO:
+        static partial void Partial_LogMessage(Level level, string message)
+        {
+            switch (level)
+            {
+                case Level.Success:
+                case Level.HighLight:
+                case Level.Info:
+                case Level.Warning:
+                    break;
+                case Level.Error:
+                case Level.Exception:
+                default:
+                    Services.Log.Error(message ?? "");
+                    break;
+            }
+        }
     }
 }
