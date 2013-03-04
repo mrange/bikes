@@ -375,27 +375,6 @@ namespace SASBikes.WP8.Controls
             }
         }
 
-        public static readonly DependencyProperty LocationProperty = DependencyProperty.Register (
-            "Location",
-            typeof (System.Device.Location.GeoCoordinate),
-            typeof (StationPushPin),
-            new PropertyMetadata (
-                default (System.Device.Location.GeoCoordinate),
-                Changed_Location
-            ));
-
-        static void Changed_Location (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var instance = dependencyObject as StationPushPin;
-            if (instance != null)
-            {
-                var oldValue = (System.Device.Location.GeoCoordinate)eventArgs.OldValue;
-                var newValue = (System.Device.Location.GeoCoordinate)eventArgs.NewValue;
-
-                instance.Changed_Location (oldValue, newValue);
-            }
-        }
-
         public static readonly DependencyProperty StationBackgroundProperty = DependencyProperty.Register (
             "StationBackground",
             typeof (Brush),
@@ -474,27 +453,6 @@ namespace SASBikes.WP8.Controls
         }
         // --------------------------------------------------------------------
         partial void Changed_StationName (string oldValue, string newValue);
-        // --------------------------------------------------------------------
-
-
-           
-        // --------------------------------------------------------------------
-        public System.Device.Location.GeoCoordinate Location
-        {
-            get
-            {
-                return (System.Device.Location.GeoCoordinate)GetValue (LocationProperty);
-            }
-            set
-            {
-                if (Location != value)
-                {
-                    SetValue (LocationProperty, value);
-                }
-            }
-        }
-        // --------------------------------------------------------------------
-        partial void Changed_Location (System.Device.Location.GeoCoordinate oldValue, System.Device.Location.GeoCoordinate newValue);
         // --------------------------------------------------------------------
 
 

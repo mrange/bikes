@@ -14,7 +14,6 @@
     <Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
         <maps:Map
             x:Name="Map"
-            CartographicMode="Hybrid"
                 >
 
         </maps:Map>

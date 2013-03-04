@@ -29,7 +29,7 @@ namespace SASBikes.Controls
         partial void Constructed__StationPushPin()
         {
             InitializeComponent();
-            MapLayer.SetPositionAnchor(this, new Point(32,16));
+            MapLayer.SetPositionAnchor(this, new Point(16,32));
             StationBackground = s_isClosedBackground;
         }
 

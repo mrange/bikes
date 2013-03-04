@@ -42,8 +42,6 @@ using SASBikes.Common.SASBikes.Common.DataModel;
             {
                 P ("bool"           , "IsOpen"                                      ),
                 P ("string"         , "StationName"                                 ),
-                P ("System.Device.Location.GeoCoordinate"  , "Location"                                    ),
-
                 P ("Brush"          , "StationBackground"                           , flags:PropertyFlags.IsReadOnly    ),
 
             },
